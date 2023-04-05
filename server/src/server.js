@@ -1,10 +1,11 @@
 const express = require("express");
 const helmet = require("helmet");
 const compression = require("express-compression");
+const sequelize = require("./util/database");
 
 const app = express();
 
-// Dev imports
+// Development imports
 if (process.env.NODE_ENV !== "production") {
    require("dotenv").config();
    const logger = require("morgan");
@@ -17,7 +18,12 @@ app.use(helmet.hidePoweredBy());
 app.use(compression());
 app.use(express.json());
 
-// Handling 404 Not found
+// database sync (should import all models to work) //! DELETE after sync is complete
+// sequelize.sync()
+//    .then(() => console.log("database syncd"))  
+//    .catch(e => console.log(`database sync error: ${e}`));  
+
+// Handling 404 (Not found)
 app.use((req, res, next) => {
    const err = new Error("Not Found!");
    err.status = 404;
