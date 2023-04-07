@@ -1,7 +1,9 @@
 const express = require("express");
 const helmet = require("helmet");
 const compression = require("express-compression");
-const sequelize = require("./util/database");
+const sequelize = require("./utils/database");
+
+// TODO: may need to make a cart and favorait tables
 
 const app = express();
 
