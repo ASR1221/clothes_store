@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
+const SIZES = require("../../constants/sizes");
+const COLORS = require("../../constants/colors");
 
 const Order = sequelize.define("order", {
    id: {
@@ -13,6 +15,22 @@ const Order = sequelize.define("order", {
       type: DataTypes.BIGINT,
       allowNull: false,
    },
+   item_table: {
+      type: DataTypes.ENUM("women", "men", "kids"),
+      allowNull: false,
+   },
+   item_size: {
+      type: DataTypes.ENUM(SIZES),
+      allowNull: false,
+   },
+   item_color: {
+      type: DataTypes.ENUM(COLORS),
+      allowNull: false,
+   },
+   product_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+   },
    customer_id: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -20,10 +38,6 @@ const Order = sequelize.define("order", {
          model: "users",
          key: "id",
       },
-   },
-   product_count: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
    },
    totoal_price: {
       type: DataTypes.DECIMAL,

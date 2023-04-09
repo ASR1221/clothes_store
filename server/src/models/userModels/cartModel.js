@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
+const SIZES = require("../../constants/sizes");
+const COLORS = require("../../constants/colors");
 
 const Cart = sequelize.define("cart", {
    id: {
@@ -15,6 +17,14 @@ const Cart = sequelize.define("cart", {
    },
    item_table: {
       type: DataTypes.ENUM("women", "men", "kids"),
+      allowNull: false,
+   },
+   item_size: {
+      type: DataTypes.ENUM(SIZES),
+      allowNull: false,
+   },
+   item_color: {
+      type: DataTypes.ENUM(COLORS),
       allowNull: false,
    },
    user_id: {

@@ -29,10 +29,6 @@ const KIDS = sequelize.define("kids", {
       type: DataTypes.ENUM(COLORS),
       allowNull: false,
    },
-   gender: {
-      type: DataTypes.ENUM("male", "female"),
-      allowNull: false,
-   },
    type: {
       type: DataTypes.ENUM("jeans", "shirts", "coats", "dresses", "skirts"),
       allowNull: false,

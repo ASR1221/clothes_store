@@ -18,5 +18,12 @@ router.post("/auth/facebook/user", userController.facebookUser, session);
 
 router.post("/auth/facebook/user/mobile", userController.facebookUser, session); 
 
+router.post("/cart/list", userController.listCartItems);
+
+router.post("/cart/add", userController.addToCart);
+
+router.post("/cart/remove", userController.removeFromCart);
+
+
 
 module.exports = router;
