@@ -3,8 +3,10 @@ const session = require("../middlewares/Session");
 
 const router = require("express").Router();
 
-
+// TODO: check session before any operation below
+// TODO: add, remove and list cart items
 // TODO: get user address and phone number when he make an order
+// TODO: buy operation (order)
 // TODO: payment
 
 
