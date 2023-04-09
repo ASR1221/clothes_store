@@ -27,6 +27,14 @@ const Cart = sequelize.define("cart", {
       type: DataTypes.ENUM(COLORS),
       allowNull: false,
    },
+   item_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+   },
+   totoal_price: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+   },
    user_id: {
       type: DataTypes.UUID,
       allowNull: false,
