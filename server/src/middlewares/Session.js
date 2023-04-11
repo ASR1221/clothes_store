@@ -3,15 +3,14 @@ if (process.env.NODE_ENV !== "production") {
 }
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
+exports.createSession = (req, res, next) => {
 
    const { id, name, email, phone_number, cartItems } = req.user;
    
    const expiresIn = req.path.includes("mobile") ? "7d" : "7m";
    jwt.sign(
       {
-         id,
-         name,
+         user_id,
       },
       process.env.LOGIN_JWT_SESSION_SECRET,
       {
@@ -31,3 +30,37 @@ module.exports = (req, res, next) => {
          });
       });
 }
+
+exports.checkAndRecreateSession = (req, res, next) => {
+   const { sessionToken } = req.body;
+   if (sessionToken) {
+      const error = new Error("No session token. Please try logging in")
+      error.status = 400;
+      return next(error);
+   };
+
+   jwt.verify(sessionToken, process.env.LOGIN_JWT_SESSION_SECRET, (err, data) => {
+      if (err) return next(err);
+
+      const expiresIn = req.path.includes("mobile") ? "7d" : "7m";
+      jwt.sign(
+         {
+            user_id: data.user_id,
+         },
+         process.env.LOGIN_JWT_SESSION_SECRET,
+         {
+            expiresIn,
+         },
+         (error, token) => {
+            if (error) {
+               return next(error);
+            }
+
+            req.user = {
+               user_id: data.user_id,
+               sessionToken: token,
+            }
+         });
+   });
+}
+
