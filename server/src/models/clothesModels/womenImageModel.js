@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
+const Women = require("./womenModel");
 
 const WomenImages = sequelize.define("womenImages", {
    id: {
@@ -13,16 +14,16 @@ const WomenImages = sequelize.define("womenImages", {
       type: DataTypes.STRING(50),
       allowNull: false,
    },
-   product_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-         model: "women",
-         key: "id",
-      },
-   },
 }, {
    tableName: "womenImages",
+});
+
+WomenImages.belongsTo(Women, {
+   foreignKey: {
+      name: "product_id",
+      type: DataTypes.BIGINT,
+      allowNull: false,
+   }
 });
 
 module.exports = WomenImages;

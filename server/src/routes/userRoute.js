@@ -3,7 +3,7 @@ const session = require("../middlewares/Session");
 
 const router = require("express").Router();
 
-// TODO: check session before any operation below
+
 // TODO: add, remove and list cart items
 // TODO: get user address and phone number when he make an order
 // TODO: buy operation (order)
@@ -18,9 +18,10 @@ router.post("/auth/facebook/user", userController.facebookUser, session);
 
 router.post("/auth/facebook/user/mobile", userController.facebookUser, session); 
 
-router.post("/cart/list", userController.listCartItems);
-
+// TODO: check session before any operation below
 router.post("/cart/add", userController.addToCart);
+
+router.post("/cart/update", userController.updateCartItem);
 
 router.post("/cart/remove", userController.removeFromCart);
 

@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
 const SIZES = require("../../constants/sizes");
 const COLORS = require("../../constants/colors");
+const Cart = require("./cartModel");
 
 const Order = sequelize.define("order", {
    id: {
@@ -11,14 +12,6 @@ const Order = sequelize.define("order", {
       allowNull: false,
       unique: true,
    },
-   cart_item: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-         model: "cart",
-         key: "id",
-      },
-   },
    payment_method: {
       type: DataTypes.ENUM("credit-card", "cash"),
       allowNull: false,
@@ -26,9 +19,22 @@ const Order = sequelize.define("order", {
    credit_card: {
       type: DataTypes.STRING,
    },
+   served: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+   }
 }, {
    tableName: "order",
    createdAt: "order_date"
+});
+
+Cart.hasOne(Order, {
+   foreignKey: {
+      name: "cart_item",
+      type: DataTypes.UUID,
+      allowNull: false,
+   }
 });
 
 module.exports = Order;

@@ -3,7 +3,7 @@ const sequelize = require("../../utils/database");
 const SIZES = require("../../constants/sizes");
 const COLORS = require("../../constants/colors");
 
-const KIDS = sequelize.define("kids", {
+const Kids = sequelize.define("kids", {
    id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -37,4 +37,4 @@ const KIDS = sequelize.define("kids", {
    tableName: "kids",
 });
 
-module.exports = KIDS;
+module.exports = Kids;
