@@ -8,4 +8,4 @@ router.post("/cart/add", session.checkAndRecreateSession, cartController.addToCa
 
 router.post("/cart/update", session.checkAndRecreateSession, cartController.updateCartItem);
 
-router.post("/cart/remove", session.checkAndRecreateSession, cartController.removeFromCart);
+router.delete("/cart/remove/:id", session.checkAndRecreateSession, cartController.removeFromCart);

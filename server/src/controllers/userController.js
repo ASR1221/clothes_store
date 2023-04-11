@@ -1,5 +1,6 @@
 const Users = require("../models/userModels/usersModel");
 const Cart = require("../models/userModels/cartModel");
+const countries = require("../constants/countries");
 
 exports.googleUser = async (req, res, next) => {
 
@@ -102,3 +103,52 @@ exports.facebookUser = async (req, res, next) => {
    }
 }
 
+exports.setUserInfo = (req, res, next) => {
+   const { country, city, district, nearestPoI, phone_number } = req.body;
+
+   if (district && nearestPoI && phone_number) {
+      const error = new Error("Did not get all information needed. Please try again.")
+      error.status = 400;
+      return next(error);
+   }
+   
+   if (!(countries.map(location => location.country === country && location.cities.includes(city)))) {
+      const error = new Error("We can't reach this location yet");
+      error.status = 400;
+      return next(error);
+   }
+
+   Users.update({
+      address: `${country}, ${city}, ${district}, ${nearestPoI}`,
+      phone_number,
+   }, {
+      where: {
+         id: req.user.user_id
+      }
+   })
+      .then(() => res.status(200).json({ message: "Location and phone number saved" }))
+      .catch(e => next(e));
+}
+
+exports.getUserInfo = async (req, res, next) => {
+   
+   try {
+      const userdata = await Users.findByPk(req.user.user_id, { attributes: ["address", "phone_number"] });
+      if (userdata.address && userdata.phone_number) {
+         const error = new Error("User Info are empty");
+         error.status = 500;
+         return next(error);
+      }
+
+      const location = userdata.address.split(", ");
+      res.status.json({
+         country: location[0],
+         city: location[1],
+         district: location[2],
+         nearestPoI: location[3],
+         phone_number: userdata.phone_number,
+      });
+   } catch (e) {
+      return next(e);
+   }
+}

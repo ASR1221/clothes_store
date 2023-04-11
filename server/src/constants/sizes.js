@@ -1,2 +1,1 @@
-const SIZES = ["XS", "S", "L", "XL", "XXL", "XXXL"];
-module.exports = SIZES;
+module.exports = ["XS", "S", "L", "XL", "XXL", "XXXL"];
