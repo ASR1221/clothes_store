@@ -1,5 +1,5 @@
-const OrderItems = require("../models/order/orderItemsModel");
-const Order = require("../models/order/orderModel");
+const OrderItems = require("../models/orderModels/orderItemsModel");
+const Order = require("../models/orderModels/orderModel");
 const Cart = require("../models/userModels/cartModel");
 const Users = require("../models/userModels/usersModel");
 
@@ -8,10 +8,10 @@ exports.makeOrder = async (req, res, next) => {
    const { payment_method, credit_card } = req.body;
 
    try {
-
+      
       const cartItems = await Cart.findAll({
          where: { user_id },
-         attributes: { exclude: ["user_id", "id"] }
+         attributes: { exclude: ["user_id", "id"] },
       });
 
       if (!cartItems.length > 0) {
@@ -31,7 +31,7 @@ exports.makeOrder = async (req, res, next) => {
       }
 
       let order_price = 0;
-      cartItems.map((item) => order_price += item.total_price);
+      cartItems.map((item) => (order_price += item.total_price));
 
       const order = await Order.create({
          payment_method,
@@ -40,11 +40,10 @@ exports.makeOrder = async (req, res, next) => {
          user_id,
       });
 
-      cartItems.map((item) => item.order_id = order.id);
-      con OrderItems.bulkCreate(cartItems);
+      cartItems.map((item) => (item.order_id = order.id));
+      const OrderItem = await OrderItems.bulkCreate(cartItems);
 
       res.status(200).json(order);
-
    } catch (e) {
       return next(e);
    }
@@ -60,4 +59,4 @@ exports.getOrder = async (req, res, next) => {
    } catch (e) {
       return next(e);
    }
-}
+};

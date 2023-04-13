@@ -1,9 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
-const SIZES = require("../../constants/sizes");
-const COLORS = require("../../constants/colors");
 
-const Men = sequelize.define("men", {
+const Items = sequelize.define("items", {
    id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -19,22 +17,18 @@ const Men = sequelize.define("men", {
       allowNull: false,
    },
    image_path: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50),
    },
-   size: {
-      type: DataTypes.ENUM(SIZES),
-      allowNull: false,
-   },
-   color: {
-      type: DataTypes.ENUM(COLORS),
+   gender: {
+      type: DataTypes.ENUM("men", "women", "kids"),
       allowNull: false,
    },
    type: {
-      type: DataTypes.ENUM("jeans", "shirts", "coats"),
+      type: DataTypes.ENUM("jeans", "shirts", "coats", "dresses", "skirts"),
       allowNull: false,
    },
 }, {
-   tableName: "men",
+   tableName: "items",
 });
 
-module.exports = Men;
+module.exports = Items;

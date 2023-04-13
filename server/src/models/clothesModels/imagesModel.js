@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
-const Kids = require("./kidsModel");
+const ItemsDetails = require("./itemsDetailsModel");
 
-const KidsImages = sequelize.define("kidsImages", {
+const ItemsImages = sequelize.define("itemsImages", {
    id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
@@ -15,15 +15,15 @@ const KidsImages = sequelize.define("kidsImages", {
       allowNull: false,
    },
 }, {
-   tableName: "kidsImages",
+   tableName: "itemsImages",
 });
 
-KidsImages.belongsTo(Kids, {
+ItemsImages.belongsTo(ItemsDetails, {
    foreignKey: {
-      name: "product_id",
+      name: "item_id",
       type: DataTypes.BIGINT,
       allowNull: false,
    }
 });
 
-module.exports = KidsImages;
+module.exports = ItemsImages;

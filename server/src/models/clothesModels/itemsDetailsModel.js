@@ -2,24 +2,15 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../utils/database");
 const SIZES = require("../../constants/sizes");
 const COLORS = require("../../constants/colors");
+const Items = require("./itemsModel");
 
-const Women = sequelize.define("women", {
+const ItemsDetails = sequelize.define("itemsDetails", {
    id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
       unique: true,
-   },
-   name: {
-      type: DataTypes.STRING(30),
-   },
-   price: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-   },
-   image_path: {
-      type: DataTypes.STRING,
    },
    size: {
       type: DataTypes.ENUM(SIZES),
@@ -29,12 +20,20 @@ const Women = sequelize.define("women", {
       type: DataTypes.ENUM(COLORS),
       allowNull: false,
    },
-   type: {
-      type: DataTypes.ENUM("jeans", "shirts", "coats", "dresses", "skirts"),
+   stock: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
-   },
+   }
 }, {
-   tableName: "women",
+   tableName: "itemsDetails",
 });
 
-module.exports = Women;
+ItemsDetails.belongsTo(Items, {
+   foreignKey: {
+      name: "item_details_id",
+      type: DataTypes.BIGINT,
+      allowNull: false,
+   }
+});
+
+module.exports = ItemsDetails;
