@@ -17,7 +17,7 @@ const Cart = sequelize.define("cart", {
       type: DataTypes.INTEGER,
       allowNull: false,
    },
-   totoal_price: {
+   total_price: {
       type: DataTypes.DECIMAL,
       allowNull: false,
    },
