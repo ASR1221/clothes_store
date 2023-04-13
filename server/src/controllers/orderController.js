@@ -1,11 +1,19 @@
+const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
+const Items = require("../models/clothesModels/itemsModel");
 const OrderItems = require("../models/orderModels/orderItemsModel");
 const Order = require("../models/orderModels/orderModel");
 const Cart = require("../models/userModels/cartModel");
 const Users = require("../models/userModels/usersModel");
 
 exports.makeOrder = async (req, res, next) => {
-   const { user_id } = req.user;
+   const { user_id, sessionToken } = req.user;
    const { payment_method, credit_card } = req.body;
+
+   if (!(payment_method && credit_card )) {
+      const error = new Error("Did not get all information needed. Please try again.")
+      error.status = 400;
+      return next(error);
+   }
 
    try {
       
@@ -25,7 +33,7 @@ exports.makeOrder = async (req, res, next) => {
       });
 
       if (!(user.address && user.phone_number)) {
-         const error = new Error("User info are not complete. Male sure to submit all information needed");
+         const error = new Error("User info are not complete. Make sure to submit all information needed");
          error.status = 400;
          return next(error);
       }
@@ -43,7 +51,7 @@ exports.makeOrder = async (req, res, next) => {
       cartItems.map((item) => (item.order_id = order.id));
       const OrderItem = await OrderItems.bulkCreate(cartItems);
 
-      res.status(200).json(order);
+      return res.status(200).json({ message: "Order made successfully", sessionToken });
    } catch (e) {
       return next(e);
    }
@@ -53,9 +61,41 @@ exports.getOrder = async (req, res, next) => {
    const { user_id } = req.user;
 
    try {
-      const order = await Order.findAll({ where: { user_id, served: false } });
+      const order = await Order.findAll({ where: { user_id } });
 
-      res.status(200).json(order);
+      return res.status(200).json(order);
+   } catch (e) {
+      return next(e);
+   }
+};
+
+exports.getOrderDetails = async (req, res, next) => {
+   const { user_id } = req.user;
+   const { order_id } = req.body;
+
+   if (!order_id) {
+      const error = new Error("Did not get all information needed. Please try again.")
+      error.status = 400;
+      return next(error);
+   }
+
+   try {
+      const orderItems = await OrderItems.findAll(
+         {
+            where: { order_id },
+            attributes: { exclude: ["order_id"] },
+            include: {
+               model: ItemsDetails,
+               attributes: { exclude: ["stock"] },
+            },
+         },
+      );
+
+      orderItems.map(async (orderItem) => {
+         orderItem.item = await Items.findByPk(orderItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
+      });
+
+      return res.status.json(orderItems);
    } catch (e) {
       return next(e);
    }

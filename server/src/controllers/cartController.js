@@ -5,7 +5,8 @@ const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 exports.addToCart = async (req, res, next) => {
    const { item_id, item_details_id, item_count } = req.body;
    const { user_id, sessionToken } = req.user;
-   if (!(user_id && item_details_id && item_count)) {
+
+   if (!(item_details_id && item_count)) {
       const error = new Error("Did not get all information needed. Please try again.")
       error.status = 400;
       return next(error);
