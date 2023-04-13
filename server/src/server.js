@@ -4,7 +4,7 @@ const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
 // TODO: create to seperate path for mobile and web
-// TODO: edit all tables according to the new items table
+// TODO: edit all controllers according to the new tables
 // TODO: payment
 
 const app = express();

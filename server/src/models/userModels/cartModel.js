@@ -3,6 +3,7 @@ const sequelize = require("../../utils/database");
 const SIZES = require("../../constants/sizes");
 const COLORS = require("../../constants/colors");
 const Users = require("./usersModel");
+const ItemsDetails = require("../clothesModels/itemsDetailsModel");
 
 const Cart = sequelize.define("cart", {
    id: {
@@ -11,22 +12,6 @@ const Cart = sequelize.define("cart", {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       unique: true,
-   },
-   item_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-   },
-   item_table: {
-      type: DataTypes.ENUM("women", "men", "kids"),
-      allowNull: false,
-   },
-   item_size: {
-      type: DataTypes.ENUM(SIZES),
-      allowNull: false,
-   },
-   item_color: {
-      type: DataTypes.ENUM(COLORS),
-      allowNull: false,
    },
    item_count: {
       type: DataTypes.INTEGER,
@@ -47,5 +32,13 @@ Cart.belongsTo(Users, {
       allowNull: false,
    }
 });
+
+Cart.belongsTo(ItemsDetails, {
+   foreignKey: {
+      name: "item_details_id",
+      type: DataTypes.BIGINT,
+      allowNull: false,
+   }
+})
 
 module.exports = Cart;

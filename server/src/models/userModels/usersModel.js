@@ -17,9 +17,6 @@ const Users = sequelize.define("users", {
       type: DataTypes.STRING(50),
       unique: true,
    },
-   password: {
-      type: DataTypes.STRING,
-   },
    phone: {
       type: DataTypes.STRING(20),
       unique: true,

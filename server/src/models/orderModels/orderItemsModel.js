@@ -3,6 +3,7 @@ const sequelize = require("../../utils/database");
 const SIZES = require("../../constants/sizes");
 const COLORS = require("../../constants/colors");
 const Order = require("./orderModel");
+const ItemsDetails = require("../clothesModels/itemsDetailsModel");
 
 const OrderItems = sequelize.define(
    "orderItems",
@@ -13,22 +14,6 @@ const OrderItems = sequelize.define(
          defaultValue: DataTypes.UUIDV4,
          allowNull: false,
          unique: true,
-      },
-      item_id: {
-         type: DataTypes.BIGINT,
-         allowNull: false,
-      },
-      item_table: {
-         type: DataTypes.ENUM("women", "men", "kids"),
-         allowNull: false,
-      },
-      item_size: {
-         type: DataTypes.ENUM(SIZES),
-         allowNull: false,
-      },
-      item_color: {
-         type: DataTypes.ENUM(COLORS),
-         allowNull: false,
       },
       item_count: {
          type: DataTypes.INTEGER,
@@ -47,6 +32,14 @@ const OrderItems = sequelize.define(
 OrderItems.belongsTo(Order, {
    foreignKey: {
       name: "order_id",
+      type: DataTypes.BIGINT,
+      allowNull: false,
+   },
+});
+
+OrderItems.belongsTo(ItemsDetails, {
+   foreignKey: {
+      name: "item_details_id",
       type: DataTypes.BIGINT,
       allowNull: false,
    },
