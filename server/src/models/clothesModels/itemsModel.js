@@ -19,7 +19,7 @@ const Items = sequelize.define("items", {
    image_path: {
       type: DataTypes.STRING(50),
    },
-   gender: {
+   section: {
       type: DataTypes.ENUM("men", "women", "kids"),
       allowNull: false,
    },
@@ -27,6 +27,11 @@ const Items = sequelize.define("items", {
       type: DataTypes.ENUM("jeans", "shirts", "coats", "dresses", "skirts"),
       allowNull: false,
    },
+   available: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+   } 
 }, {
    tableName: "items",
 });

@@ -3,6 +3,9 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
+// TODO: create to seperate path for mobile and web
+// TODO: edit all tables according to the new items table
+// TODO: payment
 
 const app = express();
 
@@ -20,7 +23,7 @@ app.use(compression());
 app.use(express.json());
 
 // database sync (should import model to work) //! DELETE after sync is complete
-// sequelize.sync()
+// sequelize.sync({ force: true})
 //    .then(() => console.log("database syncd"))  
 //    .catch(e => console.log(`database sync error: ${e}`));  
 

@@ -30,7 +30,7 @@ const ItemsDetails = sequelize.define("itemsDetails", {
 
 ItemsDetails.belongsTo(Items, {
    foreignKey: {
-      name: "item_details_id",
+      name: "item_id",
       type: DataTypes.BIGINT,
       allowNull: false,
    }
