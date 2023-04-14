@@ -10,3 +10,5 @@ router.post("/list", session.checkAndRecreateSession, cartController.listCartIte
 router.put("/update", session.checkAndRecreateSession, cartController.updateCartItem);
 
 router.delete("/remove/:id", session.checkAndRecreateSession, cartController.removeFromCart);
+
+module.exports = router;
