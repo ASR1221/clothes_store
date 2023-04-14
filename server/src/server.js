@@ -3,7 +3,9 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
-// TODO: create to seperate path for mobile and web
+// TODO: list sold items and available items
+// TODO: list pending order and served order awith thier items
+// TODO: items upload with name, sizes, colors and images 
 // TODO: payment
 
 const app = express();

@@ -49,9 +49,39 @@ exports.makeOrder = async (req, res, next) => {
       });
 
       cartItems.map((item) => (item.order_id = order.id));
-      const OrderItem = await OrderItems.bulkCreate(cartItems);
+      const orderItems = await OrderItems.bulkCreate(cartItems);
 
-      return res.status(200).json({ message: "Order made successfully", sessionToken });
+      res.status(200).json({ message: "Order made successfully", sessionToken });
+
+      // run a check to see if more items are available and update accordinglly
+      function onFinish() {
+         orderItems.map(async (orderItem) => {
+            try {
+               const item = await ItemsDetails.findByPk(orderItem.item_details_id, {
+                  attributes: ["stock"],
+                  include: {
+                     model: Items,
+                     attributes: ["id"],
+                  },
+               });
+               await item.decrement({ "stock": orderItem.item_count });
+
+               const items = await ItemsDetails.findAll({
+                  where: { item_id: item.Item.id },
+                  attributes: ["stock"],
+               });
+
+               const available = items.some((item) => item.stock > 0);
+               if (!available) {
+                  await Items.update({ available }, { where: { id: item.Item.id } });
+               }
+            } catch (e) {
+               onFinish();
+            }
+         });
+      }
+      res.on("finish", onFinish);
+
    } catch (e) {
       return next(e);
    }
@@ -70,7 +100,6 @@ exports.getOrder = async (req, res, next) => {
 };
 
 exports.getOrderDetails = async (req, res, next) => {
-   const { user_id } = req.user;
    const { order_id } = req.body;
 
    if (!order_id) {

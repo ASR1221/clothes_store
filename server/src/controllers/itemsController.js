@@ -16,12 +16,12 @@ exports.list = async (req, res, next) => {
       if (type) {
          items = await Items.findAll({
             where: { section, type, available: true },
-            attributes: { exclude: ["section"] },
+            attributes: { exclude: ["section", "available"] },
          });
       } else {
          items = await Items.findAll({
             where: { section, available: true  },
-            attributes: { exclude: ["section"] },
+            attributes: { exclude: ["section", "available"] },
          });
       }
    
