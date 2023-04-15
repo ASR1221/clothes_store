@@ -21,8 +21,17 @@ const Users = sequelize.define("users", {
       type: DataTypes.STRING(20),
       unique: true,
    },
-   address: {
-      type: DataTypes.STRING,
+   country: {
+      type: DataTypes.STRING(30),
+   },
+   city: {
+      type: DataTypes.STRING(30),
+   },
+   district: {
+      type: DataTypes.STRING(30),
+   },
+   nearestPoI: {
+      type: DataTypes.STRING(100),
    },
 }, {
    tableName: "users",

@@ -31,9 +31,16 @@ exports.listServedItems = async (req, res, next) => {
 
 exports.listPendingItems = async (req, res, next) => {
    const { user_id, sessionToken, roles } = req.user;
-   
+   const { country, city } = req.query;
+
    if (!roles.includes("order")) {
       const error = new Error("You are not allowed to visit this route.");
+      error.status = 400;
+      return next(error);
+   }
+
+   if (!(country && city)) {
+      const error = new Error("You have to specify the country and the city");
       error.status = 400;
       return next(error);
    }
@@ -49,6 +56,9 @@ exports.listPendingItems = async (req, res, next) => {
       });
    
       const result = orders.map(async (order) => {
+         if (order.Users.country !== country || order.User.city !== city) {
+            return;
+         }
          const orderItems = await OrderItems.findAll({
             where: { order_id: order.id },
             attributes: { exclude: ["id"] },

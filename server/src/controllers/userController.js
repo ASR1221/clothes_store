@@ -112,14 +112,17 @@ exports.setUserInfo = (req, res, next) => {
       return next(error);
    }
    
-   if (!(countries.map(location => location.country === country && location.cities.includes(city)))) {
+   if (!(countries.some(location => location.country === country && location.cities.includes(city)))) {
       const error = new Error("We can't reach this location yet");
       error.status = 400;
       return next(error);
    }
 
    Users.update({
-      address: `${country}, ${city}, ${district}, ${nearestPoI}`,
+      country,
+      city,
+      district,
+      nearestPoI,
       phone_number,
    }, {
       where: {
