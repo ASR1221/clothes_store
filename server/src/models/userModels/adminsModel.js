@@ -11,7 +11,7 @@ const Admins = sequelize.define("admins", {
       unique: true,
    },
    role: {
-      type: DataTypes.ENUM("uploading", "finance"),
+      type: DataTypes.ENUM("uploading", "finance", "orders"),
       allowNull: false,
    }
 }, {

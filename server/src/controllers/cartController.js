@@ -37,16 +37,19 @@ exports.listCartItems = async (req, res, next) => {
    const { user_id, sessionToken } = req.user;
 
    try {
-      const cartItems = await Cart.findAll({
+      const cartItemsRes = await Cart.findAll({
          where: { user_id },
          include: {
             model: ItemsDetails,
          }
       });
 
-      cartItems.map(async (cartItem) => {
+      const result = cartItemsRes.map(async (cartItem) => {
          cartItem.item = await Items.findByPk(cartItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
+         return cartItem;
       });
+
+      const cartItems = await Promise.all(result);
 
       return res.status(200).json(cartItems);
 

@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
-// TODO: list sold items and available items
+// TODO: check error status code for all request for a better status number
 // TODO: list pending order and served order awith thier items
 // TODO: items upload with name, sizes, colors and images 
 // TODO: payment

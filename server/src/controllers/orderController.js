@@ -39,7 +39,7 @@ exports.makeOrder = async (req, res, next) => {
       }
 
       let order_price = 0;
-      cartItems.map((item) => (order_price += item.total_price));
+      cartItems.forEach((item) => (order_price += item.total_price));
 
       const order = await Order.create({
          payment_method,
@@ -48,15 +48,18 @@ exports.makeOrder = async (req, res, next) => {
          user_id,
       });
 
-      cartItems.map((item) => (item.order_id = order.id));
+      cartItems = cartItems.map((item) => {
+         item.order_id = order.id;
+         return item;
+      });
       const orderItems = await OrderItems.bulkCreate(cartItems);
 
       res.status(200).json({ message: "Order made successfully", sessionToken });
 
       // run a check to see if more items are available and update accordinglly
       function onFinish() {
-         orderItems.map(async (orderItem) => {
-            try {
+         try {
+            orderItems.map(async (orderItem) => {
                const item = await ItemsDetails.findByPk(orderItem.item_details_id, {
                   attributes: ["stock"],
                   include: {
@@ -75,10 +78,10 @@ exports.makeOrder = async (req, res, next) => {
                if (!available) {
                   await Items.update({ available }, { where: { id: item.Item.id } });
                }
-            } catch (e) {
-               onFinish();
-            }
-         });
+            });
+         } catch (e) {
+            onFinish();
+         }
       }
       res.on("finish", onFinish);
 
@@ -116,13 +119,18 @@ exports.getOrderDetails = async (req, res, next) => {
             include: {
                model: ItemsDetails,
                attributes: { exclude: ["stock"] },
+               include: {
+                  model: Items,
+                  attributes: { exclude: ["id"] },
+               }
             },
          },
       );
 
-      orderItems.map(async (orderItem) => {
-         orderItem.item = await Items.findByPk(orderItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
-      });
+      // if the above code won't work try this:
+      // orderItems.map(async (orderItem) => {
+      //    orderItem.item = await Items.findByPk(orderItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
+      // });
 
       return res.status.json(orderItems);
    } catch (e) {
