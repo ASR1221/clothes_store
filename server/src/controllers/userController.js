@@ -136,20 +136,28 @@ exports.setUserInfo = (req, res, next) => {
 exports.getUserInfo = async (req, res, next) => {
    
    try {
-      const userdata = await Users.findByPk(req.user.user_id, { attributes: ["address", "phone_number"] });
-      if (userdata.address && userdata.phone_number) {
+      const {
+         country,
+         city,
+         district,
+         nearestPoI,
+         phone_number } = await Users.findByPk(req.user.user_id,
+            {
+               attributes: ["country", "city", "district", "nearestPoI", , "phone_number"]
+            });
+      
+      if (country && city && district && nearestPoI && phone_number) {
          const error = new Error("User Info are empty");
          error.status = 500;
          return next(error);
       }
 
-      const location = userdata.address.split(", ");
       res.status.json({
-         country: location[0],
-         city: location[1],
-         district: location[2],
-         nearestPoI: location[3],
-         phone_number: userdata.phone_number,
+         country,
+         city,
+         district,
+         nearestPoI,
+         phone_number,
       });
    } catch (e) {
       return next(e);
