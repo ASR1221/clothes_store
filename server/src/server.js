@@ -5,7 +5,7 @@ const sequelize = require("./utils/database");
 
 // TODO: test all routes
 // TODO: check error status code for all request for a better status number
-// TODO: items upload with name, sizes, colors and images 
+// TODO: add update item with the specific id or name and update the stock 
 // TODO: payment
 
 const app = express();

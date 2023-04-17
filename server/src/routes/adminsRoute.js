@@ -1,5 +1,6 @@
 const session = require("../middlewares/Session");
 const checkRole = require("../middlewares/checkRole")
+const upload = require("../middlewares/fileHandler");
 const adminsController = require("../controllers/adminsController");
 const router = require("express").Router();
 
@@ -9,6 +10,6 @@ router.post("/list/served", session.checkAndRecreateSession, checkRole, adminsCo
 
 router.post("/list/pending", session.checkAndRecreateSession, checkRole, adminsController.listPendingItems); // query string ?country&city
 
-router.post("/item/add", session.checkAndRecreateSession, checkRole, adminsController.addNewItem);
+router.post("/item/add", session.checkAndRecreateSession, checkRole, upload, adminsController.addNewItem);
 
 module.exports = router;

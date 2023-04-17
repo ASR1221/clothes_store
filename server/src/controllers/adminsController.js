@@ -1,3 +1,7 @@
+const COLORS = require("../constants/colors");
+const SIZES = require("../constants/sizes");
+const fs = require("fs")
+const ItemsImages = require("../models/clothesModels/imagesModel");
 const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const Items = require("../models/clothesModels/itemsModel");
 const OrderItems = require("../models/orderModels/orderItemsModel");
@@ -20,7 +24,7 @@ exports.listServedItems = async (req, res, next) => {
 
    if (!roles.includes("order")) {
       const error = new Error("You are not allowed to visit this route.");
-      error.status = 400;
+      error.status = 401;
       return next(error);
    }
 
@@ -78,7 +82,7 @@ exports.listServedItems = async (req, res, next) => {
          sessionToken,
          allOrders,
       });
-      
+
    } catch (e) {
       return next(e);
    }
@@ -90,7 +94,7 @@ exports.listPendingItems = async (req, res, next) => {
 
    if (!roles.includes("order")) {
       const error = new Error("You are not allowed to visit this route.");
-      error.status = 400;
+      error.status = 401;
       return next(error);
    }
 
@@ -146,6 +150,93 @@ exports.listPendingItems = async (req, res, next) => {
 
 exports.addNewItem = async (req, res, next) => {
    const { user_id, sessionToken, roles } = req.user;
+   const { name, price, section, type, details } = req.body;
 
-   // TODO: complete request
+   if (!roles.includes("uploading")) {
+      const error = new Error("You are not allowed to visit this route.");
+      error.status = 401;
+      return next(error);
+   }
+
+   if (!(name && price && section && type && (details && details.length > 0))) {
+      const error = new Error("Missing information.");
+      error.status = 400;
+      return next(error);
+   }   
+
+   const allowCreate = details.every(obj => {
+      if (COLORS.includes(obj.color) && obj.stock % 1 === 0 && obj.stock > 0) {
+         return obj.sizes.every(size => SIZES.includes(size));
+      }
+      return false;
+   });
+
+   if (!allowCreate) {
+      const error = new Error("Information provided are wrong")
+   }
+
+   let item;
+   try {
+
+      item = await Items.create({
+         name,
+         price,
+         image_path: `/images/${req.files[0].filename}`,
+         section,
+         type,
+      });
+
+      const promises = [];
+
+      for (let i = 0; i < 3; i++) {
+         const imagePath = `/images/${req.files[i].filename}`;
+         const promise = ItemsImages.create({
+            item_id: item.id,
+            path: imagePath,
+         });
+         promises.push(promise);
+      }
+
+      await Promise.all(promises);
+      promises = [];
+
+      details.forEach(obj => {
+         
+         obj.sizes.forEach(async(size) => {
+            const promise = ItemsDetails.create({
+               size,
+               color: obj.color,
+               stock: obj.stock,
+               item_id: item.id,
+            });
+            promises.push(promise);
+         });
+      });
+      
+      await Promise.all(promises);
+
+      return res.status(200).json({ message: "Item added successfully." });
+
+   } catch (e) {
+      try {
+
+         if (req.files) {
+            for (let i = 0; i < req.files.length; i++) {
+               fs.unlink(req.files[i].path, (err) => {
+                  if (err) throw err;
+               });
+            }
+         }
+         
+         if (item) {
+            await ItemsImages.destroy({ where: { item_id: item.id } });
+            await item.destroy();
+         }
+
+      } catch (e) {
+         console.log(`Deleting error: ${e}`)
+      }
+
+      return next(e);
+   }
 };
