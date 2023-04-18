@@ -6,4 +6,6 @@ router.get("/list", itemsController.list); // must send query params like => /li
 
 router.get("/details/:id", itemsController.list);
 
+router.get("/search", itemsController.searchItem); // query string ?term=
+
 module.exports = router;

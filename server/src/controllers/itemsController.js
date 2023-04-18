@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const ItemsImages = require("../models/clothesModels/imagesModel");
 const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const Items = require("../models/clothesModels/itemsModel");
@@ -70,3 +71,45 @@ exports.itemsDetails = async (req, res, next) => {
       return next(e);
    }
 };
+
+exports.searchItem = async (req, res, next) => {
+   const { term } = req.query;
+   const terms = term.split(" ");
+   const searchQuery = terms.map(word => ({
+      [Op.or]: [
+         {
+            name: { [Op.like]: `%${word}%` },
+         },
+         {
+            section: { [Op.like]: `%${word}%` },
+         },
+         {
+            type: { [Op.like]: `%${word}%` },
+         },
+      ]
+   }));
+   try {
+      const results = await Items.findAll({
+         where: {
+            [Op.and]: searchQuery,
+            available: true,
+         },
+         attributes: { exclude: ["available"] },
+      }),
+      
+
+      const items = results.map(item => ({
+            item,
+            score: terms.reduce((score, word) => score + (
+               item.name.match(new RegExp(word, "gi")) ||
+               item.section.match(new RegExp(word, "gi")) ||
+               item.type.match(new RegExp(word, "gi")) ||
+            )?.length || 0, 0),
+      }));
+      
+      res.status(200).json(items);
+
+   } catch (e) {
+      return next(e);
+   }
+}
