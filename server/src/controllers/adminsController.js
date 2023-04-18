@@ -172,7 +172,9 @@ exports.addNewItem = async (req, res, next) => {
    });
 
    if (!allowCreate) {
-      const error = new Error("Information provided are wrong")
+      const error = new Error("Information provided are wrong");
+      error.status = 400;
+      return next(error);
    }
 
    let item;
@@ -204,9 +206,9 @@ exports.addNewItem = async (req, res, next) => {
          
          obj.sizes.forEach(async(size) => {
             const promise = ItemsDetails.create({
-               size,
+               size: size.size,
                color: obj.color,
-               stock: obj.stock,
+               stock: obj.size.stock,
                item_id: item.id,
             });
             promises.push(promise);
@@ -227,7 +229,7 @@ exports.addNewItem = async (req, res, next) => {
                });
             }
          }
-         
+
          if (item) {
             await ItemsImages.destroy({ where: { item_id: item.id } });
             await item.destroy();
@@ -239,4 +241,68 @@ exports.addNewItem = async (req, res, next) => {
 
       return next(e);
    }
+};
+
+exports.updateStock = async (req, res, next) => {
+   const { user_id, sessionToken, roles } = req.user;
+   const { id, details } = req.body;
+
+   if (!roles.includes("uploading")) {
+      const error = new Error("You are not allowed to visit this route.");
+      error.status = 401;
+      return next(error);
+   }
+
+   if (id && details) {
+      const error = new Error("Missing information.");
+      error.status = 400;
+      return next(error);
+   }
+
+   const allowCreate = details.every(obj => {
+      if (COLORS.includes(obj.color) && obj.stock % 1 === 0 && obj.stock > 0) {
+         return obj.sizes.every(size => SIZES.includes(size));
+      }
+      return false;
+   });
+
+   if (!allowCreate) {
+      const error = new Error("Information provided are wrong")
+   }
+
+   try {
+      const promises = [];
+      details.forEach(obj => {
+            
+         obj.sizes.forEach(async(size) => {
+            const promise = ItemsDetails.update({
+               stock: obj.size.stock
+            }, {
+               where: {
+                  item_id: id,
+                  color: obj.color,
+                  size: size.size
+               }
+            });
+            promises.push(promise);
+         });
+      });
+      
+      const results = await Promise.all(promises);
+   
+      const isUpdated = results.any(result => result[0] > 0);
+   
+      if (!isUpdated) {
+         const error = new Error("Nothing got updated.");
+         error.status = 400;
+         return next(error);
+      }
+   
+      await Items.update({ available: true }, { where: { id, available: false } });
+   
+      res.status(200).json({ message: "Updated" });
+   } catch (e) {
+      return next(e);
+   }
+
 };
