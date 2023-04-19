@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
       
       if (admins.length < 1) {
          const error = new Error("You are not allowed to visit this route.");
-         error.status = 400;
+         error.status = 401;
          return next(error);
       }
    

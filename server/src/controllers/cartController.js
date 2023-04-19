@@ -1,27 +1,31 @@
 const Cart = require("../models/userModels/cartModel");
 const Items = require("../models/clothesModels/itemsModel");
 const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
+const { Op } = require("sequelize");
 
 exports.addToCart = async (req, res, next) => {
    const { item_id, item_details_id, item_count } = req.body;
    const { user_id, sessionToken } = req.user;
 
    if (!(item_details_id && item_count)) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
 
    try {
-      const item = await Items.findByPk(item_id, { include: ["price", "available"] });
-
-      if (!item.available) {
-         const error = new Error("Item is out of stock. choose another size or color if available.")
-         error.status = 400;
-         return next(error);
-      }
+      const item = await ItemsDetails.findOne({
+         where: {
+            id: item_details_id,
+            stock: { [Op.gt]: 0 },
+         },
+         include: {
+            model: Items,
+            attributes: ["price"],
+         }
+      });
       
-      const total_price = item.price * item_count;
+      const total_price = item.Item.price * item_count;
       const newCartItem = await Cart.create({ user_id, item_details_id, item_count, total_price});
       return res.status(200).json({
          ...newCartItem,
@@ -62,7 +66,7 @@ exports.updateCartItem = async (req, res, next) => {
    const { id, item_details_id, item_count } = req.body;
 
    if (!(id && item_details_id && item_count)) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
@@ -99,7 +103,7 @@ exports.updateCartItem = async (req, res, next) => {
 
       if (!newCartItem[0] > 0) {
          const error = new Error("Sorry, we could not find this cart item.")
-         error.status = 400;
+         error.status = 404;
          return next(error);
       }
       

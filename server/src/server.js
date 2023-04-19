@@ -4,8 +4,6 @@ const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
 // TODO: test all routes
-// TODO: check error status code for all request for a better status number
-// TODO: implement a search
 // TODO: payment
 
 const app = express();
@@ -22,6 +20,7 @@ app.use(helmet());
 app.use(helmet.hidePoweredBy());
 app.use(compression());
 app.use(express.json());
+app.use(express.static("../public"));
 
 // database sync (should import model to work) //! DELETE after sync is complete
 // sequelize.sync({ force: true})
@@ -29,7 +28,7 @@ app.use(express.json());
 //    .catch(e => console.log(`database sync error: ${e}`));
 
 // routes
-app.use("/api/mobile", require("./routes/mainRoute"));
+app.use("/api/native", require("./routes/mainRoute"));
 app.use("/api", require("./routes/mainRoute"));
 
 // Handling 404 (Not found)

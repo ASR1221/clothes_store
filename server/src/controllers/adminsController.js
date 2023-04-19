@@ -159,7 +159,7 @@ exports.addNewItem = async (req, res, next) => {
    }
 
    if (!(name && price && section && type && (details && details.length > 0))) {
-      const error = new Error("Missing information.");
+      const error = new Error("Missing Information. Please try again.");
       error.status = 400;
       return next(error);
    }   
@@ -254,7 +254,7 @@ exports.updateStock = async (req, res, next) => {
    }
 
    if (id && details) {
-      const error = new Error("Missing information.");
+      const error = new Error("Missing Information. Please try again.");
       error.status = 400;
       return next(error);
    }
@@ -267,7 +267,9 @@ exports.updateStock = async (req, res, next) => {
    });
 
    if (!allowCreate) {
-      const error = new Error("Information provided are wrong")
+      const error = new Error("Information provided are wrong");
+      error.status = 400;
+      return next(error);
    }
 
    try {

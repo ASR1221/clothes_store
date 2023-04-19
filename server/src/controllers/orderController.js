@@ -10,7 +10,7 @@ exports.makeOrder = async (req, res, next) => {
    const { payment_method, credit_card } = req.body;
 
    if (!(payment_method && credit_card )) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
@@ -106,7 +106,7 @@ exports.getOrderDetails = async (req, res, next) => {
    const { order_id } = req.body;
 
    if (!order_id) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }

@@ -7,7 +7,7 @@ exports.createSession = (req, res, next) => {
 
    const { id, name, email, phone_number, cartItems } = req.user;
    
-   const expiresIn = req.path.includes("mobile") ? "7d" : "7m";
+   const expiresIn = req.path.includes("native") ? "7d" : "7m";
    jwt.sign(
       {
          user_id,
@@ -35,14 +35,14 @@ exports.checkAndRecreateSession = (req, res, next) => {
    const { sessionToken } = req.body;
    if (sessionToken) {
       const error = new Error("No session token. Please try logging in")
-      error.status = 400;
+      error.status = 401;
       return next(error);
    };
 
    jwt.verify(sessionToken, process.env.LOGIN_JWT_SESSION_SECRET, (err, data) => {
       if (err) return next(err);
 
-      const expiresIn = req.path.includes("mobile") ? "7d" : "7m";
+      const expiresIn = req.path.includes("native") ? "7d" : "7m";
       jwt.sign(
          {
             user_id: data.user_id,

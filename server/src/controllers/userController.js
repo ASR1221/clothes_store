@@ -5,7 +5,7 @@ const countries = require("../constants/countries");
 exports.googleUser = async (req, res, next) => {
 
    if (req.body.accessToken) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
@@ -57,7 +57,7 @@ exports.googleUser = async (req, res, next) => {
 exports.facebookUser = async (req, res, next) => {
 
    if (req.body.accessToken) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
@@ -107,7 +107,7 @@ exports.setUserInfo = (req, res, next) => {
    const { country, city, district, nearestPoI, phone_number } = req.body;
 
    if (district && nearestPoI && phone_number) {
-      const error = new Error("Did not get all information needed. Please try again.")
+      const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
    }
@@ -147,9 +147,7 @@ exports.getUserInfo = async (req, res, next) => {
             });
       
       if (country && city && district && nearestPoI && phone_number) {
-         const error = new Error("User Info are empty");
-         error.status = 500;
-         return next(error);
+         return res.status(200).json({ message: "The user does not have this info." });
       }
 
       res.status.json({

@@ -74,6 +74,13 @@ exports.itemsDetails = async (req, res, next) => {
 
 exports.searchItem = async (req, res, next) => {
    const { term } = req.query;
+
+   if (!term) {
+      const error = new Error("Missing Information. Please try again.");
+      error.status = 400;
+      return next(err);
+   }
+
    const terms = term.split(" ");
    const searchQuery = terms.map(word => ({
       [Op.or]: [
