@@ -4,7 +4,7 @@ const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const { Op } = require("sequelize");
 
 exports.addToCart = async (req, res, next) => {
-   const { item_id, item_details_id, item_count } = req.body;
+   const { item_details_id, item_count } = req.body;
    const { user_id, sessionToken } = req.user;
 
    if (!(item_details_id && item_count)) {
@@ -28,8 +28,8 @@ exports.addToCart = async (req, res, next) => {
       const total_price = item.Item.price * item_count;
       const newCartItem = await Cart.create({ user_id, item_details_id, item_count, total_price});
       return res.status(200).json({
-         ...newCartItem,
          sessionToken,
+         message: "cart item added"
       });
 
    } catch (e) {
@@ -43,13 +43,17 @@ exports.listCartItems = async (req, res, next) => {
    try {
       const cartItemsRes = await Cart.findAll({
          where: { user_id },
+         attributes: { exclude: ["user_id"] },
          include: {
             model: ItemsDetails,
+            attributes: { exclude: ["id"] },
          }
       });
 
       const result = cartItemsRes.map(async (cartItem) => {
-         cartItem.item = await Items.findByPk(cartItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
+         cartItem.item =
+            await Items.findByPk(cartItem.ItemsDetails.item_id,
+            { attributes: { exclude: ["id", "image_path", "available"] } });
          return cartItem;
       });
 

@@ -38,13 +38,13 @@ exports.googleUser = async (req, res, next) => {
          }
       });
       
-      const cartItems = created ? [] : await Cart.findAll({ where: { user_id: user.id } });
+      const cartItemsCount = created ? [] : await Cart.count({ where: { user_id: user.id } });
 
       req.user = {
          id: user.id,
          name: user.name,
          email,
-         cartItems,
+         cartItemsCount,
       }
       return next();
 

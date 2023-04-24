@@ -5,12 +5,12 @@ const jwt = require("jsonwebtoken");
 
 exports.createSession = (req, res, next) => {
 
-   const { id, name, email, phone_number, cartItems } = req.user;
+   const { id, name, email, phone_number, cartItemsCount } = req.user;
    
    const expiresIn = req.path.includes("native") ? "7d" : "7m";
    jwt.sign(
       {
-         user_id,
+         id,
       },
       process.env.LOGIN_JWT_SESSION_SECRET,
       {
@@ -26,7 +26,7 @@ exports.createSession = (req, res, next) => {
             name,
             email: email ? email : null,
             phone_number: phone_number ? phone_number : null,
-            cartItems,
+            cartItemsCount,
          });
       });
 }
@@ -45,7 +45,7 @@ exports.checkAndRecreateSession = (req, res, next) => {
       const expiresIn = req.path.includes("native") ? "7d" : "7m";
       jwt.sign(
          {
-            user_id: data.user_id,
+            id: data.user_id,
          },
          process.env.LOGIN_JWT_SESSION_SECRET,
          {

@@ -49,10 +49,11 @@ exports.itemsDetails = async (req, res, next) => {
       
       const images = await ItemsImages.findAll({
          where: { item_id: id },
+         attributes: ["path"],
       });
 
-      const itemDetails = itemInctances.map(itemInctance =>{
-         if (itemInctance.stock) {
+      const itemsDetails = itemInctances.map(itemInctance =>{
+         if (itemInctance.stock > 0) {
             return {
                stock: itemInctance.stock,
                size: itemInctance.size,
@@ -63,7 +64,7 @@ exports.itemsDetails = async (req, res, next) => {
       });
 
       return res.status(200).json({
-         itemDetails,
+         itemsDetails,
          images,
       });
 
@@ -102,18 +103,24 @@ exports.searchItem = async (req, res, next) => {
             available: true,
          },
          attributes: { exclude: ["available"] },
-      }),
+      });
       
 
-      const items = results.map(item => ({
+      const relevanceItems = results.map(item => ({
             item,
             score: terms.reduce((score, word) => score + (
                item.name.match(new RegExp(word, "gi")) ||
                item.section.match(new RegExp(word, "gi")) ||
-               item.type.match(new RegExp(word, "gi")) ||
-            )?.length || 0, 0),
+               item.type.match(new RegExp(word, "gi")) 
+            )?.length || 0, 0)
       }));
-      
+
+      const sortedItems = relevanceItems.sort((a, b) => b.score - a.score);
+      const items = sortedItems.map((item) => { 
+         delete item.score;
+         return item;
+      });
+
       res.status(200).json(items);
 
    } catch (e) {

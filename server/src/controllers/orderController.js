@@ -1,3 +1,4 @@
+const ItemsImages = require("../models/clothesModels/imagesModel");
 const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const Items = require("../models/clothesModels/itemsModel");
 const OrderItems = require("../models/orderModels/orderItemsModel");
@@ -94,7 +95,10 @@ exports.getOrder = async (req, res, next) => {
    const { user_id } = req.user;
 
    try {
-      const order = await Order.findAll({ where: { user_id } });
+      const order = await Order.findAll({
+         where: { user_id },
+         attributes: { exclude: ["user_id"] }
+      });
 
       return res.status(200).json(order);
    } catch (e) {
@@ -103,7 +107,7 @@ exports.getOrder = async (req, res, next) => {
 };
 
 exports.getOrderDetails = async (req, res, next) => {
-   const { order_id } = req.body;
+   const { id } = req.query;
 
    if (!order_id) {
       const error = new Error("Missing Information. Please try again.")
@@ -112,25 +116,30 @@ exports.getOrderDetails = async (req, res, next) => {
    }
 
    try {
-      const orderItems = await OrderItems.findAll(
+      const order = await OrderItems.findAll(
          {
             where: { order_id },
-            attributes: { exclude: ["order_id"] },
+            attributes: { exclude: ["order_id", "item_details_id"] },
             include: {
                model: ItemsDetails,
-               attributes: { exclude: ["stock"] },
+               attributes: { exclude: ["stock", "id", "item_id"] },
                include: {
                   model: Items,
-                  attributes: { exclude: ["id"] },
+                  attributes: { exclude: ["id", "available", "image_path"] },
                }
             },
          },
       );
 
-      // if the above code won't work try this:
-      // orderItems.map(async (orderItem) => {
-      //    orderItem.item = await Items.findByPk(orderItem.ItemsDetails.item_id, { attributes: { exclude: ["id"] } });
-      // });
+      const result = order.map(async (orderItem) => {
+         orderItem.images = await ItemsImages.findAll({
+            where: { item_id: orderItem.ItemsDetails.item_id },
+            attributes: { exclude: ["id", item_id] }
+         });
+         return orderItem;
+      });
+
+      const orderItems = await Promise.all(result);
 
       return res.status.json(orderItems);
    } catch (e) {

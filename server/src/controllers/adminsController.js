@@ -7,6 +7,7 @@ const Items = require("../models/clothesModels/itemsModel");
 const OrderItems = require("../models/orderModels/orderItemsModel");
 const Order = require("../models/orderModels/orderModel");
 const Users = require("../models/userModels/usersModel");
+const { Op } = require("sequelize");
 
 
 exports.allowAccess = async (req, res, next) => {
@@ -19,10 +20,10 @@ exports.allowAccess = async (req, res, next) => {
 };
 
 exports.listServedItems = async (req, res, next) => {
-   const { user_id, sessionToken, roles } = req.user;
+   const { roles } = req.user;
    const { from, to, section, type } = req.query;
 
-   if (!roles.includes("order")) {
+   if (!roles.includes("finance")) {
       const error = new Error("You are not allowed to visit this route.");
       error.status = 401;
       return next(error);
@@ -35,53 +36,47 @@ exports.listServedItems = async (req, res, next) => {
    }
    
    try {
-      const orders = await Order.findAll({
-         where: { served: true },
-         attributes: { exclude: ["served"] },
-         include: {
-            model: Users,
-            attributes: { exclude: ["id"] },
-         },
-      });
-
-      const result = orders.map(async (order) => {
-
-         const orderItems = await OrderItems.findAll({
-            where: { order_id: order.id },
-            attributes: { exclude: ["id"] },
+      const whereClause = {};
+      
+      if (section && type) {
+         whereClause.section = section;
+         whereClause.type = type;
+      }
+      else if (section && !type) whereClause.section = section;
+      else if (!section && type) whereClause.type = type;
+      
+      const orderItems = await OrderItems.findAll({
+         where: whereClause,
+         attributes: { exclude: ["id", "order_id", "item_details_id"] },
+         include: [{
+            model: ItemsDetails,
+            attributes: { exclude: ["stock", "item_id", "id"] },
             include: {
-               model: ItemsDetails,
-               attributes: { exclude: ["stock"] },
-               include: {
-                  model: Items,
-                  attributes: { exclude: ["image_path", "available"] },
-               }
+               model: Items,
+               attributes: { exclude: ["image_path", "available"] },
             }
-         });
-
-         if (
-            ((section && type)
-               && section === orderItems.ItemsDetails.Items.section
-               && type === orderItems.ItemsDetails.Items.type)
-            ||
-            ((section && !type) && section === orderItems.ItemsDetails.Items.section)
-            ||
-            ((!section && type) && type === orderItems.ItemsDetails.Items.type)
-            ||
-            (!section && !type)
-         ) {
-            order.orderItems = orderItems;
-            return order;
-         }
-
+         }, {
+            model: Order,
+            where: {
+               served: true,
+               updatedAt: {
+                  [Op.between]: [from, to]
+               }
+            },
+            attributes: { exclude: ["served", "user_id", "id"] },
+            include: {
+               model: Users,
+               attributes: { exclude: ["nearestPoI", "district", "id"] },
+            },
+         }],
       });
 
-      const allOrders = await Promise.all(result);
+      // delete all orders that do not meet the spcified section or type
+      const allOrders = [];
+      if (section || type) allOrders = orderItems.filter(order => order.ItemsDetails.Items && order.Order);
+      else allOrders = orderItems.filter(order => order.Order);;
 
-      return res.status(200).json({
-         sessionToken,
-         allOrders,
-      });
+      return res.status(200).json(allOrders);
 
    } catch (e) {
       return next(e);
@@ -89,7 +84,7 @@ exports.listServedItems = async (req, res, next) => {
 };
 
 exports.listPendingItems = async (req, res, next) => {
-   const { sessionToken, roles } = req.user;
+   const { roles } = req.user;
    const { country, city } = req.query;
 
    if (!roles.includes("order")) {
@@ -109,7 +104,7 @@ exports.listPendingItems = async (req, res, next) => {
          where: {
             served: false,
          },
-         attributes: { exclude: ["served"] },
+         attributes: { exclude: ["served", "user_id"] },
          include: {
             model: Users,
             attributes: { exclude: ["id"] },
@@ -122,26 +117,23 @@ exports.listPendingItems = async (req, res, next) => {
          }
          const orderItems = await OrderItems.findAll({
             where: { order_id: order.id },
-            attributes: { exclude: ["id"] },
+            attributes: { exclude: ["id", "order_id", "item_details_id"] },
             include: {
                model: ItemsDetails,
-               attributes: { exclude: ["stock"] },
+               attributes: { exclude: ["stock", "item_id", "id"] },
                include: {
                   model: Items,
                   attributes: { exclude: ["image_path", "available"] },
                }
             }
          });
-         order.orderItems = orderItems;
+         order.OrderItems = orderItems;
          return order;
       });
 
       const allOrders = await Promise.all(result);
       
-      return res.status(200).json({
-         sessionToken,
-         allOrders,
-      });
+      return res.status(200).json(allOrders);
 
    } catch (e) {
       return next(e);
@@ -149,7 +141,7 @@ exports.listPendingItems = async (req, res, next) => {
 };
 
 exports.addNewItem = async (req, res, next) => {
-   const { user_id, sessionToken, roles } = req.user;
+   const { sessionToken, roles } = req.user;
    const { name, price, section, type, details } = req.body;
 
    if (!roles.includes("uploading")) {
@@ -217,7 +209,7 @@ exports.addNewItem = async (req, res, next) => {
       
       await Promise.all(promises);
 
-      return res.status(200).json({ message: "Item added successfully." });
+      return res.status(200).json({ message: "Item added successfully.", sessionToken });
 
    } catch (e) {
       try {
@@ -244,7 +236,7 @@ exports.addNewItem = async (req, res, next) => {
 };
 
 exports.updateStock = async (req, res, next) => {
-   const { user_id, sessionToken, roles } = req.user;
+   const { sessionToken, roles } = req.user;
    const { id, details } = req.body;
 
    if (!roles.includes("uploading")) {
@@ -302,7 +294,7 @@ exports.updateStock = async (req, res, next) => {
    
       await Items.update({ available: true }, { where: { id, available: false } });
    
-      res.status(200).json({ message: "Updated" });
+      res.status(200).json({ message: "Updated", sessionToken });
    } catch (e) {
       return next(e);
    }

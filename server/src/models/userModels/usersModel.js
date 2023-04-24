@@ -17,7 +17,7 @@ const Users = sequelize.define("users", {
       type: DataTypes.STRING(50),
       unique: true,
    },
-   phone: {
+   phone_number: {
       type: DataTypes.STRING(20),
       unique: true,
    },
