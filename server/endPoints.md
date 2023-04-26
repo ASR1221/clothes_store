@@ -98,13 +98,13 @@ This file is going to take you through all the end points in this API.
    body:
    ```
       {
-         "accessToken": "access-token-string"
+         "access_token": "access-token-string"
       }
    ```
 
    This end point is used for users to sign up or log in with their google account.
 
-   The front-end have to show the user a consent screen and sen the accessToken return from the auth server.
+   The front-end have to show the user a consent screen by taking the user to the `https://accounts.google.com/signin/oauth/oauthchooseaccount?include_granted_scopes=true&client_id=450145178762-ve8m4krlq5cc02rp54ipkmtktlg58p11.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Flogin%2Fcomplete&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&flowName=GeneralOAuthFlow` and send the access_token returned in the hash of the *redirect_url* specified in the google auth url mentioned.
 
    The endpoint will return the following on `Success`:
 
