@@ -10,7 +10,7 @@ router.post("/list/served", session.checkAndRecreateSession, checkRole, adminsCo
 
 router.post("/list/pending", session.checkAndRecreateSession, checkRole, adminsController.listPendingItems); // query string ?country&city
 
-router.post("/item/add", session.checkAndRecreateSession, checkRole, upload.array("images"), adminsController.addNewItem);
+router.post("/item/add", session.checkAndRecreateSession, checkRole, upload, adminsController.addNewItem);
 
 router.post("/item/update", session.checkAndRecreateSession, checkRole, adminsController.updateStock);
 

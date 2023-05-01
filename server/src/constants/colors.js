@@ -1,1 +1,1 @@
-module.exports = ["red", "blue", "yellow", "green", "black", "white"];;
+module.exports = ["red", "blue", "yellow", "green", "black", "white"];

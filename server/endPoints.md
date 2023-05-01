@@ -523,8 +523,13 @@ This file is going to take you through all the end points in this API.
          "details": [
             {
                "color": "red",
-               "stock": 5,
-               "size": ["xl", "xxl", "xxxl"] 
+               "sizes": [
+                  { 
+                     "size": "xl",
+                     "stock": 3 
+                  },
+                  ...
+               ]  
             },
             ...
          ]

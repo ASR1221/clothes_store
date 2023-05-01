@@ -13,7 +13,7 @@ const Items = sequelize.define("items", {
       type: DataTypes.STRING(30),
    },
    price: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.DECIMAL(5,2),
       allowNull: false,
    },
    image_path: {

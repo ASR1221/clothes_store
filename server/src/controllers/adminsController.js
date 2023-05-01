@@ -142,48 +142,54 @@ exports.listPendingItems = async (req, res, next) => {
 
 exports.addNewItem = async (req, res, next) => {
    const { sessionToken, roles } = req.user;
-   const { name, price, section, type, details } = req.body;
-
-   if (!roles.includes("uploading")) {
-      const error = new Error("You are not allowed to visit this route.");
-      error.status = 401;
-      return next(error);
-   }
-
-   if (!(name && price && section && type && (details && details.length > 0))) {
-      const error = new Error("Missing Information. Please try again.");
-      error.status = 400;
-      return next(error);
-   }   
-
-   const allowCreate = details.every(obj => {
-      if (COLORS.includes(obj.color) && obj.stock % 1 === 0 && obj.stock > 0) {
-         return obj.sizes.every(size => SIZES.includes(size));
-      }
-      return false;
-   });
-
-   if (!allowCreate) {
-      const error = new Error("Information provided are wrong");
-      error.status = 400;
-      return next(error);
-   }
-
+   const { name, price, section, type, details } = JSON.parse(req.body.json);
+   
    let item;
    try {
+      if (!roles.includes("uploading")) {
+         const error = new Error("You are not allowed to visit this route.");
+         error.status = 401;
+         throw error;
+      }
+
+      if (!(name && price && section && type && (details && details.length > 0))) {
+         const error = new Error("Missing Information. Please try again.");
+         error.status = 400;
+         throw error;
+      }   
+
+      if (!(/^\d+(\.)+\d{1,2}$/.test(price))) {
+         const error = new Error("price has to be a decimal number with 2 digits after the dot (example: 20.50)");
+         error.status = 400;
+         throw error;
+      }
+
+      const allowCreate = details.every(obj => {
+         console.log(obj);
+         if (!COLORS.includes(obj.color)) {
+            return false;
+         }
+         return obj.sizes.every(elm => elm.stock > 0 && elm.stock % 1 === 0 && SIZES.includes(elm.size));
+      });
+
+      if (!allowCreate) {
+         const error = new Error("Information provided are wrong");
+         error.status = 400;
+         throw error;
+      }
 
       item = await Items.create({
          name,
          price,
-         image_path: `/images/${req.files[0].filename}`,
+         image_path: `/images/${req.files.images[0].filename}`,
          section,
          type,
       });
 
-      const promises = [];
+      let promises = [];
 
       for (let i = 0; i < 3; i++) {
-         const imagePath = `/images/${req.files[i].filename}`;
+         const imagePath = `/images/${req.files.images[i].filename}`;
          const promise = ItemsImages.create({
             item_id: item.id,
             path: imagePath,
@@ -196,11 +202,11 @@ exports.addNewItem = async (req, res, next) => {
 
       details.forEach(obj => {
          
-         obj.sizes.forEach(async(size) => {
+         obj.sizes.forEach(async(elm) => {
             const promise = ItemsDetails.create({
-               size: size.size,
+               size: elm.size,
                color: obj.color,
-               stock: obj.size.stock,
+               stock: elm.stock,
                item_id: item.id,
             });
             promises.push(promise);
@@ -214,9 +220,9 @@ exports.addNewItem = async (req, res, next) => {
    } catch (e) {
       try {
 
-         if (req.files) {
-            for (let i = 0; i < req.files.length; i++) {
-               fs.unlink(req.files[i].path, (err) => {
+         if (req.files.images) {
+            for (let i = 0; i < 3; i++) {
+               fs.unlink(req.files.images[i].path, (err) => {
                   if (err) throw err;
                });
             }

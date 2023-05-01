@@ -2,10 +2,10 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
    destination: (req, file, cb) => {
-      cb(null, "../../public/images");
+      cb(null, "./public/images");
    },
    filename: (req, file, cb) => {
-      cb(null, `${req.body.name}-${Date.now()}`);
+      cb(null, `${Date.now()}-${file.originalname}`);
    }
 });
 
@@ -21,4 +21,8 @@ module.exports = multer({
    storage,
    fileFilter,
    limits: { fileSize: 7_000_000 } // 7 MB
-});
+})
+   .fields([
+      { name: "images", maxCount: 3 },
+      { name: "json", maxCount: 1},
+   ]);
