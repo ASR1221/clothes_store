@@ -3,7 +3,6 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
-// TODO: change methods for a cleaner api 
 // TODO: test all routes
 // TODO: payment
 

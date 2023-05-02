@@ -4,11 +4,11 @@ const upload = require("../middlewares/fileHandler");
 const adminsController = require("../controllers/adminsController");
 const router = require("express").Router();
 
-router.post("/check", session.checkAndRecreateSession, checkRole, adminsController.allowAccess);
+router.get("/check", session.checkAndRecreateSession, checkRole, adminsController.allowAccess);
 
-router.post("/list/served", session.checkAndRecreateSession, checkRole, adminsController.listServedItems); // query string ?from&to&section&type
+router.get("/list/served", session.checkAndRecreateSession, checkRole, adminsController.listServedItems); // query string ?from&to&section&type
 
-router.post("/list/pending", session.checkAndRecreateSession, checkRole, adminsController.listPendingItems); // query string ?country&city
+router.get("/list/pending", session.checkAndRecreateSession, checkRole, adminsController.listPendingItems); // query string ?country&city
 
 router.post("/item/add", session.checkAndRecreateSession, checkRole, upload, adminsController.addNewItem);
 

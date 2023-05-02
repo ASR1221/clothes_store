@@ -109,7 +109,7 @@ exports.getOrder = async (req, res, next) => {
 exports.getOrderDetails = async (req, res, next) => {
    const { id } = req.query;
 
-   if (!order_id) {
+   if (!id) {
       const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
@@ -118,7 +118,7 @@ exports.getOrderDetails = async (req, res, next) => {
    try {
       const order = await OrderItems.findAll(
          {
-            where: { order_id },
+            where: { order_id: id },
             attributes: { exclude: ["order_id", "item_details_id"] },
             include: {
                model: ItemsDetails,

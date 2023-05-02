@@ -9,6 +9,6 @@ router.post("/auth/facebook", userController.facebookUser, session.createSession
 
 router.post("/info/set", session.checkAndRecreateSession, userController.setUserInfo);
 
-router.post("/info/get", session.checkAndRecreateSession, userController.getUserInfo);
+router.get("/info/get", session.checkAndRecreateSession, userController.getUserInfo);
 
 module.exports = router;
