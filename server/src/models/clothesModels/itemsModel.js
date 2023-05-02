@@ -17,7 +17,7 @@ const Items = sequelize.define("items", {
       allowNull: false,
    },
    image_path: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
    },
    section: {
       type: DataTypes.ENUM("men", "women", "kids"),

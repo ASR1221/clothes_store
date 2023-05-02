@@ -165,7 +165,6 @@ exports.addNewItem = async (req, res, next) => {
       }
 
       const allowCreate = details.every(obj => {
-         console.log(obj);
          if (!COLORS.includes(obj.color)) {
             return false;
          }

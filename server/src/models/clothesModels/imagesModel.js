@@ -11,7 +11,7 @@ const ItemsImages = sequelize.define("itemsImages", {
       unique: true,
    },
    path: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false,
    },
 }, {
