@@ -41,7 +41,11 @@ exports.checkAndRecreateSession = (req, res, next) => {
 
    jwt.verify(sessionToken, process.env.LOGIN_JWT_SESSION_SECRET, (err, data) => {
       
-      if (err) return next(err);
+      if (err) {
+         const error = new Error("Unauthorized. sessionToken has either expired or altered.")
+         error.status = 401;
+         return next(error)
+      }
 
       const expiresIn = req.path.includes("native") ? "7d" : "1d";
       jwt.sign(

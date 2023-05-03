@@ -41,7 +41,7 @@ This file is going to take you through all the end points in this API.
          "name": "item name",
          "price": 00.00,
          "image_path": "path/to/image",
-         "type": "jeans",
+         "type": "jeans"
       },
       ...
    ]
@@ -53,26 +53,26 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          itemsDetails: [
-             {
-                "stock": 1,
-                "size": "xl",
-                "color": "red",
-                "id": 1,
-             },
-             ...
-             // note that each item in the array is an instance of the item with a specific color and sizes. The front end developer should show it in a proper way
-          ],
-          images: [
-             {
-                "path": "path/to/image"
-             },
-             ... // 3 images
-          ]
-       }
-       ```
+      ```
+      {
+         itemsDetails: [
+            {
+               "stock": 1,
+               "size": "xl",
+               "color": "red",
+               "id": 1
+            },
+            ...
+            // note that each item in the array is an instance of the item with a specific color and sizes. The front end developer should show it in a proper way
+         ],
+         images: [
+            {
+               "path": "path/to/image"
+            },
+            ... // 3 images
+         ]
+      }
+      ```
 
 -  GET `/items/search?term=`
 
@@ -82,18 +82,18 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       [
-          {
-             "id": 1,
-             "name": "item name",
-             "price": 00.00,
-             "image_path": "path/to/image",
-             "type": "jeans",
-          },
-          ...
-       ]
-       ```
+      ```
+      [
+         {
+            "id": 1,
+            "name": "item name",
+            "price": 00.00,
+            "image_path": "path/to/image",
+            "type": "jeans"
+         },
+         ...
+      ]
+      ```
 
 ## **User**
 
@@ -119,16 +119,15 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          "sessionToken": 1,
-          "name": "user name",
-          "email": "user email or null",
-          "phone_number": "user phone number or null",
-          "cartItemsCount": 3
-       },
-
-       ```
+      ```
+      {
+         "sessionToken": "session token string",
+         "name": "user name",
+         "email": "user email or null",
+         "phone_number": "user phone number or null",
+         "cartItemsCount": 3
+      }
+      ```
 
 -  POST `/user/info/set`
 
@@ -140,7 +139,7 @@ This file is going to take you through all the end points in this API.
       "city": "city of the user",
       "district": "district of the user",
       "nearestPoI": "nearest point of intrest to the user",
-      "phone_number": "user phone number",
+      "phone_number": "user phone number"
    }
    ```
 
@@ -150,9 +149,8 @@ This file is going to take you through all the end points in this API.
 
    ```
    {
-      "message": "Location and phone number saved",
+      "message": "Location and phone number saved"
    }
-
    ```
 
 -  GET `/user/info/get`
@@ -165,7 +163,7 @@ This file is going to take you through all the end points in this API.
 
    ```
    {
-      "message": "The user does not have this info.",
+      "message": "The user does not have this info."
    }
    ```
 
@@ -177,7 +175,7 @@ This file is going to take you through all the end points in this API.
       "city": "city of the user",
       "district": "district of the user",
       "nearestPoI": "nearest point of intrest to the user",
-      "phone_number": "user phone number",
+      "phone_number": "user phone number"
    }
    ```
 
@@ -189,8 +187,8 @@ This file is going to take you through all the end points in this API.
 
    ```
       {
-         "item_details_id": "uuid",
-         "item_count": 1,
+         "item_details_id": 1,
+         "item_count": 1
       }
    ```
 
@@ -198,13 +196,12 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          "sessionToken": "new sessionToken",
-          "message": "cart item added"
-       }
-
-       ```
+      ```
+      {
+         "sessionToken": "new sessionToken",
+         "message": "cart item added"
+      }
+      ```
 
 -  GET `/cart/list`
 
@@ -212,53 +209,51 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       [
+      ```
+      [
           {
-             "id": "uuid of the cart",
-             "item_count": 2,
-             "total_price": 30.50,
-             "item_details_id": 232,
-             "ItemsDetails": {
-                "size": "xl",
-                "color": "blue",
-                "stock": 5,
-             },
-             "item": {
-                "name": "item name",
-                "price": 15.25,
-                "section": "men",
-                "type": "shirts",
-             }
-          },
-          ...
-       ]
-
-       ```
+            "id": "uuid of the cart",
+            "item_count": 2,
+            "total_price": 30.50,
+            "item_details_id": 232,
+            "itemsDetail": {
+               "size": "xl",
+               "color": "blue",
+               "stock": 5,
+               "item": {
+                  "name": "item name",
+                  "price": 15.25,
+                  "section": "men",
+                  "type": "shirts"
+               }
+            }
+         },
+         ...
+      ]
+      ```
 
 -  PUT `/cart/update`
 
    body:
 
    ```
-      {
-         "id": "uuid of the cart item",
-         "item_details_id": 234,
-         "item_count": 3,
-      }
+   {
+      "id": "uuid of the cart item",
+      "item_details_id": 234,
+      "item_count": 3
+   }
    ```
 
    This end point is used to update cart items.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          "sessionToken": "new sessionToken",
-          "message": "updated successfully"
-       }
-
-       ```
+      ```
+      {
+         "sessionToken": "new sessionToken",
+         "message": "updated successfully"
+      }
+      ```
 
 -  DELETE `/cart/remove/:id`
 
@@ -266,13 +261,12 @@ This file is going to take you through all the end points in this API.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          "sessionToken": "new sessionToken",
-          "message": "Cart item deleted"
-       }
-
-       ```
+      ```
+      {
+         "sessionToken": "new sessionToken",
+         "message": "Cart item deleted"
+      }
+      ```
 
 ## **Order**
 
@@ -281,23 +275,22 @@ This file is going to take you through all the end points in this API.
    body:
 
    ```
-      {
-         "payment_method": "credit-card", // or cash
-         "credit_card": "credit-card", // or null,
-      }
+   {
+      "payment_method": "credit-card", // or cash
+      "credit_card": "credit-card"     // or null,
+   }
    ```
 
    This end point is used to make an order.
 
    The endpoint will return the following on `Success`:
 
-       ```
-       {
-          "sessionToken": "new sessionToken",
-          "message": "order made successfully"
-       }
-
-       ```
+      ```
+      {
+         "sessionToken": "new sessionToken",
+         "message": "order made successfully"
+      }
+      ```
 
 -  GET `/order/get`
 
@@ -313,7 +306,7 @@ This file is going to take you through all the end points in this API.
          "payment_method": "cash",
          "credit_card": null,
          "order_price": 100.25,
-         "served": false,
+         "served": false
       },
       ...
    ]
@@ -335,13 +328,13 @@ This file is going to take you through all the end points in this API.
          "ItemsDetails": {
             "size": "xl",
             "color": "blue",
-            "stock": 5,
+            "stock": 5
          },
          "item": {
             "name": "item name",
             "price": 15.25,
             "section": "men",
-            "type": "shirts",
+            "type": "shirts"
          },
          "images": [
             { "path": "path/to/image" },
@@ -361,12 +354,10 @@ This file is going to take you through all the end points in this API.
    The endpoint will return the following on `Success`:
 
    ```
-
    {
       "sessionToken": "new sessionToken",
       "role": "orders" // or uploading or finance
    }
-
    ```
 
 -  GET `/admin/list/served?from&to&section&type`
@@ -397,8 +388,8 @@ This file is going to take you through all the end points in this API.
                "name": "item name",
                "price": 15.25,
                "section": "men",
-               "type": "shirts",
-            },
+               "type": "shirts"
+            }
          },
          "Order": {
             "payment_method": "credit-card",
@@ -438,7 +429,7 @@ This file is going to take you through all the end points in this API.
             "city": "user order city",
             "district": "user order district",
             "nearestPoI": "user order nearest point of intrest"
-         }.
+         },
          OrderItems: {
             "item_count": 12,
             "total_price": "cash",
@@ -449,11 +440,11 @@ This file is going to take you through all the end points in this API.
                   "name": "item name",
                   "price": 15.25,
                   "section": "men",
-                  "type": "shirts",
-               },
-            },
-         },
-      }
+                  "type": "shirts"
+               }
+            }
+         }
+      },
       ...
    ]
    ```
@@ -479,25 +470,25 @@ This file is going to take you through all the end points in this API.
    body:
 
    ```
-      {
-         "name": "item name",
-         "price": 20.00,
-         "section": "men",
-         "type": "coats",
-         "details": [
-            {
-               "color": "red",
-               "sizes": [
-                  {
-                     "size": "xl",
-                     "stock": 3
-                  },
-                  ...
-               ]
-            },
-            ...
-         ]
-      }
+   {
+      "name": "item name",
+      "price": 20.00,
+      "section": "men",
+      "type": "coats",
+      "details": [
+         {
+            "color": "red",
+            "sizes": [
+               {
+                  "size": "xl",
+                  "stock": 3
+               },
+               ...
+            ]
+         },
+         ...
+      ]
+   }
    ```
 
    The endpoint will return the following on `Success`:
@@ -514,17 +505,17 @@ This file is going to take you through all the end points in this API.
    body:
 
    ```
-      {
-         "id": "id of the item",
-         "details": [
-            {
-               "color": "red",
-               "stock": 5,
-               "size": ["xl", "xxl", "xxxl"]
-            },
-            ...
-         ]
-      }
+   {
+      "id": "id of the item",
+      "details": [
+         {
+            "color": "red",
+            "stock": 5,
+            "size": ["xl", "xxl", "xxxl"]
+         },
+         ...
+      ]
+   }
    ```
 
    The endpoint will return the following on `Success`:

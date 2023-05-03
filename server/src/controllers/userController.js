@@ -14,14 +14,14 @@ exports.googleUser = async (req, res, next) => {
    }
 
    try {
-      const response = await fetch(`https://people.googleapis.com/v1/people/me?personFields=emailAddresses,names&access_token=${access_token}`)
+      const response = await fetch(`https://people.googleapis.com/v1/people/me?personFields=emailAddresses,names&access_token=${access_token}`);
       const { names, emailAddresses } = await response.json();
 
       const name = names[0].displayName;
       const email = emailAddresses[0].value;
       const email_verified = emailAddresses[0].metadata.verified;
 
-      if (!(email_verified && email && name)) {
+      if (!(response.ok && email_verified && email && name)) {
          const error = new Error("There was a problem getting your data. Please try again.");
          error.status = 500;
          return next(error);
@@ -35,6 +35,7 @@ exports.googleUser = async (req, res, next) => {
 
       const [user, created] = await Users.findOrCreate({
          where: { email },
+         attributes: { exclude: ["createdAt", "updatedAt"]},
          defaults: {
             name,
             email,
@@ -71,7 +72,7 @@ exports.facebookUser = async (req, res, next) => {
       // should add phone_number to the fields above but it requires advance permissions. and also add phone number to the scopes in the request url in the client side.
       const { name, email, phone_number } = await facebookResponse.json(); 
 
-      if (!((email ||  phone_number) && name)) {
+      if (!(response.ok && (email ||  phone_number) && name)) {
          const error = new Error("There was a problem getting your data. Please try again.");
          error.status = 500;
          return next(error);
@@ -110,8 +111,14 @@ exports.facebookUser = async (req, res, next) => {
 exports.setUserInfo = (req, res, next) => {
    const { country, city, district, nearestPoI, phone_number } = req.body;
 
-   if (district && nearestPoI && phone_number) {
+   if (!(district && nearestPoI && phone_number)) {
       const error = new Error("Missing Information. Please try again.")
+      error.status = 400;
+      return next(error);
+   }
+
+   if (!(phone_number.length > 10 && Number(phone_number))) {
+      const error = new Error("phone_number field is not a phone number.")
       error.status = 400;
       return next(error);
    }
@@ -147,14 +154,14 @@ exports.getUserInfo = async (req, res, next) => {
          nearestPoI,
          phone_number } = await Users.findByPk(req.user.user_id,
             {
-               attributes: ["country", "city", "district", "nearestPoI", , "phone_number"]
+               attributes: ["country", "city", "district", "nearestPoI", "phone_number"]
             });
       
-      if (country && city && district && nearestPoI && phone_number) {
+      if (!(country && city && district && nearestPoI && phone_number)) {
          return res.status(200).json({ message: "The user does not have this info." });
       }
 
-      res.status.json({
+      res.status(200).json({
          country,
          city,
          district,

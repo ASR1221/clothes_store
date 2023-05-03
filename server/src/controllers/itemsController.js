@@ -14,15 +14,16 @@ exports.list = async (req, res, next) => {
 
    try {
       let items;
+      const exclude = ["section", "available", "createdAt", "updatedAt"];
       if (type) {
          items = await Items.findAll({
             where: { section, type, available: true },
-            attributes: { exclude: ["section", "available"] },
+            attributes: { exclude },
          });
       } else {
          items = await Items.findAll({
             where: { section, available: true  },
-            attributes: { exclude: ["section", "available"] },
+            attributes: { exclude },
          });
       }
    
@@ -45,6 +46,7 @@ exports.itemsDetails = async (req, res, next) => {
    try {
       const itemInctances = await ItemsDetails.findAll({
          where: { item_id: id },
+         attributes: { exclude: ["createdAt", "updatedAt"] }
       });
       
       const images = await ItemsImages.findAll({
@@ -102,7 +104,7 @@ exports.searchItem = async (req, res, next) => {
             [Op.and]: searchQuery,
             available: true,
          },
-         attributes: { exclude: ["available"] },
+         attributes: { exclude: ["available", "createdAt", "updatedAt"] },
       });
       
 

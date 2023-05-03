@@ -7,7 +7,7 @@ exports.addToCart = async (req, res, next) => {
    const { item_details_id, item_count } = req.body;
    const { user_id, sessionToken } = req.user;
 
-   if (!(item_details_id && item_count)) {
+   if (!(item_details_id && (item_count && item_count > 0))) {
       const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
@@ -24,8 +24,8 @@ exports.addToCart = async (req, res, next) => {
             attributes: ["price"],
          }
       });
-      
-      const total_price = item.Item.price * item_count;
+
+      const total_price = item.item.price * item_count;
       const newCartItem = await Cart.create({ user_id, item_details_id, item_count, total_price});
       return res.status(200).json({
          sessionToken,
@@ -38,26 +38,21 @@ exports.addToCart = async (req, res, next) => {
 }
 
 exports.listCartItems = async (req, res, next) => {
-   const { user_id, sessionToken } = req.user;
+   const { user_id } = req.user;
 
    try {
-      const cartItemsRes = await Cart.findAll({
+      const cartItems = await Cart.findAll({
          where: { user_id },
-         attributes: { exclude: ["user_id"] },
+         attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
          include: {
             model: ItemsDetails,
-            attributes: { exclude: ["id"] },
+            attributes: { exclude: ["id", "updatedAt", "createdAt"] },
+            include: {
+               model: Items,
+               attributes: { exclude: ["id", "image_path", "available", "createdAt", "updatedAt"] },
+            },
          }
       });
-
-      const result = cartItemsRes.map(async (cartItem) => {
-         cartItem.item =
-            await Items.findByPk(cartItem.ItemsDetails.item_id,
-            { attributes: { exclude: ["id", "image_path", "available"] } });
-         return cartItem;
-      });
-
-      const cartItems = await Promise.all(result);
 
       return res.status(200).json(cartItems);
 
@@ -86,13 +81,13 @@ exports.updateCartItem = async (req, res, next) => {
             }],
          });
       
-      if (item_count > item.stock || !item.Items.available) {
+      if (item_count > item.stock || !item.item.available) {
          const error = new Error("Sorry, we don't have this amount of the item.")
          error.status = 400;
          return next(error);
       }
 
-      const total_price = item.Items.price * item_count;
+      const total_price = item.item.price * item_count;
 
       const newCartItem = await Cart.update(
          { 
