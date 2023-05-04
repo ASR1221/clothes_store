@@ -20,7 +20,7 @@ exports.makeOrder = async (req, res, next) => {
       
       const cartItems = await Cart.findAll({
          where: { user_id },
-         attributes: { exclude: ["user_id", "id"] },
+         attributes: ["item_count", "total_price", "item_details_id"],
       });
 
       if (!cartItems.length > 0) {
@@ -30,10 +30,10 @@ exports.makeOrder = async (req, res, next) => {
       }
 
       const user = await Users.findByPk(user_id, {
-         attributes: ["adderss", "phone_number"],
+         attributes: ["country", "city", "district", "nearestPoI", "phone_number"],
       });
 
-      if (!(user.address && user.phone_number)) {
+      if (!(user.country && user.city && user.district && user.nearestPoI && user.phone_number)) {
          const error = new Error("User info are not complete. Make sure to submit all information needed");
          error.status = 400;
          return next(error);
@@ -49,39 +49,45 @@ exports.makeOrder = async (req, res, next) => {
          user_id,
       });
 
-      cartItems = cartItems.map((item) => {
+      const items = cartItems.map((item) => {
+         item = { ...item.dataValues };
          item.order_id = order.id;
          return item;
       });
-      const orderItems = await OrderItems.bulkCreate(cartItems);
+      const orderItems = await OrderItems.bulkCreate(items);
 
       res.status(200).json({ message: "Order made successfully", sessionToken });
 
       // run a check to see if more items are available and update accordinglly
-      function onFinish() {
+      async function onFinish() {
          try {
-            orderItems.map(async (orderItem) => {
-               const item = await ItemsDetails.findByPk(orderItem.item_details_id, {
-                  attributes: ["stock"],
-                  include: {
-                     model: Items,
-                     attributes: ["id"],
-                  },
-               });
-               await item.decrement({ "stock": orderItem.item_count });
-
-               const items = await ItemsDetails.findAll({
-                  where: { item_id: item.Item.id },
-                  attributes: ["stock"],
-               });
-
-               const available = items.some((item) => item.stock > 0);
-               if (!available) {
-                  await Items.update({ available }, { where: { id: item.Item.id } });
-               }
+            let item_id;
+            await Promise.all(
+               items.map(async (item) => {
+                  const itemsDetails = await ItemsDetails.findByPk(item.item_details_id, {
+                     attributes: ["stock", "id"],
+                     include: {
+                        model: Items,
+                        attributes: ["id"],
+                     },
+                  });
+                  item_id = itemsDetails.item.id;
+                  return itemsDetails.decrement("stock", { by: item.item_count }); 
+               })
+            );
+            
+            const alltems = await ItemsDetails.findAll({
+               where: { item_id },
+               attributes: ["stock"],
             });
+
+            const available = alltems.some((item) => item.stock > 0);
+            if (!available) {
+               await Items.update({ available }, { where: { id: item_id } });
+            }
+                        
          } catch (e) {
-            onFinish();
+            console.log(e)
          }
       }
       res.on("finish", onFinish);
@@ -97,7 +103,7 @@ exports.getOrder = async (req, res, next) => {
    try {
       const order = await Order.findAll({
          where: { user_id },
-         attributes: { exclude: ["user_id"] }
+         attributes: { exclude: ["user_id", "updatedAt"] }
       });
 
       return res.status(200).json(order);
@@ -107,7 +113,7 @@ exports.getOrder = async (req, res, next) => {
 };
 
 exports.getOrderDetails = async (req, res, next) => {
-   const { id } = req.query;
+   const { id } = req.params;
 
    if (!id) {
       const error = new Error("Missing Information. Please try again.")
@@ -119,29 +125,30 @@ exports.getOrderDetails = async (req, res, next) => {
       const order = await OrderItems.findAll(
          {
             where: { order_id: id },
-            attributes: { exclude: ["order_id", "item_details_id"] },
+            attributes: ["id", "item_count", "total_price"],
             include: {
                model: ItemsDetails,
-               attributes: { exclude: ["stock", "id", "item_id"] },
+               attributes: ["size", "color"],
                include: {
                   model: Items,
-                  attributes: { exclude: ["id", "available", "image_path"] },
-               }
+                  attributes: { exclude: ["available", "createdAt", "updatedAt", "image_path"] },
+               },
             },
          },
       );
 
       const result = order.map(async (orderItem) => {
-         orderItem.images = await ItemsImages.findAll({
-            where: { item_id: orderItem.ItemsDetails.item_id },
-            attributes: { exclude: ["id", item_id] }
+         const items = { ...orderItem.dataValues };
+         items.images = await ItemsImages.findAll({
+            where: { item_id: orderItem.itemsDetail.item.id },
+            attributes: { exclude: ["id", "item_id", "createdAt", "updatedAt"] }
          });
-         return orderItem;
+         return items;
       });
 
       const orderItems = await Promise.all(result);
 
-      return res.status.json(orderItems);
+      return res.status(200).json(orderItems);
    } catch (e) {
       return next(e);
    }

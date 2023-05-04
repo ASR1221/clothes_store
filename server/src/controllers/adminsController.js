@@ -29,7 +29,7 @@ exports.listServedItems = async (req, res, next) => {
       return next(error);
    }
 
-   if (!(from && to && section && type)) {
+   if (!(from && to)) {
       const error = new Error("You have to specify the 'from' and the 'to' or both.");
       error.status = 400;
       return next(error);
@@ -45,36 +45,40 @@ exports.listServedItems = async (req, res, next) => {
       else if (section && !type) whereClause.section = section;
       else if (!section && type) whereClause.type = type;
       
+      const exclude = ["createdAt", "updatedAt"];
       const orderItems = await OrderItems.findAll({
-         where: whereClause,
-         attributes: { exclude: ["id", "order_id", "item_details_id"] },
-         include: [{
-            model: ItemsDetails,
-            attributes: { exclude: ["stock", "item_id", "id"] },
-            include: {
-               model: Items,
-               attributes: { exclude: ["image_path", "available"] },
-            }
-         }, {
-            model: Order,
-            where: {
-               served: true,
-               updatedAt: {
-                  [Op.between]: [from, to]
+         attributes: { exclude: ["id", "order_id", "item_details_id", ...exclude] },
+         include: [
+            {
+               model: ItemsDetails,
+               attributes: { exclude: ["stock", "item_id", "id", ...exclude] },
+               include: {
+                  model: Items,
+                  where: whereClause,
+                  attributes: { exclude: ["image_path", "available", ...exclude] },
                }
             },
-            attributes: { exclude: ["served", "user_id", "id"] },
-            include: {
-               model: Users,
-               attributes: { exclude: ["nearestPoI", "district", "id"] },
-            },
-         }],
+            {
+               model: Order,
+               where: {
+                  served: true,
+                  updatedAt: {
+                     [Op.between]: [from, to]
+                  }
+               },
+               attributes: { exclude: ["served", "user_id", "id", exclude[1]] },
+               include: {
+                  model: Users,
+                  attributes: { exclude: ["nearestPoI", "district", "id", ...exclude] },
+               },
+            }
+         ],
       });
 
       // delete all orders that do not meet the spcified section or type
-      const allOrders = [];
-      if (section || type) allOrders = orderItems.filter(order => order.ItemsDetails.Items && order.Order);
-      else allOrders = orderItems.filter(order => order.Order);;
+      const allOrders = (section || type) 
+         ? orderItems.filter(order => order.itemsDetail?.item && order.order)
+         : orderItems.filter(order => order.order);
 
       return res.status(200).json(allOrders);
 
@@ -87,7 +91,7 @@ exports.listPendingItems = async (req, res, next) => {
    const { roles } = req.user;
    const { country, city } = req.query;
 
-   if (!roles.includes("order")) {
+   if (!roles.includes("orders")) {
       const error = new Error("You are not allowed to visit this route.");
       error.status = 401;
       return next(error);
@@ -112,10 +116,11 @@ exports.listPendingItems = async (req, res, next) => {
       });
    
       const result = orders.map(async (order) => {
-         if (order.Users.country !== country || order.User.city !== city) {
+         if (order.user.country !== country || order.user.city !== city) {
             return;
          }
-         const orderItems = await OrderItems.findAll({
+         const newOrders = {...order.dataValues};
+         newOrders.orderItem = await OrderItems.findAll({
             where: { order_id: order.id },
             attributes: { exclude: ["id", "order_id", "item_details_id"] },
             include: {
@@ -127,12 +132,11 @@ exports.listPendingItems = async (req, res, next) => {
                }
             }
          });
-         order.OrderItems = orderItems;
-         return order;
+         return newOrders;
       });
 
       const allOrders = await Promise.all(result);
-      
+
       return res.status(200).json(allOrders);
 
    } catch (e) {
@@ -250,17 +254,17 @@ exports.updateStock = async (req, res, next) => {
       return next(error);
    }
 
-   if (id && details) {
+   if (!(id && details)) {
       const error = new Error("Missing Information. Please try again.");
       error.status = 400;
       return next(error);
    }
 
    const allowCreate = details.every(obj => {
-      if (COLORS.includes(obj.color) && obj.stock % 1 === 0 && obj.stock > 0) {
-         return obj.sizes.every(size => SIZES.includes(size));
+      if (!COLORS.includes(obj.color)) {
+         return false;
       }
-      return false;
+      return obj.sizes.every(elm => elm.count > 0 && elm.count % 1 === 0 && SIZES.includes(elm.size));
    });
 
    if (!allowCreate) {
@@ -270,13 +274,17 @@ exports.updateStock = async (req, res, next) => {
    }
 
    try {
-      const promises = [];
+      let promises = [];
       details.forEach(obj => {
             
-         obj.sizes.forEach(async(size) => {
-            const promise = ItemsDetails.update({
-               stock: obj.size.stock
-            }, {
+         obj.sizes.forEach(async (size) => {
+            const promise = ItemsDetails.findOrCreate({
+               defaults: {
+                  size: size.size,
+                  color: obj.color,
+                  stock: size.count,
+                  item_id: id,
+               },
                where: {
                   item_id: id,
                   color: obj.color,
@@ -287,9 +295,27 @@ exports.updateStock = async (req, res, next) => {
          });
       });
       
-      const results = await Promise.all(promises);
+      let results = await Promise.all(promises);
+
+      promises = [];
+      let i = 0;
+      let createdFlag = false;
+
+      details.forEach(obj => {
+         obj.sizes.forEach((size) => {
+            const [itemDetail, created] = results[i];
+            if (created) {
+               createdFlag = true;
+               return;
+            }
+            itemDetail.stock = itemDetail.stock + size.count;
+            promises.push(itemDetail.save());
+         })
+      });
+
+      results = await Promise.all(promises);
    
-      const isUpdated = results.any(result => result[0] > 0);
+      const isUpdated = results.length || createdFlag;
    
       if (!isUpdated) {
          const error = new Error("Nothing got updated.");

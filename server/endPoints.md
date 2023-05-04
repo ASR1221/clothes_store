@@ -186,10 +186,10 @@ This file is going to take you through all the end points in this API.
    body:
 
    ```
-      {
-         "item_details_id": 1,
-         "item_count": 1
-      }
+   {
+      "item_details_id": 1,
+      "item_count": 1
+   }
    ```
 
    This end point is user to add items to the cart.
@@ -277,7 +277,7 @@ This file is going to take you through all the end points in this API.
    ```
    {
       "payment_method": "credit-card", // or cash
-      "credit_card": "credit-card"     // or null,
+      "credit_card": "credit-card-number"     // or null,
    }
    ```
 
@@ -301,12 +301,12 @@ This file is going to take you through all the end points in this API.
    ```
    [
       {
-         "sessionToken": "new sessionToken",
          "id": 12,
          "payment_method": "cash",
          "credit_card": null,
          "order_price": 100.25,
-         "served": false
+         "served": false,
+         "createdAt": "2023-05-04T08:56:12.000Z"
       },
       ...
    ]
@@ -323,18 +323,18 @@ This file is going to take you through all the end points in this API.
    [
       {
          "id": "uuid",
-         "item_count": 12,
-         "total_price": "cash",
+         "item_count": 2,
+         "total_price": 69.98,
          "ItemsDetails": {
             "size": "xl",
             "color": "blue",
-            "stock": 5
-         },
-         "item": {
-            "name": "item name",
-            "price": 15.25,
-            "section": "men",
-            "type": "shirts"
+            "item": {
+               "id": 2,
+               "name": "item name",
+               "price": 15.25,
+               "section": "men",
+               "type": "shirts"
+            }
          },
          "images": [
             { "path": "path/to/image" },
@@ -380,21 +380,23 @@ This file is going to take you through all the end points in this API.
    [
       {
          "item_count": 12,
-         "total_price": "cash",
-         "ItemsDetails": {
-            "size": "xl",
+         "total_price": 68.98,
+         "itemsDetail": {
+            "size": "XL",
             "color": "blue",
             "Item": {
+               "id": 2,
                "name": "item name",
                "price": 15.25,
                "section": "men",
                "type": "shirts"
             }
          },
-         "Order": {
+         "order": {
             "payment_method": "credit-card",
             "credit_card": "credit card id",
             "order_price": 20.50,
+            "order_date": "2023-05-04T08:56:12.000Z",
             "User": {
                "name": "user name",
                "email": "user email",
@@ -500,7 +502,7 @@ This file is going to take you through all the end points in this API.
    }
    ```
 
--  POST `/admin/item/update`
+-  PUT `/admin/item/update`
 
    body:
 
@@ -510,19 +512,28 @@ This file is going to take you through all the end points in this API.
       "details": [
          {
             "color": "red",
-            "stock": 5,
-            "size": ["xl", "xxl", "xxxl"]
+            "sizes": [ 
+               {
+                  size: "XL",
+                  count: 5
+               },
+               ...
+            ]
          },
          ...
       ]
    }
    ```
 
+   This end point is used to update the stock of an item instance or add a size that did not exsist previouslly. 
+
+   *count* is the number that is going to be added of that item instance.
+
    The endpoint will return the following on `Success`:
 
    ```
    {
-      "message": "Updated.",
+      "message": "Updated",
       "sessionToken": "new session token"
    }
    ```

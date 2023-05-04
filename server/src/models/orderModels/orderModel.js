@@ -20,7 +20,7 @@ const Order = sequelize.define(
          type: DataTypes.STRING,
       },
       order_price: {
-         type: DataTypes.DECIMAL,
+         type: DataTypes.DECIMAL(10,2),
          allowNull: false,
       },
       served: {
@@ -35,7 +35,7 @@ const Order = sequelize.define(
    }
 );
 
-Users.hasOne(Order, {
+Order.belongsTo(Users, {
    foreignKey: {
       name: "user_id",
       type: DataTypes.UUID,

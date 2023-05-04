@@ -12,6 +12,6 @@ router.get("/list/pending", session.checkAndRecreateSession, checkRole, adminsCo
 
 router.post("/item/add", session.checkAndRecreateSession, checkRole, upload, adminsController.addNewItem);
 
-router.post("/item/update", session.checkAndRecreateSession, checkRole, adminsController.updateStock);
+router.put("/item/update", session.checkAndRecreateSession, checkRole, adminsController.updateStock);
 
 module.exports = router;

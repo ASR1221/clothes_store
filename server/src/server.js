@@ -3,7 +3,9 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
-// TODO: test all routes
+// TODO: fix order_price 
+// TODO: fix adminController's served items for a a better logic
+// TODO: test all routes again an polish
 // TODO: payment
 
 const app = express();
