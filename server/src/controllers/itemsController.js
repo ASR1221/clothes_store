@@ -45,7 +45,10 @@ exports.itemsDetails = async (req, res, next) => {
 
    try {
       const itemInctances = await ItemsDetails.findAll({
-         where: { item_id: id },
+         where: {
+            item_id: id,
+            stock: { [Op.gt]: 0 },
+         },
          attributes: { exclude: ["createdAt", "updatedAt"] }
       });
       
@@ -54,7 +57,7 @@ exports.itemsDetails = async (req, res, next) => {
          attributes: ["path"],
       });
 
-      const itemsDetails = itemInctances.map(itemInctance =>{
+      const itemsDetail = itemInctances.map(itemInctance =>{
          if (itemInctance.stock > 0) {
             return {
                stock: itemInctance.stock,
@@ -66,7 +69,7 @@ exports.itemsDetails = async (req, res, next) => {
       });
 
       return res.status(200).json({
-         itemsDetails,
+         itemsDetail,
          images,
       });
 
@@ -79,9 +82,9 @@ exports.searchItem = async (req, res, next) => {
    const { term } = req.query;
 
    if (!term) {
-      const error = new Error("Missing Information. Please try again.");
+      const error = new Error("Missing Information. You have to specify 'term' of the search.");
       error.status = 400;
-      return next(err);
+      return next(error);
    }
 
    const terms = term.split(" ");
@@ -119,8 +122,8 @@ exports.searchItem = async (req, res, next) => {
 
       const sortedItems = relevanceItems.sort((a, b) => b.score - a.score);
       const items = sortedItems.map((item) => { 
-         delete item.score;
-         return item;
+         const newItem = item.item;
+         return newItem;
       });
 
       res.status(200).json(items);

@@ -21,7 +21,7 @@ exports.allowAccess = async (req, res, next) => {
 
 exports.listServedItems = async (req, res, next) => {
    const { roles } = req.user;
-   const { from, to, section, type } = req.query;
+   const { from, to } = req.query;
 
    if (!roles.includes("finance")) {
       const error = new Error("You are not allowed to visit this route.");
@@ -36,49 +36,41 @@ exports.listServedItems = async (req, res, next) => {
    }
    
    try {
-      const whereClause = {};
-      
-      if (section && type) {
-         whereClause.section = section;
-         whereClause.type = type;
-      }
-      else if (section && !type) whereClause.section = section;
-      else if (!section && type) whereClause.type = type;
       
       const exclude = ["createdAt", "updatedAt"];
-      const orderItems = await OrderItems.findAll({
-         attributes: { exclude: ["id", "order_id", "item_details_id", ...exclude] },
-         include: [
-            {
-               model: ItemsDetails,
-               attributes: { exclude: ["stock", "item_id", "id", ...exclude] },
-               include: {
-                  model: Items,
-                  where: whereClause,
-                  attributes: { exclude: ["image_path", "available", ...exclude] },
-               }
+
+      const orders = await Order.findAll({
+         where: {
+            served: true,
+            updatedAt: {
+               [Op.between]: [from, to]
             },
-            {
-               model: Order,
-               where: {
-                  served: true,
-                  updatedAt: {
-                     [Op.between]: [from, to]
-                  }
-               },
-               attributes: { exclude: ["served", "user_id", "id", exclude[1]] },
-               include: {
-                  model: Users,
-                  attributes: { exclude: ["nearestPoI", "district", "id", ...exclude] },
-               },
-            }
-         ],
+         },
+         attributes: { exclude: ["served", "user_id", "updatedAt"] },
+         include: {
+            model: Users,
+            attributes: { exclude: ["nearestPoI", "district", "id", ...exclude] },
+         },
       });
 
-      // delete all orders that do not meet the spcified section or type
-      const allOrders = (section || type) 
-         ? orderItems.filter(order => order.itemsDetail?.item && order.order)
-         : orderItems.filter(order => order.order);
+      const result = orders.map(async (order) => {
+         const newOrders = {...order.dataValues};
+         newOrders.orderItems = await OrderItems.findAll({
+            where: { order_id: order.id },
+            attributes: ["item_count", "total_price"],
+            include: {
+               model: ItemsDetails,
+               attributes: ["size", "color"],
+               include: {
+                  model: Items,
+                  attributes: ["id", "name", "price", "section", "type"],
+               }
+            }
+         });
+         return newOrders;
+      });
+
+      const allOrders = await Promise.all(result);
 
       return res.status(200).json(allOrders);
 
@@ -108,10 +100,10 @@ exports.listPendingItems = async (req, res, next) => {
          where: {
             served: false,
          },
-         attributes: { exclude: ["served", "user_id"] },
+         attributes: { exclude: ["served", "user_id", "updatedAt"] },
          include: {
             model: Users,
-            attributes: { exclude: ["id"] },
+            attributes: { exclude: ["id", "createdAt", "updatedAt"] },
          },
       });
    
@@ -120,15 +112,15 @@ exports.listPendingItems = async (req, res, next) => {
             return;
          }
          const newOrders = {...order.dataValues};
-         newOrders.orderItem = await OrderItems.findAll({
+         newOrders.orderItems = await OrderItems.findAll({
             where: { order_id: order.id },
-            attributes: { exclude: ["id", "order_id", "item_details_id"] },
+            attributes: ["item_count", "total_price"],
             include: {
                model: ItemsDetails,
-               attributes: { exclude: ["stock", "item_id", "id"] },
+               attributes: ["size", "color"],
                include: {
                   model: Items,
-                  attributes: { exclude: ["image_path", "available"] },
+                  attributes: ["name", "price", "section", "type"],
                }
             }
          });

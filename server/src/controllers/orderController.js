@@ -21,10 +21,25 @@ exports.makeOrder = async (req, res, next) => {
       const cartItems = await Cart.findAll({
          where: { user_id },
          attributes: ["item_count", "total_price", "item_details_id"],
+         include: {
+            model: ItemsDetails,
+            attributes: ["stock", "id", "item_id"],
+         }
       });
 
-      if (!cartItems.length > 0) {
+      if (!cartItems.length) {
          const error = new Error("No cart item founded. Put some items in youe cart before making an order.");
+         error.status = 400;
+         return next(error);
+      }
+
+       let unavalibaleMessage = cartItems.reduce((acc, current) => {
+         if (current.itemsDetail.stock >= current.item_count) return acc;
+         return acc + ` [only ${current.itemsDetail.stock} instances of the item with id ${current.itemsDetail.id} exsist]`;
+      }, "");
+
+      if (unavalibaleMessage) {
+         const error = new Error(`Not enough items as following:${unavalibaleMessage}`);
          error.status = 400;
          return next(error);
       }
@@ -39,8 +54,7 @@ exports.makeOrder = async (req, res, next) => {
          return next(error);
       }
 
-      let order_price = 0;
-      cartItems.forEach((item) => (order_price += item.total_price));
+      let order_price = cartItems.reduce((acc, current) => acc + parseFloat(current.total_price), 0);
 
       const order = await Order.create({
          payment_method,
@@ -51,40 +65,44 @@ exports.makeOrder = async (req, res, next) => {
 
       const items = cartItems.map((item) => {
          item = { ...item.dataValues };
+         delete item.itemsDetail;
          item.order_id = order.id;
          return item;
       });
-      const orderItems = await OrderItems.bulkCreate(items);
-
+      
+      await OrderItems.bulkCreate(items);
+      
       res.status(200).json({ message: "Order made successfully", sessionToken });
 
       // run a check to see if more items are available and update accordinglly
       async function onFinish() {
          try {
-            let item_id;
+
+            await Cart.destroy({ where: { user_id } });
+
+            const item_ids = [];
             await Promise.all(
-               items.map(async (item) => {
-                  const itemsDetails = await ItemsDetails.findByPk(item.item_details_id, {
-                     attributes: ["stock", "id"],
-                     include: {
-                        model: Items,
-                        attributes: ["id"],
-                     },
-                  });
-                  item_id = itemsDetails.item.id;
-                  return itemsDetails.decrement("stock", { by: item.item_count }); 
+               cartItems.map(async (item) => {
+                  if (!item_ids.includes(item.itemsDetail.item_id)) item_ids.push(item.itemsDetail.item_id);
+                  return item.itemsDetail.decrement("stock", { by: item.item_count });
                })
             );
             
-            const alltems = await ItemsDetails.findAll({
-               where: { item_id },
-               attributes: ["stock"],
-            });
+            await Promise.all(
+               item_ids.map(async (item_id) => {
+                  const alltems = await ItemsDetails.findAll({
+                     where: { item_id },
+                     attributes: ["stock"],
+                  });
 
-            const available = alltems.some((item) => item.stock > 0);
-            if (!available) {
-               await Items.update({ available }, { where: { id: item_id } });
-            }
+                  const available = alltems.some((item) => item.stock > 0);
+                  if (!available) {
+                     console.log("hi in")
+                     return Items.update({ available }, { where: { id: item_id } });
+                  }
+                  return;
+               })
+            );
                         
          } catch (e) {
             console.log(e)

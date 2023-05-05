@@ -5,8 +5,8 @@ const router = require("express").Router();
 
 router.post("/make", session.checkAndRecreateSession, orderController.makeOrder);
 
-router.get("/get", session.checkAndRecreateSession, orderController.getOrder);
+router.get("/list", session.checkAndRecreateSession, orderController.getOrder);
 
-router.get("/get/:id", session.checkAndRecreateSession, orderController.getOrderDetails);
+router.get("/details/:id", session.checkAndRecreateSession, orderController.getOrderDetails);
 
 module.exports = router;

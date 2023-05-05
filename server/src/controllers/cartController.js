@@ -25,8 +25,8 @@ exports.addToCart = async (req, res, next) => {
          }
       });
 
-      const total_price = item.item.price * item_count;
-      const newCartItem = await Cart.create({ user_id, item_details_id, item_count, total_price});
+      const total_price = parseFloat(item.item.price) * item_count;
+      await Cart.create({ user_id, item_details_id, item_count, total_price});
       return res.status(200).json({
          sessionToken,
          message: "cart item added"
@@ -43,13 +43,13 @@ exports.listCartItems = async (req, res, next) => {
    try {
       const cartItems = await Cart.findAll({
          where: { user_id },
-         attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
+         attributes: { exclude: ["user_id", "createdAt", "updatedAt", "item_details_id"] },
          include: {
             model: ItemsDetails,
-            attributes: { exclude: ["id", "updatedAt", "createdAt"] },
+            attributes: { exclude: ["updatedAt", "createdAt", "item_id"] },
             include: {
                model: Items,
-               attributes: { exclude: ["id", "image_path", "available", "createdAt", "updatedAt"] },
+               attributes: { exclude: ["image_path", "available", "createdAt", "updatedAt"] },
             },
          }
       });
@@ -64,7 +64,7 @@ exports.listCartItems = async (req, res, next) => {
 exports.updateCartItem = async (req, res, next) => {
    const { id, item_details_id, item_count } = req.body;
 
-   if (!(id && item_details_id && item_count)) {
+   if (!(id && item_details_id && (item_count && item_count > 0))) {
       const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);
@@ -81,13 +81,13 @@ exports.updateCartItem = async (req, res, next) => {
             }],
          });
       
-      if (item_count > item.stock || !item.item.available) {
+      if (item_count > item.stock) {
          const error = new Error("Sorry, we don't have this amount of the item.")
          error.status = 400;
          return next(error);
       }
 
-      const total_price = item.item.price * item_count;
+      const total_price = parseFloat(item.item.price) * item_count;
 
       const newCartItem = await Cart.update(
          { 
@@ -119,10 +119,17 @@ exports.updateCartItem = async (req, res, next) => {
 exports.removeFromCart = async (req, res, next) => {
    try {
       const result = await Cart.destroy({ where: { id: req.params.id } })
-      if (result) return res.status(200).json({
+      if (!result) { 
+         const error = new Error("Item not found.");
+         error.status = 404;
+         return next(error);
+      }
+      
+      return res.status(200).json({
          message: "Cart item deleted",
          sessionToken: req.user.sessionToken,
       });
+      
    } catch (e) {
       return next(e);
    }

@@ -158,7 +158,9 @@ exports.getUserInfo = async (req, res, next) => {
             });
       
       if (!(country && city && district && nearestPoI && phone_number)) {
-         return res.status(200).json({ message: "The user does not have this info." });
+         const error = new Error("The user haven't specified his location and phone number yet.");
+         error.status = 404;
+         return next(error);
       }
 
       res.status(200).json({

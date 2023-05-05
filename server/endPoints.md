@@ -55,7 +55,7 @@ This file is going to take you through all the end points in this API.
 
       ```
       {
-         itemsDetails: [
+         itemsDetail: [
             {
                "stock": 1,
                "size": "xl",
@@ -157,17 +157,7 @@ This file is going to take you through all the end points in this API.
 
    This end point is used to check if user info are still the same or if he even entered this data previouslly when he makes an order.
 
-   The endpoint will return the following on `Success`:
-
-   If the user data does not exsist:
-
-   ```
-   {
-      "message": "The user does not have this info."
-   }
-   ```
-
-   If the user data exsist:
+   If the user data exsist ( `Success` ), the endpoint will return the following:
 
    ```
    {
@@ -215,12 +205,13 @@ This file is going to take you through all the end points in this API.
             "id": "uuid of the cart",
             "item_count": 2,
             "total_price": 30.50,
-            "item_details_id": 232,
             "itemsDetail": {
+               "id": 34,
                "size": "xl",
                "color": "blue",
                "stock": 5,
                "item": {
+                  "id": 4,
                   "name": "item name",
                   "price": 15.25,
                   "section": "men",
@@ -292,7 +283,7 @@ This file is going to take you through all the end points in this API.
       }
       ```
 
--  GET `/order/get`
+-  GET `/order/list`
 
    This end point is used to get all orders that the user made.
 
@@ -306,13 +297,13 @@ This file is going to take you through all the end points in this API.
          "credit_card": null,
          "order_price": 100.25,
          "served": false,
-         "createdAt": "2023-05-04T08:56:12.000Z"
+         "order_date": "2023-05-04T08:56:12.000Z"
       },
       ...
    ]
    ```
 
--  GET `/order/get/:id`
+-  GET `/order/details/:id`
 
    This end point is used to get a specific order details.
    The end point is going to return all items of that order.
@@ -325,7 +316,7 @@ This file is going to take you through all the end points in this API.
          "id": "uuid",
          "item_count": 2,
          "total_price": 69.98,
-         "ItemsDetails": {
+         "itemsDetail": {
             "size": "xl",
             "color": "blue",
             "item": {
@@ -356,11 +347,11 @@ This file is going to take you through all the end points in this API.
    ```
    {
       "sessionToken": "new sessionToken",
-      "role": "orders" // or uploading or finance
+      "roles": "orders" // or uploading or finance
    }
    ```
 
--  GET `/admin/list/served?from&to&section&type`
+-  GET `/admin/list/served?from&to`
 
    _from_ and _to_ are required while _section_ and _type_ are not.
 
@@ -368,9 +359,7 @@ This file is going to take you through all the end points in this API.
 
    _to_ is the data where the search ends.
 
-   _section_ could be men, women or kids.
-
-   _type_ could be any type listed in the top of this file like shirts or jeans.
+   Both _from_ and _to_ have to be in the following format: `2023-5-4`
 
    This end point is used to serve the served items to the finance admin to see the sales and calculate profit.
 
@@ -379,32 +368,36 @@ This file is going to take you through all the end points in this API.
    ```
    [
       {
-         "item_count": 12,
-         "total_price": 68.98,
-         "itemsDetail": {
-            "size": "XL",
-            "color": "blue",
-            "Item": {
-               "id": 2,
-               "name": "item name",
-               "price": 15.25,
-               "section": "men",
-               "type": "shirts"
-            }
+         "id": 1
+         "payment_method": "credit-card",
+         "credit_card": "credit card id",
+         "order_price": 20.50,
+         "order_date": "2023-05-05T17:55:57.000Z",
+         "user": {
+            "name": "user name",
+            "email": "user email",
+            "phone": "user phone number",
+            "country": "user order country",
+            "city": "user order city",
          },
-         "order": {
-            "payment_method": "credit-card",
-            "credit_card": "credit card id",
-            "order_price": 20.50,
-            "order_date": "2023-05-04T08:56:12.000Z",
-            "User": {
-               "name": "user name",
-               "email": "user email",
-               "phone": "user phone number",
-               "country": "user order country",
-               "city": "user order city"
-            }
-         }
+         orderItems: [
+            {
+               "item_count": 12,
+               "total_price": "cash",
+               "itemsDetail": {
+                  "size": "xl",
+                  "color": "blue",
+                  "item": {
+                     "id": 1,
+                     "name": "item name",
+                     "price": 15.25,
+                     "section": "men",
+                     "type": "shirts"
+                  }
+               }
+            },
+            ...
+         ]
       },
       ...
    ]
@@ -423,7 +416,8 @@ This file is going to take you through all the end points in this API.
          "payment_method": "credit-card",
          "credit_card": "credit card id",
          "order_price": 20.50,
-         "User": {
+         "order_date": "2023-05-05T17:55:57.000Z",
+         "user": {
             "name": "user name",
             "email": "user email",
             "phone": "user phone number",
@@ -432,20 +426,23 @@ This file is going to take you through all the end points in this API.
             "district": "user order district",
             "nearestPoI": "user order nearest point of intrest"
          },
-         OrderItems: {
-            "item_count": 12,
-            "total_price": "cash",
-            "ItemsDetails": {
-               "size": "xl",
-               "color": "blue",
-               "Item": {
-                  "name": "item name",
-                  "price": 15.25,
-                  "section": "men",
-                  "type": "shirts"
+         orderItems: [
+            {
+               "item_count": 12,
+               "total_price": "cash",
+               "itemsDetail": {
+                  "size": "xl",
+                  "color": "blue",
+                  "item": {
+                     "name": "item name",
+                     "price": 15.25,
+                     "section": "men",
+                     "type": "shirts"
+                  }
                }
-            }
-         }
+            },
+            ...
+         ]
       },
       ...
    ]
