@@ -296,6 +296,7 @@ exports.updateStock = async (req, res, next) => {
       details.forEach(obj => {
          obj.sizes.forEach((size) => {
             const [itemDetail, created] = results[i];
+            i++;
             if (created) {
                createdFlag = true;
                return;

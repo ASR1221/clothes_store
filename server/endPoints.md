@@ -505,14 +505,14 @@ This file is going to take you through all the end points in this API.
 
    ```
    {
-      "id": "id of the item",
+      "id": 1,
       "details": [
          {
             "color": "red",
             "sizes": [ 
                {
-                  size: "XL",
-                  count: 5
+                  "size": "XL",
+                  "count": 5
                },
                ...
             ]
