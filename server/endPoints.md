@@ -109,15 +109,7 @@ This file is going to take you through all the end points in this API.
 
    This end point is used for users to sign up or log in with their google account.
 
-   The front-end have to show the user a consent screen by taking the user to the following urls:
-
-   For google: `https://accounts.google.com/signin/oauth/oauthchooseaccount?include_granted_scopes=true&client_id=450145178762-ve8m4krlq5cc02rp54ipkmtktlg58p11.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Flogin%2Fcomplete&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&service=lso&o2v=2&flowName=GeneralOAuthFlow`
-
-   For facebook: `https://www.facebook.com/v16.0/dialog/oauth?client_id=1409874359834789&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Flogin%2Fcomplete&response_type=token&scope=email`
-
-   And send the _access_token_ returned in the hash of the _redirect_uri_ specified in the urls mentioned above.
-
-   **Note** that _redirect_uri_ is the uri where you want the user to wait while you send the _access_token_ and it has to be set in the facebook or google developer console for the app specificlly.
+   The front-end have to show the user a consent screen (google or facebook) to log in or sign in and send the _access_token_ returned from the server.
 
    The endpoint will return the following on `Success`:
 
@@ -436,6 +428,7 @@ This file is going to take you through all the end points in this API.
                   "size": "xl",
                   "color": "blue",
                   "item": {
+                     "id": 12,
                      "name": "item name",
                      "price": 15.25,
                      "section": "men",
@@ -464,11 +457,9 @@ This file is going to take you through all the end points in this API.
 
    The body is going to contain the files and the data as json.
 
-   You have to name the images part of the the body _image_ and the other data sent as json are named _json_.
+   You have to name the images part of the the body _images_ and the other data sent as json are named _json_.
 
    The json part is like the following:
-
-   body:
 
    ```
    {

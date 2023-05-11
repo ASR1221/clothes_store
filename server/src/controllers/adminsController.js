@@ -120,7 +120,7 @@ exports.listPendingItems = async (req, res, next) => {
                attributes: ["size", "color"],
                include: {
                   model: Items,
-                  attributes: ["name", "price", "section", "type"],
+                  attributes: ["Id", "name", "price", "section", "type"],
                }
             }
          });

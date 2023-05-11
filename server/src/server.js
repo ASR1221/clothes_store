@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
+// TODO: fix session time
 // TODO: payment
 
 const app = express();
