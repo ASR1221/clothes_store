@@ -24,9 +24,11 @@ This file is going to take you through all the end points in this API.
 
 ## **Items**
 
--  GET `/items/list?section=&type=`
+-  GET `/items/list?section=&type=&page=`
 
    Get all specified items by _section_ and **optionally** _type_.
+
+   **section** and **page** are required. _page_ is used for pagenating. It indecate the page number. It has to be an integer.
 
    **section** could only be _men_, _women_ and _kids_.
 

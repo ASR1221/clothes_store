@@ -4,7 +4,7 @@ const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const Items = require("../models/clothesModels/itemsModel");
 
 exports.list = async (req, res, next) => {
-   const { section, type } = req.query;
+   const { section, type, page } = req.query;
 
    if (!section) {
       const error = new Error("No section specified");
@@ -19,11 +19,15 @@ exports.list = async (req, res, next) => {
          items = await Items.findAll({
             where: { section, type, available: true },
             attributes: { exclude },
+            limit: 16,
+            offset: Number((page -1 ) * 16),
          });
       } else {
          items = await Items.findAll({
             where: { section, available: true  },
             attributes: { exclude },
+            limit: 16,
+            offset: Number((page - 1) * 16),
          });
       }
    
