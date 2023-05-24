@@ -5,6 +5,7 @@ const sequelize = require("./utils/database");
 
 // TODO: fix session time
 // TODO: payment
+// TODO: infinite scrolling in /list/items
 
 const app = express();
 
