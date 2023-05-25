@@ -1,117 +1,28 @@
 import { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery } from "react-query";
-import { Link } from "react-router-dom";
-
-import fetchFn from "../../utils/fetchFn";
-
-import FilterBtn from "../../components/filterBtn/filterBtn";
-import ItemCard from "../../components/card/card";
 
 import "./home.css";
+import Cover from "./components/cover/cover";
+import Trends from "./components/trends/trends";
+import Items from "./components/items/items";
 
 // TODO: infinteQuery and trends in server and client
 
 function Home() {
 
-   const TYPES = ["jeans", "shirts", "coats", "dresses", "skirts"];
-   const deviceWidth = useRef(document.documentElement.clientWidth);
+   // constants
+   const DEVICEWIDTH = document.documentElement.clientWidth;
 
+   // query requirement 
    const [section, setSection] = useState("women");
-   const [types, setTypes] = useState([]);
-   const trendImgsRef = useRef({
+
+   // images and text for trends 
+   const [trendImgs, setTrendImgs] = useState({
       cat: "/images/home/elei-top.png",
       item1: "/images/1683055485589-Cotton shirt-1.jpg",
       item2: "/images/1683055559620-Oxford shirt-1.jpg",
       item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
    });
-   const trendTextRef = useRef("Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.");
-
-
-
-   function updateType(newType) {
-      // needs to be passes to FilterBtn
-      if (types.includes(newType)) {
-         setTypes((p) => p.filter((type) => type !== newType));
-      } else {
-         setTypes((p) => [...p, newType]);
-      }
-   }
-   
-   function InfinitFetch({ pageParam = 1 }) {
-      return fetchFn(`/items/list?section=${section}&page=${pageParam}`, "GET")
-   }
-
-   const {
-      data: items,
-      error,
-      fetchNextPage,
-      hasNextPage,
-      isLoading,
-      isFetchingNextPage,
-      isSuccess,
-      refetch,
-   } = useInfiniteQuery(["items", section], InfinitFetch, {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-   });
-
-   //! ###########  Infinte Scroll Observer ##############
-   const containerRef = useRef(null);
-   const observerRef = useRef(null);
-   useEffect(() => {
-      observerRef.current = new IntersectionObserver(
-         ([entry]) => {
-            if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-               fetchNextPage();
-            }
-         },
-         { threshold: 0, /* rootMargin: "350px" */ }
-      );
-
-      if (containerRef.current) {
-         observerRef.current.observe(containerRef.current);
-      }
-
-      return () => {
-         if (containerRef.current) {
-            observerRef.current.unobserve(containerRef.current);
-         }
-      };
-   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-   //! ###########  Infinte Scroll Observer End ##############
-
-
-   useEffect(() => {
-      refetch();
-
-      if (section === "women") {
-         trendImgsRef.current = {
-            cat: "/images/home/elei-top.png",
-            item1: "/images/1683055485589-Cotton shirt-1.jpg",
-            item2: "/images/1683055559620-Oxford shirt-1.jpg",
-            item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
-         };
-         trendTextRef.current = "Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.";
-      } else if (section === "men") {
-         trendImgsRef.current = {
-            cat: "/images/home/black.png",
-            item1: "/images/1683057393396-Regular Fit Oxford shirt-1.jpg",
-            item2: "/images/1683057632516-Felted wool-blend car coat-1.jpg",
-            item3: "/images/1683057591829-Slim Jeans-1.jpg",
-         };
-         trendTextRef.current = "Elevate your style with our Classic Gentlemen's Coat. Timeless elegance, impeccable craftsmanship.";
-      } else if (section === "kids") {
-         trendImgsRef.current = {
-            cat: "/images/home/kids-in-suit.png",
-            item1: "/images/1683056826778-Pleated tulle dress-1.jpg",
-            item2: "/images/1683057044567-Printed sweatshirt-2.jpg",
-            item3: "/images/1683057143507-Superstretch Slim Fit Jeans-1.jpg",
-         };
-         trendTextRef.current = "Style your little one in our charming Little Gentleman Suit. Sharp style for young icons. Make a statement";
-      }
-
-      mainSlideRef.current.style.top = "91%";
-      navigatorRef.current.parentElement.style.top = "87%";
-   }, [section, refetch]);
+   const [trendText, setTrendText] = useState("Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.");
 
    //! #######  Main Slide Animation  ########
    const mainSlideRef = useRef();
@@ -122,7 +33,7 @@ function Home() {
    useEffect(() => {
 
       previousPosRef.current = parseInt(window.getComputedStyle(mainSlideRef.current).top, 10);
-      if (deviceWidth.current < 550) {
+      if (DEVICEWIDTH < 550) {
          document.body.style.overflow = "hidden";
          document.body.style.overscrollBehaviorY = "contain";
       }
@@ -134,7 +45,7 @@ function Home() {
    }, []);
 
    function handleMainSlideDown(e, isIndecator) {
-      if (deviceWidth.current >= 550) {
+      if (DEVICEWIDTH >= 550) {
          return;
       }
 
@@ -208,8 +119,7 @@ function Home() {
    //! #######  Main Slide Animation End  ########
 
 
-   //! #######  Carousel Animation   ########
-   const carouselRef = useRef();
+   //! #######  Carousel Animation and Images and Text Change   ########
    const navigatorRef = useRef();
    const isAllowedRef = useRef(true);
    const imgsLoad = useRef({
@@ -218,7 +128,7 @@ function Home() {
       item2: false,
       item3: false,
    });
-
+   
    function handleImgsLoad(obj) {
       isAllowedRef.current = false;
       imgsLoad.current = obj;
@@ -234,104 +144,47 @@ function Home() {
       }
    }
 
-   function scrollLeft() {
-      carouselRef.current.scrollLeft -= deviceWidth.current;
-   }
+   useEffect(() => {
 
-   function scrollRight() {
-      carouselRef.current.scrollLeft += deviceWidth.current;
-   }
-
-   function handleCarouselScroll() {
-      const screenWidth = deviceWidth.current;
-      const scrollPrecentage = carouselRef.current.scrollLeft / (3 * screenWidth);
-
-      navigatorRef.current.style.transform = `translateX(${scrollPrecentage * 300}%)`;
-
-      let isChanged = false;
-      if (
-         Math.round(carouselRef.current.scrollLeft) >= 0 &&
-         Math.round(carouselRef.current.scrollLeft) < 2
-      ) {
-         setSection("women");
-         isChanged = true;
-      } else if (
-         Math.round(carouselRef.current.scrollLeft) >= screenWidth - 2 &&
-         Math.round(carouselRef.current.scrollLeft) < screenWidth + 2
-      ) {
-         setSection("men");
-         isChanged = true;
-      } else if (
-         Math.round(carouselRef.current.scrollLeft) >= 2 * screenWidth - 2 &&
-         Math.round(carouselRef.current.scrollLeft) < 2 * screenWidth + 2
-      ) {
-         setSection("kids");
-         isChanged = true;
+      if (section === "women") {
+         setTrendImgs({
+            cat: "/images/home/elei-top.png",
+            item1: "/images/1683055485589-Cotton shirt-1.jpg",
+            item2: "/images/1683055559620-Oxford shirt-1.jpg",
+            item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
+         });
+         setTrendText("Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.");
+      } else if (section === "men") {
+         setTrendImgs({
+            cat: "/images/home/black.png",
+            item1: "/images/1683057393396-Regular Fit Oxford shirt-1.jpg",
+            item2: "/images/1683057632516-Felted wool-blend car coat-1.jpg",
+            item3: "/images/1683057591829-Slim Jeans-1.jpg",
+         });
+         setTrendText("Elevate your style with our Classic Gentlemen's Coat. Timeless elegance, impeccable craftsmanship.");
+      } else if (section === "kids") {
+         setTrendImgs({
+            cat: "/images/home/kids-in-suit.png",
+            item1: "/images/1683056826778-Pleated tulle dress-1.jpg",
+            item2: "/images/1683057044567-Printed sweatshirt-2.jpg",
+            item3: "/images/1683057143507-Superstretch Slim Fit Jeans-1.jpg",
+         });
+         setTrendText("Style your little one in our charming Little Gentleman Suit. Sharp style for young icons. Make a statement");
       }
 
-      if (isChanged && isAllowedRef.current) {
-         imgsLoad.current = {
-            cat: false,
-            item1: false,
-            item2: false,
-            item3: false,
-         };
-      }
-   }
-   //! #######  Carousel Animation End  ########
+      mainSlideRef.current.style.top = "91%";
+      navigatorRef.current.parentElement.style.top = "87%";
+   }, [section]);
+   //! #######  Carousel Animation and Images and Text Change End  ########
 
    return (
       <div className="home">
-         <button type="button" onClick={scrollLeft} className="leftScrollBtn">
-            <img
-               src="/icons/carousel-arrow.png"
-               alt="left scroll"
-               className="scrollBtnImg"
-            />
-         </button>
-         <button type="button" onClick={scrollRight} className="rightScrollBtn">
-            <img
-               src="/icons/carousel-arrow.png"
-               alt="right scroll"
-               className="scrollBtnImg"
-            />
-         </button>
-         <section
-            onScroll={handleCarouselScroll}
-            className="home-carousel grid transition-05"
-            ref={carouselRef}
-         >
-            <div className="home-carousel-placeholder">
-               <Link to="/trends/women">
-                  <img
-                     src="/images/home/elei-top.png"
-                     alt="Home image"
-                     className="img home-carousel-img women"
-                  />
-               </Link>
-            </div>
-            <div className="home-carousel-placeholder">
-               <Link to="/trends/men">
-                  <img
-                     src="/images/home/man-in-suit.png"
-                     alt="Home image"
-                     className="img home-carousel-img men"
-                  />
-               </Link>
-            </div>
-            <div className="home-carousel-placeholder">
-               <Link to="/trends/kids">
-                  <img
-                     src="/images/home/kids-in-coats.png"
-                     alt="Home image"
-                     className="img home-carousel-img kids"
-                  />
-               </Link>
-            </div>
-         </section>
-         <div className="home-carousel-navigator transition-05">
-            <div ref={navigatorRef}></div>
-         </div>
+         <Cover
+            imgsLoad={imgsLoad}
+            isAllowedRef={isAllowedRef}
+            navigatorRef={navigatorRef}
+            setSection={setSection}
+         />
          <section
             onTouchStart={(e) => handleMainSlideDown(e, false)}
             className="home-main transition-05"
@@ -344,118 +197,16 @@ function Home() {
                <p className="home-main-slideIndecator-p"></p>
             </div>
             <div>
-               <h2>Trends</h2>
-               <Link to="/trends/category" className="home-main-trend cat grid">
-                  <div className="trends-placeholder">
-                     <img
-                        onLoad={() =>
-                           handleImgsLoad({ ...imgsLoad.current, cat: true })
-                        }
-                        src={trendImgsRef.current.cat}
-                        alt="trend category"
-                        className="img transition-1"
-                     />
-                  </div>
-                  <p>{trendTextRef.current}</p>
-               </Link>
-               <div className="home-main-trend items grid">
-                  <Link to="/item/5">
-                     <div className="trends-placeholder">
-                        <img
-                           onLoad={() =>
-                              handleImgsLoad({
-                                 ...imgsLoad.current,
-                                 item1: true,
-                              })
-                           }
-                           src={trendImgsRef.current.item1}
-                           alt="trend item"
-                           className="img home-main-trend-img"
-                        />
-                     </div>
-                  </Link>
-                  <Link to="/item/6">
-                     <div className="trends-placeholder">
-                        <img
-                           onLoad={() =>
-                              handleImgsLoad({
-                                 ...imgsLoad.current,
-                                 item2: true,
-                              })
-                           }
-                           src={trendImgsRef.current.item2}
-                           alt="trend item"
-                           className="img home-main-trend-img"
-                        />
-                     </div>
-                  </Link>
-                  <Link to="/item/13">
-                     <div className="trends-placeholder">
-                        <img
-                           onLoad={() =>
-                              handleImgsLoad({
-                                 ...imgsLoad.current,
-                                 item3: true,
-                              })
-                           }
-                           src={trendImgsRef.current.item3}
-                           alt="trend item"
-                           className="img home-main-trend-img"
-                        />
-                     </div>
-                  </Link>
-               </div>
-               <h2>All</h2>
-               <div className="flex home-main-types">
-                  {TYPES.map((type) => {
-                     if (
-                        section === "men" &&
-                        (type === "skirts" || type === "dresses")
-                     )
-                        return;
-
-                     return (
-                        <FilterBtn
-                           text={type}
-                           updateState={updateType}
-                           key={type}
-                        />
-                     );
-                  })}
-               </div>
-               <div className="grid home-main-items">
-                  {isLoading
-                     ? "Loading..."
-                     : error
-                        ? error.message
-                        : isSuccess
-                           ? items.pages.map((page) => 
-                              page.items.map((item, i) => {
-                                 if (types.length > 0 && !types.includes(item.type))
-                                    return;
-                              
-                                 return <>
-                                    {
-                                       i === 6 &&
-                                       <>
-                                          <div ref={containerRef}></div>
-                                          <div></div>
-                                          { deviceWidth.current >= 450 && <div></div>}
-                                       </>
-                                    }
-                                    <ItemCard
-                                       key={item.id}
-                                       id={item.id}
-                                       name={item.name}
-                                       price={item.price}
-                                       img={item.image_path}
-                                       type={item.type}
-                                    />
-                                 </>;
-                              })
-                           )
-                     : "No Items"}
-               </div>
+               <Trends
+                  imgsLoad={imgsLoad}
+                  handleImgsLoad={handleImgsLoad}
+                  trendImgs={trendImgs}
+                  trendText={trendText}
+               />
+               <Items
+                  section={section}
+                  mainSlideRef={mainSlideRef}
+               />
             </div>
          </section>
       </div>

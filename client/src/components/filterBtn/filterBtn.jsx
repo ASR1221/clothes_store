@@ -1,13 +1,19 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import "./filterBtn.css"
 
-function FilterBtn({ text, updateState }) {
+function FilterBtn({ text, array, setArray }) {
 
    const [isSelected, setIsSelected] = useState(false);
 
+   
    function handleClick() {
       setIsSelected(!isSelected);
-      updateState(text);
+      if (array.includes(text)) {
+         setArray((p) => p.filter((a) => a !== text));
+      } else {
+         setArray((p) => [...p, text]);
+      }
    }
 
    return (  
