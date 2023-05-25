@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import fetchFn from "../../utils/fetchFn";
@@ -12,6 +12,10 @@ import "./home.css";
 // TODO: infinteQuery and trends in server and client
 
 function Home() {
+
+   const TYPES = ["jeans", "shirts", "coats", "dresses", "skirts"];
+   const deviceWidth = useRef(document.documentElement.clientWidth);
+
    const [section, setSection] = useState("women");
    const [types, setTypes] = useState([]);
    const trendImgsRef = useRef({
@@ -20,6 +24,9 @@ function Home() {
       item2: "/images/1683055559620-Oxford shirt-1.jpg",
       item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
    });
+   const trendTextRef = useRef("Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.");
+
+
 
    function updateType(newType) {
       // needs to be passes to FilterBtn
@@ -29,18 +36,49 @@ function Home() {
          setTypes((p) => [...p, newType]);
       }
    }
+   
+   function InfinitFetch({ pageParam = 1 }) {
+      return fetchFn(`/items/list?section=${section}&page=${pageParam}`, "GET")
+   }
 
-   const TYPES = ["jeans", "shirts", "coats", "dresses", "skirts"];
    const {
-      isLoading,
-      isFetching,
-      refetch,
-      isError,
-      error,
       data: items,
-   } = useQuery(["items", section], () =>
-      fetchFn(`/items/list?section=${section}`, "GET")
-   );
+      error,
+      fetchNextPage,
+      hasNextPage,
+      isLoading,
+      isFetchingNextPage,
+      isSuccess,
+      refetch,
+   } = useInfiniteQuery(["items", section], InfinitFetch, {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+   });
+
+   //! ###########  Infinte Scroll Observer ##############
+   const containerRef = useRef(null);
+   const observerRef = useRef(null);
+   useEffect(() => {
+      observerRef.current = new IntersectionObserver(
+         ([entry]) => {
+            if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+               fetchNextPage();
+            }
+         },
+         { threshold: 0, /* rootMargin: "350px" */ }
+      );
+
+      if (containerRef.current) {
+         observerRef.current.observe(containerRef.current);
+      }
+
+      return () => {
+         if (containerRef.current) {
+            observerRef.current.unobserve(containerRef.current);
+         }
+      };
+   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+   //! ###########  Infinte Scroll Observer End ##############
+
 
    useEffect(() => {
       refetch();
@@ -52,6 +90,7 @@ function Home() {
             item2: "/images/1683055559620-Oxford shirt-1.jpg",
             item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
          };
+         trendTextRef.current = "Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.";
       } else if (section === "men") {
          trendImgsRef.current = {
             cat: "/images/home/black.png",
@@ -59,6 +98,7 @@ function Home() {
             item2: "/images/1683057632516-Felted wool-blend car coat-1.jpg",
             item3: "/images/1683057591829-Slim Jeans-1.jpg",
          };
+         trendTextRef.current = "Elevate your style with our Classic Gentlemen's Coat. Timeless elegance, impeccable craftsmanship.";
       } else if (section === "kids") {
          trendImgsRef.current = {
             cat: "/images/home/kids-in-suit.png",
@@ -66,22 +106,23 @@ function Home() {
             item2: "/images/1683057044567-Printed sweatshirt-2.jpg",
             item3: "/images/1683057143507-Superstretch Slim Fit Jeans-1.jpg",
          };
+         trendTextRef.current = "Style your little one in our charming Little Gentleman Suit. Sharp style for young icons. Make a statement";
       }
 
       mainSlideRef.current.style.top = "91%";
       navigatorRef.current.parentElement.style.top = "87%";
-   }, [section]);
+   }, [section, refetch]);
 
    //! #######  Main Slide Animation  ########
-
    const mainSlideRef = useRef();
    const [mouseIsDown, setMouseIsDown] = useState(false);
    const touchYRef = useRef({});
    const previousPosRef = useRef();
 
    useEffect(() => {
+
       previousPosRef.current = parseInt(window.getComputedStyle(mainSlideRef.current).top, 10);
-      if (document.documentElement.clientWidth < 550) {
+      if (deviceWidth.current < 550) {
          document.body.style.overflow = "hidden";
          document.body.style.overscrollBehaviorY = "contain";
       }
@@ -93,7 +134,7 @@ function Home() {
    }, []);
 
    function handleMainSlideDown(e, isIndecator) {
-      if (document.documentElement.clientWidth >= 550) {
+      if (deviceWidth.current >= 550) {
          return;
       }
 
@@ -164,11 +205,10 @@ function Home() {
          document.body.removeEventListener("touchend", handleMainSlideUp);
       };
    }, [mouseIsDown]);
-
    //! #######  Main Slide Animation End  ########
 
-   //! #######  Carousel Animation   ########
 
+   //! #######  Carousel Animation   ########
    const carouselRef = useRef();
    const navigatorRef = useRef();
    const isAllowedRef = useRef(true);
@@ -195,21 +235,18 @@ function Home() {
    }
 
    function scrollLeft() {
-      carouselRef.current.scrollLeft -= document.documentElement.clientWidth;
+      carouselRef.current.scrollLeft -= deviceWidth.current;
    }
 
    function scrollRight() {
-      carouselRef.current.scrollLeft += document.documentElement.clientWidth;
+      carouselRef.current.scrollLeft += deviceWidth.current;
    }
 
    function handleCarouselScroll() {
-      const screenWidth = document.documentElement.clientWidth;
-      const scrollPrecentage =
-         carouselRef.current.scrollLeft / (3 * screenWidth);
+      const screenWidth = deviceWidth.current;
+      const scrollPrecentage = carouselRef.current.scrollLeft / (3 * screenWidth);
 
-      navigatorRef.current.style.transform = `translateX(${
-         scrollPrecentage * 300
-      }%)`;
+      navigatorRef.current.style.transform = `translateX(${scrollPrecentage * 300}%)`;
 
       let isChanged = false;
       if (
@@ -241,7 +278,6 @@ function Home() {
          };
       }
    }
-
    //! #######  Carousel Animation End  ########
 
    return (
@@ -272,7 +308,7 @@ function Home() {
                      alt="Home image"
                      className="img home-carousel-img women"
                   />
-                  </Link>
+               </Link>
             </div>
             <div className="home-carousel-placeholder">
                <Link to="/trends/men">
@@ -320,11 +356,7 @@ function Home() {
                         className="img transition-1"
                      />
                   </div>
-                  <p>
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                     sed do eiusmod tempor incididunt ut labore et dolore magna
-                     aliqua
-                  </p>
+                  <p>{trendTextRef.current}</p>
                </Link>
                <div className="home-main-trend items grid">
                   <Link to="/item/5">
@@ -376,9 +408,12 @@ function Home() {
                <h2>All</h2>
                <div className="flex home-main-types">
                   {TYPES.map((type) => {
-                     if (section === "men" && (type === "skirts" || type === "dresses"))
+                     if (
+                        section === "men" &&
+                        (type === "skirts" || type === "dresses")
+                     )
                         return;
-                     
+
                      return (
                         <FilterBtn
                            text={type}
@@ -389,24 +424,37 @@ function Home() {
                   })}
                </div>
                <div className="grid home-main-items">
-                  {isError
-                     ? "Sorry, some error happend."
-                     : isLoading
-                     ? "Loading"
-                     : items.map((item) => {
-                          if (types.length > 0 && !types.includes(item.type))
-                             return;
-                          return (
-                             <ItemCard
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                price={item.price}
-                                img={item.image_path}
-                                type={item.type}
-                             />
-                          );
-                       })}
+                  {isLoading
+                     ? "Loading..."
+                     : error
+                        ? error.message
+                        : isSuccess
+                           ? items.pages.map((page) => 
+                              page.items.map((item, i) => {
+                                 if (types.length > 0 && !types.includes(item.type))
+                                    return;
+                              
+                                 return <>
+                                    {
+                                       i === 6 &&
+                                       <>
+                                          <div ref={containerRef}></div>
+                                          <div></div>
+                                          { deviceWidth.current >= 450 && <div></div>}
+                                       </>
+                                    }
+                                    <ItemCard
+                                       key={item.id}
+                                       id={item.id}
+                                       name={item.name}
+                                       price={item.price}
+                                       img={item.image_path}
+                                       type={item.type}
+                                    />
+                                 </>;
+                              })
+                           )
+                     : "No Items"}
                </div>
             </div>
          </section>

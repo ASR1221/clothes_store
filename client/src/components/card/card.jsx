@@ -16,7 +16,7 @@ function ItemCard({ id, name, price, type, img }) {
             <img
                src={ img }
                alt="item image"
-               className="card-img transition-1"
+               className="card-img transition-1 img"
             />
          </div>
          <div className="card-text">

@@ -13,25 +13,30 @@ exports.list = async (req, res, next) => {
    }
 
    try {
-      let items;
       const exclude = ["section", "available", "createdAt", "updatedAt"];
-      if (type) {
-         items = await Items.findAll({
-            where: { section, type, available: true },
-            attributes: { exclude },
-            limit: 16,
-            offset: Number((page -1 ) * 16),
-         });
-      } else {
-         items = await Items.findAll({
-            where: { section, available: true  },
-            attributes: { exclude },
-            limit: 16,
-            offset: Number((page - 1) * 16),
-         });
+      const whereClause = {
+         section,
+         available: true,
       }
+
+      if (type) {
+         whereClause.type = type;
+      }
+
+      const items = await Items.findAll({
+         where: whereClause,
+         attributes: { exclude },
+         limit: 12,
+         offset: (Number(page) - 1) * 12,
+      });
+
+      const result = {
+         nextCursor: Number(page) + 1,
+         items,
+      };
+      if (items.length < 12) result.nextCursor = null;
    
-      return res.status(200).json(items);
+      return res.status(200).json(result);
 
    } catch (e) {
       return next(e);
