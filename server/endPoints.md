@@ -80,25 +80,31 @@ This file is going to take you through all the end points in this API.
       }
       ```
 
--  GET `/items/search?term=`
+-  GET `/items/search?term=&page=`
 
    Seacrch a specific _term_.
+
+   **page** are required. _page_ is used for pagenating. It indecate the page number and it has to be an integer.
+   This endpoint return only 12 items and then _nextCursor_ indecate the next page to fetch (you should start with 1).
 
    **term** could be any search term the user write.
 
    The endpoint will return the following on `Success`:
 
       ```
-      [
-         {
-            "id": 1,
-            "name": "item name",
-            "price": 00.00,
-            "image_path": "path/to/image",
-            "type": "jeans"
-         },
-         ...
-      ]
+      {
+         nextCursor: 2,
+         items: [
+            {
+               "id": 1,
+               "name": "item name",
+               "price": 00.00,
+               "image_path": "path/to/image",
+               "type": "jeans"
+            },
+            ...
+         ]
+      }
       ```
 
 ## **User**

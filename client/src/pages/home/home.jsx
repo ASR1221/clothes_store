@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import "./home.css";
 import Cover from "./components/cover/cover";
 import Trends from "./components/trends/trends";
-import Items from "./components/items/items";
+import Items from "../../components/items/items";
+import FilterBtn from "../../components/filterBtn/filterBtn";
 
 // TODO: infinteQuery and trends in server and client
 
@@ -11,11 +12,15 @@ function Home() {
 
    // constants
    const DEVICEWIDTH = document.documentElement.clientWidth;
+   const TYPES = ["jeans", "shirts", "coats", "dresses", "skirts"];
 
-   // query requirement 
+   // types to filter items
+   const [types, setTypes] = useState([]);
+
+   // query requirement
    const [section, setSection] = useState("women");
 
-   // images and text for trends 
+   // images and text for trends
    const [trendImgs, setTrendImgs] = useState({
       cat: "/images/home/elei-top.png",
       item1: "/images/1683055485589-Cotton shirt-1.jpg",
@@ -33,6 +38,7 @@ function Home() {
    useEffect(() => {
 
       previousPosRef.current = parseInt(window.getComputedStyle(mainSlideRef.current).top, 10);
+
       if (DEVICEWIDTH < 550) {
          document.body.style.overflow = "hidden";
          document.body.style.overscrollBehaviorY = "contain";
@@ -51,9 +57,8 @@ function Home() {
 
       touchYRef.current.first = e.touches[0].clientY;
       if (
-         mainSlideRef.current.scrollTop < 2 ||
-         (isIndecator &&
-            parseInt(window.getComputedStyle(mainSlideRef.current).top, 10) === 0)
+         mainSlideRef.current.scrollTop <= 0 ||
+         (isIndecator && parseInt(window.getComputedStyle(mainSlideRef.current).top, 10) === 0)
       ) {
          setMouseIsDown(true);
       }
@@ -68,11 +73,11 @@ function Home() {
          const offset =
             previousPosRef.current - parseInt(touchYRef.current.last);
 
-         if (offset > 0) {
+         if (offset > 50) {
             mainSlideRef.current.style.top = "0";
             mainSlideRef.current.style.borderRadius = "0";
             mainSlideRef.current.style.overflow = "scroll";
-            mainSlideRef.current.scrollTop = 0;
+            mainSlideRef.current.scrollTop = 2;
          } else {
             navigatorRef.current.parentElement.style.top = "79%";
             mainSlideRef.current.style.top = "83%";
@@ -128,7 +133,7 @@ function Home() {
       item2: false,
       item3: false,
    });
-   
+
    function handleImgsLoad(obj) {
       isAllowedRef.current = false;
       imgsLoad.current = obj;
@@ -203,9 +208,30 @@ function Home() {
                   trendImgs={trendImgs}
                   trendText={trendText}
                />
+               <h2>All</h2>
+               <div className="flex home-main-types">
+                  {TYPES.map((type) => {
+                     if (
+                        section === "men" &&
+                        (type === "skirts" || type === "dresses")
+                     )
+                        return;
+
+                     return (
+                        <FilterBtn
+                           text={type}
+                           array={types}
+                           setArray={setTypes}
+                           key={type}
+                        />
+                     );
+                  })}
+               </div>
                <Items
-                  section={section}
-                  mainSlideRef={mainSlideRef}
+                  endpoint={`/items/list?section=${section}&page=`}
+                  queryId={section}
+                  rootRef={mainSlideRef}
+                  types={types}
                />
             </div>
          </section>

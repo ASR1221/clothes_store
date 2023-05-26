@@ -29,7 +29,7 @@ a {
    color: black;
 }
 
-a, button {
+a, button, input {
    -webkit-tap-highlight-color: transparent;
    -webkit-touch-callout: none;
    -webkit-user-select: none;
@@ -64,3 +64,6 @@ a:focus, button:focus, a:hover, button:hover {
    transition: .7s;
 }
 
+.main-padding {
+   padding: 10px;
+}

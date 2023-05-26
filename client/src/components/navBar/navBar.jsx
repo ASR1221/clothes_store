@@ -1,30 +1,23 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 import "./navBar.css";
 
 function NavBar() {
 
-   function handleActiveClass(e) {
-      const allLinks = e.target.parentElement.parentElement.children;
-      console.log(allLinks)
-      for (let i = 0; i < allLinks.length; i++) {
-         allLinks[i].classList.remove("active");
-      }
-      e.target.parentElement.classList.add("active");
-   }
+   const { pathname } = useLocation();
 
    return <>
       <nav  className="grid navBar">
-         <Link className="active" to="/">
-            <img onClick={handleActiveClass}  className="img" src="/icons/icons8-clothes-100.png" alt="home icon" />
+         <Link className={pathname === "/" ? "active" : ""} to="/">
+            <img  className="img" src="/icons/icons8-clothes-100.png" alt="home icon" />
          </Link>
-         <Link onClick={handleActiveClass} to="/search">
+         <Link className={pathname === "/search" ? "active" : ""} to="/search">
             <img className="img" src="/icons/icons8-search.svg" alt="search icon" />
          </Link>
-         <Link onClick={handleActiveClass} to="/cart">
+         <Link className={pathname === "/cart" ? "active" : ""} to="/cart">
             <img className="img" src="/icons/icons8-shopping-cart-100.png" alt="cart icon" />
          </Link>
-         <Link onClick={handleActiveClass} to="/user">
+         <Link className={pathname === "/user" ? "active" : ""} to="/user">
             <img className="img" src="/icons/icons8-order-100.png" alt="user icon" />
          </Link>
       </nav>

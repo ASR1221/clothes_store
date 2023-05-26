@@ -88,7 +88,7 @@ exports.itemsDetails = async (req, res, next) => {
 };
 
 exports.searchItem = async (req, res, next) => {
-   const { term } = req.query;
+   const { term, page } = req.query;
 
    if (!term) {
       const error = new Error("Missing Information. You have to specify 'term' of the search.");
@@ -117,6 +117,8 @@ exports.searchItem = async (req, res, next) => {
             available: true,
          },
          attributes: { exclude: ["available", "createdAt", "updatedAt"] },
+         limit: 12,
+         offset: (Number(page) - 1) * 12,
       });
       
 
@@ -135,7 +137,13 @@ exports.searchItem = async (req, res, next) => {
          return newItem;
       });
 
-      res.status(200).json(items);
+      const result = {
+         nextCursor: Number(page) + 1,
+         items,
+      };
+      if (items.length < 12) result.nextCursor = null;
+
+      res.status(200).json(result);
 
    } catch (e) {
       return next(e);
