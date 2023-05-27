@@ -2,14 +2,11 @@ import { Link } from "react-router-dom";
 import "./card.css";
 
 // eslint-disable-next-line react/prop-types
-function ItemCard({ id, name, price, type, img }) {
-
-	// fetch logic and click logic here
+function ItemCard({ id, name, price, img }) {
 
    return (
       <Link
          to={`/item/${id}`}
-         state={{id, name, price, type}}
          className="card-container"
       >
          <div className="placeholder">

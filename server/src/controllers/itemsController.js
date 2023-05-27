@@ -13,7 +13,6 @@ exports.list = async (req, res, next) => {
    }
 
    try {
-      const exclude = ["section", "available", "createdAt", "updatedAt"];
       const whereClause = {
          section,
          available: true,
@@ -25,7 +24,7 @@ exports.list = async (req, res, next) => {
 
       const items = await Items.findAll({
          where: whereClause,
-         attributes: { exclude },
+         attributes: { exclude: ["section", "available", "createdAt", "updatedAt"] },
          limit: 12,
          offset: (Number(page) - 1) * 12,
       });
@@ -53,32 +52,42 @@ exports.itemsDetails = async (req, res, next) => {
    }
 
    try {
-      const itemInctances = await ItemsDetails.findAll({
+      
+      const item = await Items.findOne({
+         where: { id, available: true },
+         attributes: ["name", "price", "section", "type"],
+      });
+
+      if (item.length < 1) {
+         const error = new Error("Item is not available.");
+         error.status = 404;
+         return next(error);
+      }
+      
+      const itemDetails = await ItemsDetails.findAll({
          where: {
             item_id: id,
             stock: { [Op.gt]: 0 },
          },
-         attributes: { exclude: ["createdAt", "updatedAt"] }
+         attributes: { exclude: ["createdAt", "updatedAt"] },
       });
+
+      if (itemDetails.length < 1) {
+         const error = new Error("Item is out of stock.");
+         error.status = 404;
+         return next(error);
+      }
       
-      const images = await ItemsImages.findAll({
+      const imagesRes = await ItemsImages.findAll({
          where: { item_id: id },
          attributes: ["path"],
       });
 
-      const itemsDetail = itemInctances.map(itemInctance =>{
-         if (itemInctance.stock > 0) {
-            return {
-               stock: itemInctance.stock,
-               size: itemInctance.size,
-               color: itemInctance.color,
-               id: itemInctance.id,
-            };
-         }
-      });
+      const images = imagesRes.map(img => img.path);
 
       return res.status(200).json({
-         itemsDetail,
+         item,
+         itemDetails,
          images,
       });
 

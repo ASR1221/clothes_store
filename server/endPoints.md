@@ -61,7 +61,13 @@ This file is going to take you through all the end points in this API.
 
       ```
       {
-         itemsDetail: [
+         item: {
+            "name": "item name", 
+            "price": 00.00, 
+            "section": "men", 
+            "type": "shirts"
+         },
+         itemDetails: [
             {
                "stock": 1,
                "size": "xl",
@@ -72,9 +78,7 @@ This file is going to take you through all the end points in this API.
             // note that each item in the array is an instance of the item with a specific color and sizes. The front end developer should show it in a proper way
          ],
          images: [
-            {
-               "path": "path/to/image"
-            },
+            "/path/to/image",
             ... // 3 images
          ]
       }
@@ -100,6 +104,7 @@ This file is going to take you through all the end points in this API.
                "name": "item name",
                "price": 00.00,
                "image_path": "path/to/image",
+               "section": "women",
                "type": "jeans"
             },
             ...
@@ -173,7 +178,8 @@ This file is going to take you through all the end points in this API.
       "country": "country of the user",
       "city": "city of the user",
       "district": "district of the user",
-      "nearestPoI": "nearest point of intrest to the user"
+      "nearestPoI": "nearest point of intrest to the user",
+      "cartItemsCount": 3
    }
    ```
 

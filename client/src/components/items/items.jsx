@@ -7,11 +7,14 @@ import fetchFn from "../../utils/fetchFn";
 
 import "./items.css";
 import Loading from "../loading/loading";
+import { useParams } from "react-router-dom";
 
 function Items({ endpoint, queryId, rootRef, types }) {
+
    // constants
    const DEVICEWIDTH = document.documentElement.clientWidth;
 
+   const { id } = useParams();
 
    //! ############# Items Query ###############
    function InfinitFetch({ pageParam = 1 }) {
@@ -55,7 +58,7 @@ function Items({ endpoint, queryId, rootRef, types }) {
       };
    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
    //! ###########  Infinte Scroll Observer End ##############
-   console.log(items)
+   
    return (
       <>
          <div className="grid home-main-items">
@@ -66,7 +69,7 @@ function Items({ endpoint, queryId, rootRef, types }) {
                      {page.items?.map((item) => {
                         
                         if (types && types.length > 0 && !types.includes(item.type)) return;
-
+                        if (id && parseInt(id) === item.id) return;
                         return (
                            <ItemCard
                               key={item.id}
@@ -74,7 +77,6 @@ function Items({ endpoint, queryId, rootRef, types }) {
                               name={item.name}
                               price={item.price}
                               img={item.image_path}
-                              type={item.type}
                            />
                         );
                      })}
