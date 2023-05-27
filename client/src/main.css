@@ -63,7 +63,3 @@ a:focus, button:focus, a:hover, button:hover {
 .transition-1 {
    transition: .7s;
 }
-
-.main-padding {
-   padding: 10px;
-}

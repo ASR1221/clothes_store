@@ -8,7 +8,7 @@
 .home-main-items {
    grid-template-columns: 1fr 1fr;
    gap: 10px;
-   padding-bottom: 30px;
+   padding-bottom: 45px;
 }
 
 @media (min-width: 450px) {
