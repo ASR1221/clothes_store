@@ -2,8 +2,6 @@ import { useState } from "react";
 import "./search.css";
 import Items from "../../components/items/items";
 
-// TODO: better styling and responsive
-
 function Search() {
 
    const [searchTerm, setSearchTerm] = useState("");

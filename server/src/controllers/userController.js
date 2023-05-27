@@ -147,29 +147,13 @@ exports.setUserInfo = (req, res, next) => {
 exports.getUserInfo = async (req, res, next) => {
    
    try {
-      const {
-         country,
-         city,
-         district,
-         nearestPoI,
-         phone_number } = await Users.findByPk(req.user.user_id,
-            {
-               attributes: ["country", "city", "district", "nearestPoI", "phone_number"]
-            });
-      
-      if (!(country && city && district && nearestPoI && phone_number)) {
-         const error = new Error("The user haven't specified his location and phone number yet.");
-         error.status = 404;
-         return next(error);
-      }
-
-      res.status(200).json({
-         country,
-         city,
-         district,
-         nearestPoI,
-         phone_number,
+      const user = await Users.findByPk(req.user.user_id, {
+         attributes: { exclude: ["id"] },
       });
+
+      const cartItemsCount = await Cart.count({ where: { user_id: req.user.id } });      
+
+      res.status(200).json({ ...user, cartItemsCount });
    } catch (e) {
       return next(e);
    }

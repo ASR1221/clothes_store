@@ -167,11 +167,13 @@ This file is going to take you through all the end points in this API.
 
    ```
    {
+      "name": "user name",
+      "email": "user email",
+      "phone_number": "user phone number",
       "country": "country of the user",
       "city": "city of the user",
       "district": "district of the user",
-      "nearestPoI": "nearest point of intrest to the user",
-      "phone_number": "user phone number"
+      "nearestPoI": "nearest point of intrest to the user"
    }
    ```
 
