@@ -47,6 +47,15 @@
    outline: none;
 }
 
+.search-phrases {
+   display: none;
+   padding: 7px;
+}
+
+.search-phrases-section {
+   padding: 4px;
+}
+
 .search-items-container {
    padding-top: 25vh;
    padding-inline: 5%;
