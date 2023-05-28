@@ -49,15 +49,20 @@
 
 .search-phrases {
    display: none;
+   margin-inline: 7px;
+   margin-block: 25px;
+}
+
+.search-phrases-section {
    padding: 7px;
 }
 
 .search-phrases-section {
-   padding: 4px;
+   padding-block: 5px;
 }
 
 .search-items-container {
-   padding-top: 25vh;
+   padding-top: 27vh;
    padding-inline: 5%;
 }
 

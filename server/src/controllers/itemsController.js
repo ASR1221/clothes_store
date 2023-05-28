@@ -119,6 +119,7 @@ exports.searchItem = async (req, res, next) => {
          },
       ]
    }));
+
    try {
       const results = await Items.findAll({
          where: {
@@ -130,14 +131,24 @@ exports.searchItem = async (req, res, next) => {
          offset: (Number(page) - 1) * 12,
       });
       
+      console.log(/\bmen\b/i.test(term))
+      const fResult = results.filter(item => {
+         if (/\bmen\b/i.test(term)) {
+            if (item.section === "men") {
+               return true;
+            } 
+            return false;
+         } 
+         return true;
+      });
 
-      const relevanceItems = results.map(item => ({
-            item,
-            score: terms.reduce((score, word) => score + (
-               item.name.match(new RegExp(word, "gi")) ||
-               item.section.match(new RegExp(word, "gi")) ||
-               item.type.match(new RegExp(word, "gi")) 
-            )?.length || 0, 0)
+      const relevanceItems = fResult.map(item => ({
+         item,
+         score: terms.reduce((score, word) => score + (
+            item.name.match(new RegExp(word, "gi")) ||
+            item.section.match(new RegExp(word, "gi")) ||
+            item.type.match(new RegExp(word, "gi"))
+         )?.length || 0, 0)
       }));
 
       const sortedItems = relevanceItems.sort((a, b) => b.score - a.score);

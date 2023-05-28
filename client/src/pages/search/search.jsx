@@ -11,8 +11,8 @@ function Search() {
       const DEVICEWIDTH = document.documentElement.clientWidth;
       document.querySelector(".search-background").style.opacity = 0;
       document.querySelector(".search-img-container").style.top = DEVICEWIDTH >= 550 ? "8vh" : "3vh";
-      document.querySelector(".search-img-container").style.padding = "15px";
-      document.querySelector(".search-input-container").style.top = DEVICEWIDTH >= 550 ? "25vh" : "17vh";
+      document.querySelector(".search-img-container").style.padding = "20px";
+      document.querySelector(".search-input-container").style.top = DEVICEWIDTH >= 550 ? "25vh" : "19vh";
       if (!searchTerm) {
          setTimeout(() =>
             document.querySelector(".search-phrases").style.display = "block"
