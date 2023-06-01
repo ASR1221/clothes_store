@@ -63,3 +63,23 @@ a:focus, button:focus, a:hover, button:hover {
 .transition-1 {
    transition: .7s;
 }
+
+.relative {
+   position: relative;
+}
+
+.absolute {
+   position: absolute;
+}
+
+@media (min-width: 550px) {
+   .responsive-margin {
+      margin-inline: 10%;
+   }
+}
+
+@media (min-width: 780px) {
+   .responsive-margin {
+      margin-inline: 20%;
+   }
+}

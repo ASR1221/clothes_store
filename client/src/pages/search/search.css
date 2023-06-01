@@ -1,10 +1,5 @@
 .search-container {
-   position: relative;
    height: 30vh;
-}
-
-.search-background, .search-img-container, .search-input-container {
-   position: absolute;
 }
 
 .search-background {

@@ -11,3 +11,8 @@
    color: white;
    background-color: black;
 }
+
+.btn:disabled:hover {
+   background-color: white;
+   color: rgba(0, 0, 0, 0.267);
+}

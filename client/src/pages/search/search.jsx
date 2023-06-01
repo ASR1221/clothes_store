@@ -34,12 +34,12 @@ function Search() {
       }
    }, [searchFeild]);
 
-   return <div className="search-container">
-      <img src="images/home/black.png" alt="search background" className="search-background img transition-05"/>
-      <div className="search-img-container transition-05">
+   return <div className="search-container relative">
+      <img src="images/home/black.png" alt="search background" className="search-background img transition-05 absolute"/>
+      <div className="search-img-container absolute transition-05">
          <img src="/icons/asr-logo.svg" alt="ASR Logo" className="img"/>
       </div>
-      <div className="search-input-container transition-05">
+      <div className="search-input-container absolute transition-05">
          <input
             type="search"
             placeholder="search..."

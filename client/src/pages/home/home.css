@@ -65,17 +65,11 @@
    }
 
    .home-main > *:not(.home-main-slideIndecator-div) {
-      padding: 0 10%;
+      padding-inline: 10%;
    } 
 
    .home-main-slideIndecator-div {
       display: none;
    }
 
-}
-
-@media (min-width: 780px) {
-   .home-main {
-      padding-inline: 20%;
-   }
 }

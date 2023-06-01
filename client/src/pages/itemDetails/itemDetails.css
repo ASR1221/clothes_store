@@ -1,14 +1,15 @@
 .itemDetails-container {
-   padding: 5%;
+   padding: 5% 7%;
+   overflow: hidden !important;
 }
 
 .logo-container {
-   width: 16%;
+   width: min(16%, 70px);
 }
 
 .itemDetails-imgs-container {
    padding-top: 20px;
-   height: 360px;
+   height: 92vw;
    grid-template-columns: 3fr 1fr;
    gap: 8px;
 }
@@ -26,22 +27,25 @@
 }
 
 .itemDetails-smallImgs-container {
-   height: 340px;
+   height: calc(92vw - 20px);
    grid-template-rows: repeat(3, 1fr);
    gap: 5px;
 }
 
 .itemDetails-smallImg-container.selected {
    opacity: 0;
+   pointer-events: none;
 }
 
 .itemDetails-text-container {
    padding-inline: 5px;
-   position: relative;
+}
+
+.itemDetails-h1 {
+   width: 65%;
 }
 
 .itemDetails-price {
-   position: absolute;
    font-family: title;
    top: 0;
    right: 0;
@@ -59,14 +63,14 @@
    width: 23px;
    height: 23px;
    border-radius: 50%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
 }
-
 
 .itemDetails-color-border.selected {
    border: 1px solid black;
+}
+
+.itemDetails-color-border.selected .itemDetails-color {
+   box-shadow: none;
 }
 
 .itemDetails-color {
@@ -74,18 +78,56 @@
    height: 18px;
    border-radius: 50%;
    box-shadow: 0px 0px 7px black;
+   cursor: pointer;
+   margin: 1.9px;
 }
 
 .itemDetails-number-input {
    background-color: white;
    border: none;
    border-bottom: 1px solid black;
-   width: 30px;
+   width: clamp(20px, 10%, 30px);
    margin-inline: 10px;
    padding-block: 3px;
    padding-inline: 7px;
 }
 
+.itemDetails-number-input { 
+   -moz-appearance: textfield;
+   appearance: textfield;
+}
+
 .itemDetails-number-input:focus {
    outline: none;
+}
+
+.itemDetails-addToCart-btn {
+   width: fit-content;
+   margin-block: 10px;
+   margin-inline: 20px;
+}
+
+@media (min-width: 550px) {
+   .logo-container {
+      margin-top: -5%;
+      margin-left: -5%;
+   }
+
+   .itemDetails-imgs-container {
+      height: 75vw;
+   }
+
+   .itemDetails-smallImgs-container {
+      height: calc(75vw - 20px);
+   }
+}
+
+@media (min-width: 780px) {
+   .itemDetails-imgs-container {
+      height: 58vw;
+   }
+
+   .itemDetails-smallImgs-container {
+      height: calc(58vw - 20px);
+   }
 }

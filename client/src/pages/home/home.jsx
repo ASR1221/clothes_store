@@ -192,7 +192,7 @@ function Home() {
          />
          <section
             onTouchStart={(e) => handleMainSlideDown(e, false)}
-            className="home-main transition-05"
+            className="home-main responsive-margin transition-05"
             ref={mainSlideRef}
          >
             <div
