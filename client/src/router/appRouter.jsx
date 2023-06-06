@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 
-import fetchFn from "../utils/fetchFn";
+// import fetchFn from "../utils/fetchFn";
 import { dialogContext } from "../context/dialogContext.js";
 
 import NavBar from "../components/navBar/navBar";
@@ -10,6 +10,10 @@ import Search from "../pages/search/search";
 import ItemDetails from "../pages/itemDetails/itemDetails";
 import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
+
+// TODO: fix dialog
+// TODO: mutation and loading states in itemDetails
+// TODO: error states in login
 
 function App() {
 
@@ -26,13 +30,18 @@ function App() {
       }, 3500);
    }
 
-   useEffect(() => {
-      if (localStorage.getItem("user")) {
-         fetchFn("/user/info/get", "GET")
-            .then(res => localStorage.setItem("user", res))
-            .catch(() => localStorage.removeItem("user"));
-      }
-   }, []);
+   // const [checked, setChecked] = useState(false);
+
+   // useEffect(() => {
+   //    const ssID = localStorage.getItem("ssID");
+   //    if (ssID && !checked) {
+   //       fetchFn("/user/info/get", "GET", ssID)
+   //          .then(res => localStorage.setItem("user", res))
+   //          .catch(() => localStorage.removeItem("user"));
+         
+   //       setChecked(true);
+   //    }
+   // }, []);
 
    return <>
       <dialogContext.Provider value={showDialog} >

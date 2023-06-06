@@ -68,9 +68,9 @@ exports.facebookUser = async (req, res, next) => {
    }
 
    try {
-      const facebookResponse = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${access_token}`);
+      const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${access_token}`);
       // should add phone_number to the fields above but it requires advance permissions. and also add phone number to the scopes in the request url in the client side.
-      const { name, email, phone_number } = await facebookResponse.json(); 
+      const { name, email, phone_number } = await response.json(); 
 
       if (!(response.ok && (email ||  phone_number) && name)) {
          const error = new Error("There was a problem getting your data. Please try again.");

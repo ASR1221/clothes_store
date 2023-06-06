@@ -1,13 +1,19 @@
-export default async function (path, method) {
-   const res = await fetch(`/api${path}`, {
+export default async function (path, method, auth, body) {
+   const options = {
       method,
       headers: {
          "Content-Type": "application/json",
       },
-   });
+   }
+   
+   if (body) options.body = JSON.stringify(body);
+   if (auth) options.Authorization = auth;
+
+   const res = await fetch(`/api${path}`, options);
+
    if (!res.ok) {
-      const message = await res.json();
-      throw new Error(message.message);
+      const body = await res.json();
+      throw new Error(body.message);
    }
    return res.json(); 
 }
