@@ -11,10 +11,7 @@ import FilterBtn from "../../components/filterBtn/filterBtn";
 import Button from "../../components/button/button";
 import { dialogContext } from "../../context/dialogContext.js";
 
-// TODO: small screens
-// TODO: loading state and error state 
-// TODO: responive layout
-// TODO: add functionality
+// TODO: mutation and loading states
 
 function ItemDetails() {
 

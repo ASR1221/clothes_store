@@ -24,7 +24,6 @@ dist-ssr
 *.sw?
 
 test.js
-signin.jsx
 upload.jsx
 public/fonts
 public/icons
