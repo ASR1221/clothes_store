@@ -11,9 +11,7 @@ import ItemDetails from "../pages/itemDetails/itemDetails";
 import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
 
-// TODO: fix dialog
-// TODO: mutation and loading states in itemDetails
-// TODO: error states in login
+// TODO: mutation in itemDetails
 
 function App() {
 

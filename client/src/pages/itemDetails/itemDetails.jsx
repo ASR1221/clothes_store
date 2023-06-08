@@ -2,16 +2,17 @@ import "./itemDetails.css";
 
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useMemo } from "react";
 
 import fetchFn from "../../utils/fetchFn";
+import { dialogContext } from "../../context/dialogContext.js";
 
 import Items from "../../components/items/items";
 import FilterBtn from "../../components/filterBtn/filterBtn";
 import Button from "../../components/button/button";
-import { dialogContext } from "../../context/dialogContext.js";
+import Loading from "../../components/loading/loading";
 
-// TODO: mutation and loading states
+// TODO: mutation
 
 function ItemDetails() {
 
@@ -19,18 +20,17 @@ function ItemDetails() {
 
    const {
       isLoading,
-      isFetching,
-      isSuccess,
-      error: queryError,
       data,
-   } = useQuery(["item", id], () => fetchFn(`/items/details/${id}`, "GET"));
+   } = useQuery(["item", id], () => fetchFn(`/items/details/${id}`, "GET"), {
+      onError: (e) => showDialog(e.message),
+   });
 
    const colorSize = useRef({});
    const [selectedImg, setSelectedImg] = useState("");
    const [selectedColor, setSelectedColor] = useState("");
    const [selectedSizes, setSelectedSizes] = useState([]);
    const [selectedCount, setSelectedCount] = useState(0);
-   const [isCountError, setIsCountError] = useState(0);
+   // const [isCountError, setIsCountError] = useState(0);
 
    const showDialog = useContext(dialogContext);
 
@@ -64,47 +64,23 @@ function ItemDetails() {
    }
    
 
-   useEffect(() => {
+   const isCountError = useMemo(() => {
 
-      if (selectedSizes.length < 1) {
-         setIsCountError(1);
-         return;
-      }
-
-      if (!selectedCount) {
-         setIsCountError(1);
-         return;
-      }
-
-      let changed = false;
+      let changed = 0;
       data?.itemDetails.forEach((detail) => {
          if ((detail.color === selectedColor)) {
             if (selectedSizes.includes(detail.size)) {
                if (selectedCount > detail.stock) {
-                  setIsCountError(detail.stock);
-                  changed = true;
+                  changed = detail.stock;
                }
             }
          }
       });
-
-      if (!changed) {
-         setIsCountError(0);
-      }
+      
+      if (changed) showDialog(`Sorry, we only have ${changed} of one of your selected sizes`);
+      return changed;
 
    }, [data, selectedCount, selectedColor, selectedSizes]);
-
-   useEffect(() => {
-
-      if (queryError) {
-         showDialog(queryError.message);
-      } /* else if (isMutationError) {
-         showDialog(mutationError.message);
-      } */ else if (isCountError && !selectedSizes.length < 1 && selectedCount) {
-         showDialog(`Sorry, we only have ${isCountError} of one of your selected sizes`);
-      } 
-
-   }, [queryError/* , isMutationError */, isCountError]);
 
    useEffect(() => {
 
@@ -134,89 +110,95 @@ function ItemDetails() {
       <div className="logo-container">
          <img className="img" src="/icons/asr-logo.svg" alt="ASR Logo" />
       </div>
-      <section className="grid itemDetails-imgs-container responsive-margin">
-         <div className="itemDetails-mainImg-container">
-            <img className="img" src={selectedImg} alt="selected item image" />
-         </div>
-         <div className="grid itemDetails-smallImgs-container">
-            {
-               data?.images.map((img, i) => <div
-                  key={i}
-                  onClick={handleImgClick}
-                  className={`itemDetails-smallImg-container ${selectedImg === img ? "selected" : ""}`}
-               >
-                  <img className="img" src={img} alt="item image" />
-               </div>)
-            }
-         </div>
-      </section>
-      <section className="itemDetails-text-container responsive-margin relative">
-         <h1 className="itemDetails-h1">{ data?.item.name }<p className="itemDetails-price absolute">{ data?.item.price }$</p></h1>
-         <div>
-            <p>Select color:</p>
-            <div className="flex itemDetails-color-container">
-               {
-                  Object.keys(colorSize.current)?.map(color =>
-                     <div
-                        key={color}
-                        className={`itemDetails-color-border ${selectedColor === color ? "selected" : ""}`}
-                     >
-                        <div
-                           onClick={handleColorClick}
-                           style={{ backgroundColor: color }}
-                           className="itemDetails-color"
-                        ></div>
+      <div> 
+         {isLoading ? <Loading /> :
+            <>
+               <section className="grid itemDetails-imgs-container responsive-margin">
+                  <div className="itemDetails-mainImg-container">
+                     <img className="img" src={selectedImg} alt="selected item image" />
+                  </div>
+                  <div className="grid itemDetails-smallImgs-container">
+                     {
+                        data?.images.map((img, i) => <div
+                           key={i}
+                           onClick={handleImgClick}
+                           className={`itemDetails-smallImg-container ${selectedImg === img ? "selected" : ""}`}
+                        >
+                           <img className="img" src={img} alt="item image" />
+                        </div>)
+                     }
+                  </div>
+               </section>
+               <section className="itemDetails-text-container responsive-margin relative">
+                  <h1 className="itemDetails-h1">{ data?.item.name }<p className="itemDetails-price absolute">{ data?.item.price }$</p></h1>
+                  <div>
+                     <p>Select color:</p>
+                     <div className="flex itemDetails-color-container">
+                        {
+                           Object.keys(colorSize.current)?.map(color =>
+                              <div
+                                 key={color}
+                                 className={`itemDetails-color-border ${selectedColor === color ? "selected" : ""}`}
+                              >
+                                 <div
+                                    onClick={handleColorClick}
+                                    style={{ backgroundColor: color }}
+                                    className="itemDetails-color"
+                                 ></div>
+                              </div>
+                           )
+                        }
                      </div>
-                  )
-               }
-            </div>
-         </div>
-         <div>
-            <p>Select size:</p>
-            <div className="flex itemDetails-color-container">
-               {
-                  colorSize.current[selectedColor]?.map((size, i) => 
-                     <FilterBtn
-                        key={i}
-                        text={size}
-                        array={selectedSizes}
-                        setArray={setSelectedSizes}
+                  </div>
+                  <div>
+                     <p>Select size:</p>
+                     <div className="flex itemDetails-color-container">
+                        {
+                           colorSize.current[selectedColor]?.map((size, i) => 
+                              <FilterBtn
+                                 key={i}
+                                 text={size}
+                                 array={selectedSizes}
+                                 setArray={setSelectedSizes}
+                              />
+                           )
+                        }
+                     </div>
+                  </div>
+                  <div className="itemDetails-number-container">
+                     <label htmlFor="itemCount">
+                        How many would you like:
+                        <input
+                           type="number"
+                           name="itemCount"
+                           disabled={selectedSizes.length < 1}  // TODO: disable indecation to user
+                           value={selectedCount}
+                           onChange={e => setSelectedCount(e.target.value)}
+                           className="itemDetails-number-input"
+                        />
+                     </label>
+                     <div className="itemDetails-addToCart-btn">
+                        <Button
+                           text={"Add to cart"}
+                           fn={handleAddToCart}
+                           disabled={isCountError}
+                        />
+                     </div>
+                  </div>
+               </section>
+               <section className="responsive-margin">
+                  <h2>More { data?.item.section } { data?.item.type }</h2>
+                  <div>
+                     <Items
+                        endpoint={`/items/list?section=${data?.item.section}&type=${data?.item.type}&page=`}
+                        queryId={[data?.item.section, data?.item.type]}
+                        rootRef={{current: null}}
                      />
-                  )
-               }
-            </div>
-         </div>
-         <div className="itemDetails-number-container">
-            <label htmlFor="itemCount">
-               How many would you like:
-               <input
-                  type="number"
-                  name="itemCount"
-                  disabled={selectedSizes.length < 1}  // TODO: disable indecation to user
-                  value={selectedCount}
-                  onChange={e => setSelectedCount(e.target.value)}
-                  className="itemDetails-number-input"
-               />
-            </label>
-            <div className="itemDetails-addToCart-btn">
-               <Button
-                  text={"Add to cart"}
-                  fn={handleAddToCart}
-                  disabled={isCountError}
-               />
-            </div>
-         </div>
-      </section>
-      <section className="responsive-margin">
-         <h2>More { data?.item.section } { data?.item.type }</h2>
-         <div>
-            <Items
-               endpoint={`/items/list?section=${data?.item.section}&type=${data?.item.type}&page=`}
-               queryId={[data?.item.section, data?.item.type]}
-               rootRef={{current: null}}
-            />
-         </div>
-      </section>
+                  </div>
+               </section>
+            </>
+         }
+      </div>
    </div>;
 }
 

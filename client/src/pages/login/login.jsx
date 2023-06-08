@@ -1,10 +1,11 @@
 import "./login.css";
 
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import fetchFn from "../../utils/fetchFn";
+import { dialogContext } from "../../context/dialogContext";
 
 import Loading from "../../components/loading/loading";
 
@@ -24,15 +25,14 @@ const facebookOptions = {
    scope: "email",
 };
 
-// TODO: error states
-
 function Login() {
 
    const { state } = useLocation();
    const navigate = useNavigate();
+   const showDialog = useContext(dialogContext);
 
    const { mutate, isLoading } = useMutation({
-      mutationFn: ({path, method, body}) => fetchFn(path, method, null, body),
+      mutationFn: ({ path, method, body }) => fetchFn(path, method, null, body),
       onSuccess: (data) => {
          localStorage.setItem("ssID", data.sessionToken);
          delete data.sessionToken;
@@ -41,11 +41,8 @@ function Login() {
          if (state) navigate(state);
          else navigate("/");
       },
-      onError: (e) => {
-         console.log(e)
-      }
-
-   })
+      onError: (e) => showDialog(e),
+   });
 
    useEffect(() => {
       const access_token = location.hash?.split("#access_token=")[1]?.split("&")[0];
