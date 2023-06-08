@@ -1,7 +1,7 @@
 import "./itemDetails.css";
 
 import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useEffect, useState, useRef, useContext, useMemo } from "react";
 
 import fetchFn from "../../utils/fetchFn";
@@ -12,11 +12,17 @@ import FilterBtn from "../../components/filterBtn/filterBtn";
 import Button from "../../components/button/button";
 import Loading from "../../components/loading/loading";
 
-// TODO: mutation
-
 function ItemDetails() {
 
    const { id } = useParams();
+
+   const { mutate } = useMutation({
+      mutationFn: ({ body }) => fetchFn("/cart/add", "POST", localStorage.getItem("ssID"), body),
+      onSuccess: data => {
+         localStorage.setItem("ssID", data.sessionToken);
+      },
+      onError: (e) => showDialog(e.message),
+   });
 
    const {
       isLoading,
@@ -29,8 +35,7 @@ function ItemDetails() {
    const [selectedImg, setSelectedImg] = useState("");
    const [selectedColor, setSelectedColor] = useState("");
    const [selectedSizes, setSelectedSizes] = useState([]);
-   const [selectedCount, setSelectedCount] = useState(0);
-   // const [isCountError, setIsCountError] = useState(0);
+   const [selectedCount, setSelectedCount] = useState(1);
 
    const showDialog = useContext(dialogContext);
 
@@ -54,12 +59,29 @@ function ItemDetails() {
    }
 
    function handleAddToCart() {
-      const previous = JSON.parse(localStorage.getItem("cartItems"));
-      const items = [1];
-      if (previous) {
-         items.push(...previous);
+
+      const cartItems = data?.itemDetails.flatMap((detail) => {
+         if ((detail.color === selectedColor)) {
+            if (selectedSizes.includes(detail.size)) {
+               detail.stock -= selectedCount;
+               return {
+                  item_details_id: detail.id,
+                  item_count: selectedCount,
+               };
+            }
+         }
+         return [];
+      });
+
+      if (localStorage.getItem("ssID") && localStorage.getItem("user")) {
+         mutate({body: cartItems});
       }
-      localStorage.setItem("cartItems", JSON.stringify(items));
+
+      const previous = JSON.parse(localStorage.getItem("cartItems"));
+      if (previous) {
+         cartItems.push(...previous);
+      }
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
       showDialog("Cart Item Added");
    }
    
@@ -181,7 +203,7 @@ function ItemDetails() {
                         <Button
                            text={"Add to cart"}
                            fn={handleAddToCart}
-                           disabled={isCountError}
+                           disabled={!selectedCount || !selectedSizes.length || isCountError}
                         />
                      </div>
                   </div>

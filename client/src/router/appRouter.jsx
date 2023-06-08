@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
-// import fetchFn from "../utils/fetchFn";
+import fetchFn from "../utils/fetchFn";
 import { dialogContext } from "../context/dialogContext.js";
 
 import NavBar from "../components/navBar/navBar";
@@ -10,8 +10,6 @@ import Search from "../pages/search/search";
 import ItemDetails from "../pages/itemDetails/itemDetails";
 import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
-
-// TODO: mutation in itemDetails
 
 function App() {
 
@@ -26,18 +24,20 @@ function App() {
       }, 3000);
    }
 
-   // const [checked, setChecked] = useState(false);
+   const [checked, setChecked] = useState(false);
 
-   // useEffect(() => {
-   //    const ssID = localStorage.getItem("ssID");
-   //    if (ssID && !checked) {
-   //       fetchFn("/user/info/get", "GET", ssID)
-   //          .then(res => localStorage.setItem("user", res))
-   //          .catch(() => localStorage.removeItem("user"));
+   useEffect(() => {
+      const ssID = localStorage.getItem("ssID");
+      if (ssID && !checked) {
+         fetchFn("/user/info/get", "GET", ssID)
+            .catch(() => {
+               localStorage.removeItem("user");
+               localStorage.removeItem("ssID");
+            });
          
-   //       setChecked(true);
-   //    }
-   // }, []);
+         setChecked(true);
+      }
+   }, []);
 
    return <>
       <dialogContext.Provider value={showDialog} >

@@ -32,7 +32,7 @@ function Login() {
    const showDialog = useContext(dialogContext);
 
    const { mutate, isLoading } = useMutation({
-      mutationFn: ({ path, method, body }) => fetchFn(path, method, null, body),
+      mutationFn: ({ path, body }) => fetchFn(path, "POST", null, body),
       onSuccess: (data) => {
          localStorage.setItem("ssID", data.sessionToken);
          delete data.sessionToken;
@@ -41,7 +41,7 @@ function Login() {
          if (state) navigate(state);
          else navigate("/");
       },
-      onError: (e) => showDialog(e),
+      onError: (e) => showDialog(e.message),
    });
 
    useEffect(() => {
@@ -51,7 +51,6 @@ function Login() {
 
       mutate({
          path: `/user/auth/${path}`,
-         method: "POST",
          body: { access_token }
       });
 

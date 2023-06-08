@@ -7,7 +7,7 @@ export default async function (path, method, auth, body) {
    }
    
    if (body) options.body = JSON.stringify(body);
-   if (auth) options.Authorization = auth;
+   if (auth) options.headers.Authorization = `Bearer ${auth}`;
 
    const res = await fetch(`/api${path}`, options);
 
