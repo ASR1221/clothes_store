@@ -22,12 +22,10 @@ function App() {
 
    function showDialog(text) {
       setDialogTxt(text);
-      dialogRef.current.style.display = "block";
-      setTimeout(() => dialogRef.current.style.bottom = "57px", 10);
+      dialogRef.current.show();
       setTimeout(() => {
-         dialogRef.current.style.bottom = "-120px";
-         setTimeout(() => dialogRef.current.style.display = "none", 700);
-      }, 3500);
+         dialogRef.current.close();
+      }, 3000);
    }
 
    // const [checked, setChecked] = useState(false);
