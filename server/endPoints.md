@@ -190,10 +190,13 @@ This file is going to take you through all the end points in this API.
    body:
 
    ```
-   {
-      "item_details_id": 1,
-      "item_count": 1
-   }
+   [
+      {
+         "item_details_id": 1,
+         "item_count": 1
+      },
+      ...
+   ]
    ```
 
    This end point is user to add items to the cart.
