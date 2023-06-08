@@ -203,7 +203,7 @@ function ItemDetails() {
                         <Button
                            text={"Add to cart"}
                            fn={handleAddToCart}
-                           disabled={!selectedCount || !selectedSizes.length || isCountError}
+                           disabled={selectedCount < 1 || !selectedSizes.length || isCountError}
                         />
                      </div>
                   </div>
