@@ -4,29 +4,69 @@ const ItemsDetails = require("../models/clothesModels/itemsDetailsModel");
 const { Op } = require("sequelize");
 
 exports.addToCart = async (req, res, next) => {
-   const { item_details_id, item_count } = req.body;
+   const items = req.body;
    const { user_id, sessionToken } = req.user;
 
-   if (!(item_details_id && (item_count && item_count > 0))) {
-      const error = new Error("Missing Information. Please try again.")
-      error.status = 400;
-      return next(error);
-   }
-
    try {
-      const item = await ItemsDetails.findOne({
-         where: {
-            id: item_details_id,
-            stock: { [Op.gt]: 0 },
-         },
-         include: {
-            model: Items,
-            attributes: ["price"],
+
+      if (!items.length) {
+         throw new Error("No Items in the body");
+      }
+
+      items.forEach(item => {
+         if (!(item.item_details_id && item.item_count)) {
+            throw new Error("Missing Information. Please try again.");
+         }
+         if (item.item_count < 1) {
+            throw new Error("item_count for all items has to be bigger than 0.");
          }
       });
 
-      const total_price = parseFloat(item.item.price) * item_count;
-      await Cart.create({ user_id, item_details_id, item_count, total_price});
+   } catch (e) {
+      return next(e);
+   }
+
+   try {
+      const promises = [];
+      items.forEach(item => {
+         
+         const reply = ItemsDetails.findOne({
+            where: {
+               id: item.item_details_id,
+               stock: { [Op.gt]: 0 },
+            },
+            include: {
+               model: Items,
+               attributes: ["price"],
+            }
+         });
+         promises.push(reply);
+      });
+
+      const pricesArr = await Promise.all(promises);
+
+      if (pricesArr.length < 1) throw new Error("The specified item_count is larger than what is available of the item.");
+      console.log(pricesArr)
+      const cartItems = pricesArr.map(priceObj => {
+         let total_price = 0;
+         let item_count = 0;
+         items.forEach(item => {
+            if (item.item_details_id === priceObj.id) {
+               total_price = parseFloat(priceObj.item.price) * item.item_count;
+               item_count = item.item_count;
+            }
+         });
+         if (!total_price) return;
+
+         return {
+            user_id,
+            item_details_id: priceObj.id,
+            item_count,
+            total_price,
+         };
+      });
+
+      await Cart.bulkCreate(cartItems);
       return res.status(200).json({
          sessionToken,
          message: "cart item added"
