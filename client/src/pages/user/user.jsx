@@ -49,7 +49,7 @@ function User() {
             ) : (
                <div className="flex user-notLogged">
                   <h1>You are not loged in</h1>
-                  <Link to="/login" state={"/user"} className="btn">Log in or Sign up</Link>
+                  <Link to="/login" className="btn">Log in or Sign up</Link>
                </div>
             )}
          </div>

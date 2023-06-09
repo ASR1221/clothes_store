@@ -2,7 +2,7 @@ import "./login.css";
 
 import { useContext, useEffect } from "react";
 import { useMutation } from "react-query";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import fetchFn from "../../utils/fetchFn";
 import { dialogContext } from "../../context/dialogContext";
@@ -27,7 +27,7 @@ const facebookOptions = {
 
 function Login() {
 
-   const { state } = useLocation();
+
    const navigate = useNavigate();
    const showDialog = useContext(dialogContext);
 
@@ -38,8 +38,7 @@ function Login() {
          delete data.sessionToken;
          localStorage.setItem("user", JSON.stringify(data));
 
-         if (state) navigate(state);
-         else navigate("/");
+         navigate('/');
       },
       onError: (e) => showDialog(e.message),
    });
