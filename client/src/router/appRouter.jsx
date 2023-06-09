@@ -34,6 +34,7 @@ function App() {
             .catch(() => {
                localStorage.removeItem("user");
                localStorage.removeItem("ssID");
+               localStorage.removeItem("cardItems");
             });
          
          setChecked(true);

@@ -31,14 +31,27 @@ function Login() {
    const navigate = useNavigate();
    const showDialog = useContext(dialogContext);
 
-   const { mutate, isLoading } = useMutation({
+   const { mutate: addCartMutate } = useMutation({
+      mutationFn: ({ path, body, sessionToken }) => fetchFn(path, "POST", sessionToken, body),
+      onSuccess: () => navigate('/'),
+      onError: (e) => showDialog(e.message),
+   });
+
+   const { mutate: logInMutate, isLoading } = useMutation({
       mutationFn: ({ path, body }) => fetchFn(path, "POST", null, body),
       onSuccess: (data) => {
          localStorage.setItem("ssID", data.sessionToken);
-         delete data.sessionToken;
          localStorage.setItem("user", JSON.stringify(data));
-
-         navigate('/');
+         
+         if (localStorage.getItem("cartItems")) {
+            addCartMutate({
+               path: "/cart/add",
+               sessionToken: data.sessionToken,
+               body: JSON.parse(localStorage.getItem("cartItems")),
+            });
+         } else {
+            navigate('/');
+         }
       },
       onError: (e) => showDialog(e.message),
    });
@@ -48,7 +61,7 @@ function Login() {
       if (!access_token) return;
       const path = location.hash.includes("google") ? "google" : "facebook";
 
-      mutate({
+      logInMutate({
          path: `/user/auth/${path}`,
          body: { access_token }
       });

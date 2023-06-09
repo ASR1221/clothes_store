@@ -19,6 +19,7 @@ function User() {
       setIsLogedIn(false);
       localStorage.removeItem("user");
       localStorage.removeItem("ssID");
+      localStorage.removeItem("cartItems");
    }
 
    return (
