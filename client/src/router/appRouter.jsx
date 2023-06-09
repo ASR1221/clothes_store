@@ -10,6 +10,7 @@ import Search from "../pages/search/search";
 import ItemDetails from "../pages/itemDetails/itemDetails";
 import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
+import User from "../pages/user/user";
 
 function App() {
 
@@ -51,11 +52,11 @@ function App() {
                <Route index element={<Home />} />
                <Route path="search" element={<Search />} />
                <Route path="item/:id" element={<ItemDetails />} />
-               <Route path="login" element={<Login />}></Route> {/* This should be the redirect url for logins */}
+               <Route path="login" element={<Login />} /> {/* This should be the redirect url for logins */}
+               <Route path="user" element={<User />} />
             </Route>
          </Routes>
       </dialogContext.Provider>
-
    </>
 }
 
