@@ -11,6 +11,7 @@ import ItemDetails from "../pages/itemDetails/itemDetails";
 import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
 import User from "../pages/user/user";
+import Cart from "../pages/cart/cart";
 
 // TODO: orders page
 // TODO: cart page and modals
@@ -59,6 +60,7 @@ function App() {
                <Route path="item/:id" element={<ItemDetails />} />
                <Route path="login" element={<Login />} /> {/* This should be the redirect url for logins */}
                <Route path="user" element={<User />} />
+               <Route path="cart" element={<Cart />} />
             </Route>
          </Routes>
       </dialogContext.Provider>
