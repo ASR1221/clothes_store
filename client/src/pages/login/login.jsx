@@ -44,10 +44,15 @@ function Login() {
          localStorage.setItem("user", JSON.stringify(data));
          
          if (localStorage.getItem("cartItems")) {
+            const cart = JSON.parse(localStorage.getItem("cartItems"));
+            const bodyCart = { 
+               item_details_id: cart.item_details_id,
+               item_count: cart.item_count,
+            }
             addCartMutate({
                path: "/cart/add",
                sessionToken: data.sessionToken,
-               body: JSON.parse(localStorage.getItem("cartItems")),
+               body: bodyCart,
             });
          } else {
             navigate('/');

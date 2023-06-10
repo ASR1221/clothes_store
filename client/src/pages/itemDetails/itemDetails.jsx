@@ -67,6 +67,11 @@ function ItemDetails() {
                return {
                   item_details_id: detail.id,
                   item_count: selectedCount,
+                  color: detail.color,
+                  size: detail.size,
+                  name: data.item.name,
+                  price: data.item.price,
+                  img: data.images[0],
                };
             }
          }
