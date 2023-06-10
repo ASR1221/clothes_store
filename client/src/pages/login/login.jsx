@@ -46,8 +46,8 @@ function Login() {
          if (localStorage.getItem("cartItems")) {
             const cart = JSON.parse(localStorage.getItem("cartItems"));
             const bodyCart = { 
-               item_details_id: cart.item_details_id,
-               item_count: cart.item_count,
+               item_details_id: cart.id,
+               item_count: cart.count,
             }
             addCartMutate({
                path: "/cart/add",
