@@ -199,6 +199,7 @@ function ItemDetails() {
                            className="itemDetails-number-input"
                         />
                      </label>
+                     <p>Total cost: { data && data.item.price * selectedCount * selectedSizes.length }$</p>
                      <div className="itemDetails-addToCart-btn">
                         <Button
                            text={"Add to cart"}

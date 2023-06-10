@@ -12,6 +12,10 @@ import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
 import User from "../pages/user/user";
 
+// TODO: orders page
+// TODO: cart page and modals
+// TODO: admins pages
+
 function App() {
 
    const [dialogTxt, setDialogTxt] = useState();
