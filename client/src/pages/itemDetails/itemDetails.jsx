@@ -65,8 +65,8 @@ function ItemDetails() {
             if (selectedSizes.includes(detail.size)) {
                detail.stock -= selectedCount;
                return {
-                  id: detail.id,
-                  count: selectedCount,
+                  itemDetailsId: detail.id,
+                  item_count: selectedCount,
                   color: detail.color,
                   size: detail.size,
                   name: data.item.name,
