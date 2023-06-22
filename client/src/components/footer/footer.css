@@ -6,6 +6,7 @@ footer {
    justify-content: center;
    gap: 9vw;
    padding: 5%;
+   padding-bottom: calc(5% + 35px);
    box-shadow: 1px 1px 3px black;
    bottom: 0;
 }
