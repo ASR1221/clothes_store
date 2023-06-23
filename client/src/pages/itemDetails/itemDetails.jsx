@@ -38,10 +38,15 @@ function ItemDetails() {
    const showDialog = useContext(dialogContext);
 
    function handleAddToCart() {
+      const cartItemsBody = [];
       const cartItems = data?.itemDetails.flatMap((detail) => {
          if (detail.color === selectedColor) {
             if (selectedSizes.includes(detail.size)) {
                detail.stock -= selectedCount;
+               cartItemsBody.push({
+                  item_details_id: detail.id,
+                  item_count: selectedCount,
+               });
                return {
                   itemId: id,
                   itemDetailsId: detail.id,
@@ -58,7 +63,7 @@ function ItemDetails() {
       });
 
       if (localStorage.getItem("ssID") && localStorage.getItem("user")) {
-         mutate({ body: cartItems });
+         mutate({ body: cartItemsBody });
       }
 
       const previous = JSON.parse(localStorage.getItem("cartItems"));
