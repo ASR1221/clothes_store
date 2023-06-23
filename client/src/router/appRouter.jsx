@@ -13,7 +13,6 @@ import Login from "../pages/login/login";
 import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
 
-// TODO: /cart/list should return img
 // TODO: orders page
 // TODO: cart page and modals
 // TODO: admins pages

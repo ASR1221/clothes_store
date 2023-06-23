@@ -89,7 +89,7 @@ exports.listCartItems = async (req, res, next) => {
             attributes: { exclude: ["updatedAt", "createdAt", "item_id"] },
             include: {
                model: Items,
-               attributes: { exclude: ["image_path", "available", "createdAt", "updatedAt"] },
+               attributes: { exclude: ["section", "type", "available", "createdAt", "updatedAt"] },
             },
          }
       });

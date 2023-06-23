@@ -17,7 +17,6 @@ function Cart() {
       () => fetchFn("/cart/list", "GET", localStorage.getItem("ssID")),
       {
          onSuccess: (data) => {
-            console.log(data)
             localStorage.setItem("cartItems",
                JSON.stringify( data.map(item => {
                   return {
@@ -29,7 +28,7 @@ function Cart() {
                      name: item.itemsDetail.item.name,
                      price: item.itemsDetail.item.price,
                      itemId: item.itemsDetail.item.id,
-                     // img: item.img,
+                     img: item.itemsDetail.item.image_path,
                   };
                }))
             );
