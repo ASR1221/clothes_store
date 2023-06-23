@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import "./filterBtn.css"
 
-function FilterBtn({ text, array, setArray }) {
+function FilterBtn({ text, array, setArray, isSingle = false }) {
 
    const [isSelected, setIsSelected] = useState(false);
 
@@ -11,11 +11,17 @@ function FilterBtn({ text, array, setArray }) {
    }, [array]);
    
    function handleClick() {
+      
       setIsSelected(!isSelected);
-      if (array.includes(text)) {
-         setArray((p) => p.filter((a) => a !== text));
+
+      if (isSingle) {
+         setArray(text);
       } else {
-         setArray((p) => [...p, text]);
+         if (array.includes(text)) {
+            setArray((p) => p.filter((a) => a !== text));
+         } else {
+            setArray((p) => [...p, text]);
+         }
       }
    }
 

@@ -1,0 +1,30 @@
+.editDialog-container {
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   translate: -50% -50%;
+   height: 80vh;
+   width: 90%;
+   padding: 5%;
+   border: none;
+   border-radius: 15px;
+   box-shadow: 0 0 5px rgba(255, 255, 255, 0.25);
+}
+
+.editDialog-container::backdrop {
+   background-color: rgba(0, 0, 0, 0.6);
+}
+
+.editDialog-details-container {
+   height: 70vh;
+   overflow-y: scroll;
+}
+
+.editDialog-actions-container {
+   justify-content: space-evenly;
+   position: fixed;
+   bottom: 0px;
+   width: 90%;
+   padding: 7px;
+   background-color: white;
+}
