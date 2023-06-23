@@ -37,10 +37,10 @@ function App() {
       const ssID = localStorage.getItem("ssID");
       if (ssID && !checked) {
          fetchFn("/user/info/get", "GET", ssID)
-            .catch(() => {
+         .catch(() => {
                localStorage.removeItem("user");
                localStorage.removeItem("ssID");
-               localStorage.removeItem("cardItems");
+               localStorage.removeItem("cartItems");
             });
          
          setChecked(true);

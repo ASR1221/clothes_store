@@ -44,6 +44,7 @@ function ItemDetails() {
                detail.stock -= selectedCount;
                return {
                   itemId: id,
+                  itemDetailsId: detail.id,
                   item_count: selectedCount,
                   color: detail.color,
                   size: detail.size,

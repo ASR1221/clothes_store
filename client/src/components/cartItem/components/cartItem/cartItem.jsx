@@ -44,10 +44,6 @@ function CartItem({ cartItem, index, isEditable, setCartItems }) {
             </button>
          )}
          <EditCartItem
-            itemId={cartItem.itemId}
-            color={cartItem.color}
-            size={cartItem.size}
-            count={cartItem.item_count}
             index={index}
             setCartItems={setCartItems}
             ref={editRef}
