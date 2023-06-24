@@ -5,3 +5,18 @@
 .cart-h1 {
    margin-top: 7%;
 }
+
+.cart-check-container {
+   position: fixed;
+   bottom: 9%;
+   border-radius: 15px;
+   width: 94%;
+   padding: 3% 5%;
+   align-items: center;
+   background-color: black;
+   color: white;
+}
+
+.cart-check-container > p {
+   width: 70%;
+}

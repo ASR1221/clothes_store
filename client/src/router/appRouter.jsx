@@ -13,8 +13,9 @@ import Login from "../pages/login/login";
 import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
 
-// TODO: orders page
+// TODO: orders page and fix footer there
 // TODO: cart page and modals
+// TODO: add responisivity to cart and orders
 // TODO: admins pages
 
 function App() {
