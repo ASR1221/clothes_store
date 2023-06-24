@@ -112,6 +112,11 @@ const EditCartItem = forwardRef(({ index, setCartItems }, ref) => {
                fn={handleRemoveClick}
                disabled={isMutLoading}
             />
+            <Button
+               text={"Cancel"}
+               fn={() => ref.current.close()}
+               disabled={isMutLoading}
+            />
          </div>
       </dialog>
    );

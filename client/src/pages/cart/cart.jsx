@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 import fetchFn from "../../utils/fetchFn";
 
 import CartItems from "../../components/cartItem/cartItems";
 import Loading from "../../components/loading/loading";
+import Button from "../../components/button/button";
 
 import "./cart.css";
-import Button from "../../components/button/button";
 
 function Cart() {
 
@@ -40,7 +41,13 @@ function Cart() {
       }
    );
 
+   const navigate = useNavigate();
+
    function handleMakeOrderClick() {
+      if (!isSignedIn) {
+         navigate("/login");
+         return;
+      }
 
    }
 
@@ -60,7 +67,7 @@ function Cart() {
          ) : < CartItems isEditable={true}/>
       }
       <div className="cart-check-container flex">
-         <p>Tottal Check: { totalCheck.current }$</p>
+         <p>Total Check: { totalCheck.current }$</p>
          <Button
             text={"Make Order"}
             fn={handleMakeOrderClick}
