@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -13,17 +13,14 @@ import "./cart.css";
 function Cart() {
 
    const isSignedIn = useRef(localStorage.getItem("ssID") ? true : false);
-   const totalCheck = useRef(0);
 
-   const { isLoading, error } = useQuery(
+   const { isLoading, error, data } = useQuery(
       ["cartItems"],
       () => fetchFn("/cart/list", "GET", localStorage.getItem("ssID")),
       {
          onSuccess: (data) => {
-            totalCheck.current = 0;
             localStorage.setItem("cartItems",
                JSON.stringify(data.map(item => {
-                  totalCheck.current += item.item_count * item.itemsDetail.item.price;
                   return {
                      id: item.id,
                      item_count: item.item_count,
@@ -40,6 +37,16 @@ function Cart() {
          },
       }
    );
+
+   const totalCheck = useMemo(() => {
+      const items = JSON.parse(localStorage.getItem("cartItems"));
+      let final = 0;
+      items.forEach(item => {
+         final += item.item_count * item.price;
+      });
+
+      return final;
+   }, [data]);
 
    const navigate = useNavigate();
 
@@ -67,7 +74,7 @@ function Cart() {
          ) : < CartItems isEditable={true}/>
       }
       <div className="cart-check-container flex">
-         <p>Total Check: { totalCheck.current }$</p>
+         <p>Total Check: { totalCheck }$</p>
          <Button
             text={"Make Order"}
             fn={handleMakeOrderClick}
