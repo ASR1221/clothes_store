@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 
 import Footer from "../../components/footer/footer"
+import { useQuery } from 'react-query';
+import fetchFn from '../../utils/fetchFn';
 
 function User() {
 
@@ -14,6 +16,14 @@ function User() {
          return JSON.parse(localStorage.getItem("user"));
       }
    }, [isLogedIn]);
+
+   const { data } = useQuery(
+      ["admin_check"],
+      () => fetchFn("/admin/check", "GET", localStorage.getItem("ssID")),
+      {
+         onSuccess: (data) => localStorage.setItem("ssID", data.sessionToken)
+      }
+   );
 
    function handleLogOut() {
       setIsLogedIn(false);
@@ -40,9 +50,11 @@ function User() {
                         <p onClick={handleLogOut} className="user-hover">Log out</p>
                      </div>
                   </div>
-                  <div className="user-admin-container">
-                     <Link to="/admin" className="user-hover">Admin dashboard</Link>
-                  </div>
+                  {
+                     data && data.roles && <div className="user-admin-container">
+                        <Link to="/admin" className="user-hover">Admin dashboard</Link>
+                     </div>
+                  }
                   <div className="user-report-container">
                      <a href="mailto:asr12211@outlook.com" className="user-hover">Report a problem</a>
                   </div>
