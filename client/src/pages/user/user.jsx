@@ -52,7 +52,7 @@ function User() {
                   </div>
                   {
                      data && data.roles && <div className="user-admin-container">
-                        <Link to="/admin" className="user-hover">Admin dashboard</Link>
+                        <Link to="/admin" state={data.roles} className="user-hover">Admin dashboard</Link>
                      </div>
                   }
                   <div className="user-report-container">

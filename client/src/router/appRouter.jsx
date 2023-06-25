@@ -12,7 +12,9 @@ import Dialog from "../components/dialog/dialog";
 import Login from "../pages/login/login";
 import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
+import Orders from "../pages/orders/orders";
 
+// TODO: fix order details response
 // TODO: fix /user/info/get response
 // TODO: store new sessionToken where ever needed in localStorage 
 // TODO: orders page and fix footer there
@@ -61,7 +63,10 @@ function App() {
                <Route path="search" element={<Search />} />
                <Route path="item/:id" element={<ItemDetails />} />
                <Route path="login" element={<Login />} /> {/* This should be the redirect url for logins */}
-               <Route path="user" element={<User />} />
+               <Route path="user">
+                  <Route index element={<User />} />
+                  <Route path="orders" element={<Orders />} />
+               </Route>
                <Route path="cart" element={<Cart />} />
             </Route>
          </Routes>

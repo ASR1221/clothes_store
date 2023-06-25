@@ -43,11 +43,11 @@ function CartItem({ cartItem, index, isEditable, setCartItems }) {
                />
             </button>
          )}
-         <EditCartItem
+         {isEditable && <EditCartItem
             index={index}
             setCartItems={setCartItems}
             ref={editRef}
-         />
+         />}
       </div>
    );
 }
