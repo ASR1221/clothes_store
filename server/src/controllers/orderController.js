@@ -10,7 +10,7 @@ exports.makeOrder = async (req, res, next) => {
    const { user_id, sessionToken } = req.user;
    const { payment_method, credit_card } = req.body;
 
-   if (!(payment_method && credit_card )) {
+   if (!(payment_method && (payment_method === "cash" || (payment_method === "credit-card" && credit_card)) )) {
       const error = new Error("Missing Information. Please try again.")
       error.status = 400;
       return next(error);

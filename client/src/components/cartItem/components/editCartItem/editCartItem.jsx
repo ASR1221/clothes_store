@@ -21,7 +21,7 @@ const EditCartItem = forwardRef(({ index, setCartItems }, ref) => {
    const hasChanged = useMemo(() => {
       return selectedColor !== cartItems[index].color
          || !selectedSizes.includes(cartItems[index].size)
-         || selectedCount !== cartItems[index].item_count;
+         || parseInt(selectedCount) !== cartItems[index].item_count;
    }, [cartItems, index, selectedColor, selectedCount, selectedSizes]);
 
    const showDialog = useContext(dialogContext);

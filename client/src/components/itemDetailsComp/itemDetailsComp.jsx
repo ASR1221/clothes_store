@@ -38,8 +38,7 @@ function ItemDetailsComp({
             colorSize.current[detail.color] = [...colorSize.current[detail.color], detail.size];
          }
       });
-
-      setSelectedColor(Object.keys(colorSize.current)[0])
+      if (!isSingle) setSelectedColor(Object.keys(colorSize.current)[0])
 
       return () => 
          colorSize.current = {};

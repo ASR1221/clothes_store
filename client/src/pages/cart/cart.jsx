@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -9,10 +9,19 @@ import Loading from "../../components/loading/loading";
 import Button from "../../components/button/button";
 
 import "./cart.css";
+import UserDetails from "./components/userDetails/userDetails";
 
 function Cart() {
 
-   const isSignedIn = useRef(localStorage.getItem("ssID") ? true : false);
+   const isSignedIn = localStorage.getItem("ssID") ? true : false;
+
+   const [cartItems, setCartItems] = useState([]);
+
+   useEffect(() => {
+      if (localStorage.getItem("cartItems"))
+         setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+   }, []);
+
 
    const { isLoading, error, data } = useQuery(
       ["cartItems"],
@@ -50,11 +59,14 @@ function Cart() {
    }, [data]);
 
    const navigate = useNavigate();
+   const userDetailsRef = useRef();
 
    function handleMakeOrderClick() {
       if (!isSignedIn) {
          navigate("/login");
          return;
+      } else {
+         userDetailsRef.current.showModal();
       }
 
    }
@@ -65,14 +77,14 @@ function Cart() {
       </div>
       <h1 className="cart-h1">Cart</h1>
       {
-         isLoading && isSignedIn.current ? (
+         isLoading && isSignedIn ? (
             <Loading />
-         ) : error && isSignedIn.current ? (
+         ) : error && isSignedIn ? (
             <div>
                <h2>Error</h2>
                <p>{error.message}</p>
             </div>
-         ) : < CartItems isEditable={true}/>
+         ) : < CartItems isEditable={true} cartItems={cartItems} setCartItems={setCartItems}/>
       }
       <div className="cart-check-container flex">
          <p>Total Check: { totalCheck }$</p>
@@ -81,6 +93,7 @@ function Cart() {
             fn={handleMakeOrderClick}
          />
       </div>
+      <UserDetails ref={userDetailsRef} setCartItems={setCartItems} />
    </div>;
 }
 

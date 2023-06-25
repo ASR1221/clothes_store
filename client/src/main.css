@@ -20,8 +20,14 @@ h1, h2, h3, h4, h5, h6 {
    margin-block: 10px;
 }
 
-p, a, div, span, button {
+p, a, div, span, button, input {
    font-family: "body";
+}
+
+input[type=text] {
+   border: 1px solid black;
+   border-radius: 5px;
+   padding: 2px 7px;
 }
 
 a {

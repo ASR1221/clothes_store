@@ -1,18 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-
 import CartItem from "./components/cartItem/cartItem";
 
 import "./cartItems.css";
 
-function CartItems({ isEditable }) {
-   const [cartItems, setCartItems] = useState([]);
-
-   useEffect(() => {
-      if (localStorage.getItem("cartItems"))
-         setCartItems(JSON.parse(localStorage.getItem("cartItems")));
-   }, []);
-
+function CartItems({ isEditable, cartItems, setCartItems }) {
+   
    function itemFunction(cartItem, i) {
       return <CartItem
          cartItem={cartItem}
