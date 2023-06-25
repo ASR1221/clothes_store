@@ -339,14 +339,9 @@ This file is going to take you through all the end points in this API.
                "id": 2,
                "name": "item name",
                "price": 15.25,
-               "section": "men",
-               "type": "shirts"
+               "image_path": "/path/to/image",
             }
          },
-         "images": [
-            { "path": "path/to/image" },
-            ...
-         ]
       },
       ...
    ]

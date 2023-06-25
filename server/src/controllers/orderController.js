@@ -149,22 +149,13 @@ exports.getOrderDetails = async (req, res, next) => {
                attributes: ["size", "color"],
                include: {
                   model: Items,
-                  attributes: { exclude: ["available", "createdAt", "updatedAt", "image_path"] },
+                  attributes: { exclude: ["available", "createdAt", "updatedAt", "section", "type"] },
                },
             },
          },
       );
 
-      const result = order.map(async (orderItem) => {
-         const items = { ...orderItem.dataValues };
-         items.images = await ItemsImages.findAll({
-            where: { item_id: orderItem.itemsDetail.item.id },
-            attributes: { exclude: ["id", "item_id", "createdAt", "updatedAt"] }
-         });
-         return items;
-      });
-
-      const orderItems = await Promise.all(result);
+      const orderItems = await Promise.all(order);
 
       return res.status(200).json(orderItems);
    } catch (e) {

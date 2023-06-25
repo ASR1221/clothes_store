@@ -14,7 +14,6 @@ import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
 import Orders from "../pages/orders/orders";
 
-// TODO: fix order details response
 // TODO: fix /user/info/get response
 // TODO: store new sessionToken where ever needed in localStorage 
 // TODO: orders page and fix footer there
