@@ -1,5 +1,9 @@
+.user-body {
+   min-height: 100vh;
+}
+
 .user-container {
-   padding: 5% 7%;
+   padding: 4% 7%;
 }
 
 .logo-container {

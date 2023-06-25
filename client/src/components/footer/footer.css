@@ -1,4 +1,5 @@
 footer {
+   background-color: white;
    width: 100%;
    flex-wrap: wrap;
    flex-direction: column-reverse;
@@ -7,21 +8,16 @@ footer {
    gap: 9vw;
    padding: 5%;
    padding-bottom: calc(5% + 35px);
-   box-shadow: 1px 1px 3px black;
+   box-shadow: 0 0 3px rgba(0, 0, 0, 0.199);
    bottom: 0;
 }
 
 .footer-img {
    width: min(20%, 90px);
-   aspect-ratio: 1/1;
-}
-
-.footer-text a {
-   text-decoration: underline;
 }
 
 .footer-text a:hover {
-   color: red;
+   text-decoration: underline;
 }
 
 @media (min-width: 500px) {

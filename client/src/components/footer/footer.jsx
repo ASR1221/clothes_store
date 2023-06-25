@@ -2,7 +2,7 @@ import "./footer.css"
 
 function Footer() {
    return (  
-      <footer className="flex absolute">
+      <footer className="flex">
          <img src="/icons/asr-logo.svg" alt="ASR logo" className="footer-img"/>
          <div className="footer-text">
             <p>This website is by Abdullah Salah using react</p>

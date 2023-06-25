@@ -23,7 +23,7 @@ function User() {
    }
 
    return (
-      <>
+      <div className='user-body relative'>
          <div className="user-container">
             <div className="logo-container">
                <img className="img" src="/icons/asr-logo.svg" alt="ASR Logo" />
@@ -55,7 +55,7 @@ function User() {
             )}
          </div>
          <Footer />
-      </>
+      </div>
    );
 }
 
