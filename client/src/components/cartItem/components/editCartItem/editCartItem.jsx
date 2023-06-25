@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { forwardRef, useContext, useState } from "react";
+import { forwardRef, useContext, useMemo, useState } from "react";
 import { useQuery, useMutation } from "react-query";
 
 import fetchFn from "../../../../utils/fetchFn";
@@ -17,6 +17,12 @@ const EditCartItem = forwardRef(({ index, setCartItems }, ref) => {
    const [selectedColor, setSelectedColor] = useState(cartItems[index].color);
    const [selectedSizes, setSelectedSizes] = useState([cartItems[index].size]);
    const [selectedCount, setSelectedCount] = useState(cartItems[index].item_count);
+
+   const hasChanged = useMemo(() => {
+      return selectedColor !== cartItems[index].color
+         || !selectedSizes.includes(cartItems[index].size)
+         || selectedCount !== cartItems[index].item_count;
+   }, [cartItems, index, selectedColor, selectedCount, selectedSizes]);
 
    const showDialog = useContext(dialogContext);
 
@@ -105,7 +111,7 @@ const EditCartItem = forwardRef(({ index, setCartItems }, ref) => {
             <Button
                text={"Save"}
                fn={handleSaveClick}
-               disabled={isMutLoading}
+               disabled={isMutLoading || !hasChanged || selectedSizes.length < 1 || !selectedCount || selectedCount < 1}
             />
             <Button
                text={"Remove"}

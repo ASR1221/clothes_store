@@ -40,6 +40,7 @@ function Cart() {
 
    const totalCheck = useMemo(() => {
       const items = JSON.parse(localStorage.getItem("cartItems"));
+      if (!items) return 0;
       let final = 0;
       items.forEach(item => {
          final += item.item_count * item.price;
@@ -69,7 +70,7 @@ function Cart() {
          ) : error && isSignedIn.current ? (
             <div>
                <h2>Error</h2>
-               <p>{error}</p>
+               <p>{error.message}</p>
             </div>
          ) : < CartItems isEditable={true}/>
       }

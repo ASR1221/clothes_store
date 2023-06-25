@@ -1,21 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import "./filterBtn.css"
+import "./filterBtn.css";
 
 function FilterBtn({ text, array, setArray, isSingle = false }) {
-
-   const [isSelected, setIsSelected] = useState(false);
-
-   useEffect(() => {
-      if (!array.length) setIsSelected(false);
-   }, [array]);
    
    function handleClick() {
       
-      setIsSelected(!isSelected);
-
       if (isSingle) {
-         setArray(text);
+         setArray([text]);
       } else {
          if (array.includes(text)) {
             setArray((p) => p.filter((a) => a !== text));
@@ -30,8 +21,8 @@ function FilterBtn({ text, array, setArray, isSingle = false }) {
          onClick={handleClick}
          className="filterBtn"
          style={{
-            backgroundColor: isSelected ? "black" : "white",
-            color: isSelected ? "white" : "black"
+            backgroundColor: array.includes(text) ? "black" : "white",
+            color: array.includes(text) ? "white" : "black"
          }}
       >
          {text}
