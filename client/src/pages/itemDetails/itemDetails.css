@@ -10,30 +10,11 @@
 .itemDetails-addToCart-btn {
    width: fit-content;
    margin-block: 10px;
-   margin-inline: 20px;
 }
 
 @media (min-width: 550px) {
    .logo-container {
       margin-top: -5%;
       margin-left: -5%;
-   }
-
-   .itemDetails-imgs-container {
-      height: 75vw;
-   }
-
-   .itemDetails-smallImgs-container {
-      height: calc(75vw - 20px);
-   }
-}
-
-@media (min-width: 780px) {
-   .itemDetails-imgs-container {
-      height: 58vw;
-   }
-
-   .itemDetails-smallImgs-container {
-      height: calc(58vw - 20px);
    }
 }

@@ -1,5 +1,7 @@
 .cart-container {
-   padding: 5% 3%;
+   margin-block: 5%;
+   margin-inline: auto;
+   width: min(94vw, 500px);
 }
 
 .cart-h1 {
@@ -10,8 +12,8 @@
    position: fixed;
    bottom: 9%;
    border-radius: 15px;
-   width: 94%;
-   padding: 3% 5%;
+   width: min(94vw, 500px);
+   padding: 10px 5%;
    align-items: center;
    background-color: black;
    color: white;
@@ -19,4 +21,10 @@
 
 .cart-check-container > p {
    width: 70%;
+}
+
+@media (min-width: 550px) {
+   .cart-container {
+      margin-top: 10%;
+   }
 }

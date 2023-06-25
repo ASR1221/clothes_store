@@ -68,3 +68,25 @@
 .itemDetails-number-input:focus {
    outline: none;
 }
+
+
+@media (min-width: 550px) {
+
+   .itemDetails-imgs-container {
+      height: 73vw;
+   }
+
+   .itemDetails-smallImgs-container {
+      height: calc(73vw - 20px);
+   }
+}
+
+@media (min-width: 780px) {
+   .itemDetails-imgs-container {
+      height: 55vw;
+   }
+
+   .itemDetails-smallImgs-container {
+      height: calc(55vw - 20px);
+   }
+}

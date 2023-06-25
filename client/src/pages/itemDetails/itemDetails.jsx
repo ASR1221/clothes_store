@@ -106,16 +106,14 @@ function ItemDetails() {
             selectedCount={selectedCount}
             setSelectedCount={setSelectedCount}
          />
-         <div>
-            <div className="itemDetails-addToCart-btn">
-               <Button
-                  text={"Add to cart"}
-                  fn={handleAddToCart}
-                  disabled={
-                     selectedCount < 1 || !selectedSizes.length || isCountError
-                  }
-               />
-            </div>
+         <div className="itemDetails-addToCart-btn responsive-margin">
+            <Button
+               text={"Add to cart"}
+               fn={handleAddToCart}
+               disabled={
+                  selectedCount < 1 || !selectedSizes.length || isCountError
+               }
+            />
          </div>
          <section className="responsive-margin">
             <h2>
