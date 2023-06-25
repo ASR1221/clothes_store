@@ -31,8 +31,8 @@ const UserDetails = forwardRef(({ setCartItems }, ref) => {
       () => fetchFn("/user/info/get", "GET", localStorage.getItem("ssID")),
       {
          onSuccess: (data) => {
-            Object.keys(data.dataValues).forEach(d => {
-               setInputData(p => ({ ...p, [d]: data.dataValues[d] ? data.dataValues[d] : "" }));
+            Object.keys(data).forEach(d => {
+               setInputData(p => ({ ...p, [d]: data[d] ? data[d] : "" }));
             });
          }
       });

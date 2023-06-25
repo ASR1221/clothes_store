@@ -151,9 +151,7 @@ exports.getUserInfo = async (req, res, next) => {
          attributes: { exclude: ["id"] },
       });
 
-      const cartItemsCount = await Cart.count({ where: { user_id: req.user.user_id } });      
-
-      res.status(200).json({ ...user, cartItemsCount });
+      res.status(200).json(user);
    } catch (e) {
       return next(e);
    }

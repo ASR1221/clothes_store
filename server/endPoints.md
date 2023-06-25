@@ -178,8 +178,7 @@ This file is going to take you through all the end points in this API.
       "country": "country of the user",
       "city": "city of the user",
       "district": "district of the user",
-      "nearestPoI": "nearest point of intrest to the user",
-      "cartItemsCount": 3
+      "nearestPoI": "nearest point of intrest to the user"
    }
    ```
 
