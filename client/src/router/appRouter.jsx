@@ -14,7 +14,10 @@ import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
 import Orders from "../pages/orders/orders";
 import Admin from "../pages/admin/admin";
+import Uploading from "../pages/admin/uploading/uploading";
 
+// TODO: trend pages
+// TODO: fix rounds in itemDetails
 // TODO: admins pages
 
 function App() {
@@ -67,7 +70,7 @@ function App() {
                <Route path="admin">
                   <Route index element={<Admin />} />
                   <Route path="finance" /* element={<Admin />} */ />
-                  <Route path="uploading" /* element={<Admin />} */ />
+                  <Route path="uploading" element={<Uploading />} />
                   <Route path="orders" /* element={<Admin />} */ />
                </Route>
             </Route>
