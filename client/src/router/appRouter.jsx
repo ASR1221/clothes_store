@@ -13,6 +13,7 @@ import Login from "../pages/login/login";
 import User from "../pages/user/user";
 import Cart from "../pages/cart/cart";
 import Orders from "../pages/orders/orders";
+import Admin from "../pages/admin/admin";
 
 // TODO: admins pages
 
@@ -58,11 +59,17 @@ function App() {
                <Route path="search" element={<Search />} />
                <Route path="item/:id" element={<ItemDetails />} />
                <Route path="login" element={<Login />} /> {/* This should be the redirect url for logins */}
+               <Route path="cart" element={<Cart />} />
                <Route path="user">
                   <Route index element={<User />} />
                   <Route path="orders" element={<Orders />} />
                </Route>
-               <Route path="cart" element={<Cart />} />
+               <Route path="admin">
+                  <Route index element={<Admin />} />
+                  <Route path="finance" /* element={<Admin />} */ />
+                  <Route path="uploading" /* element={<Admin />} */ />
+                  <Route path="orders" /* element={<Admin />} */ />
+               </Route>
             </Route>
          </Routes>
       </dialogContext.Provider>

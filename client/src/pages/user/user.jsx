@@ -34,7 +34,7 @@ function User() {
 
    return (
       <div className='user-body relative'>
-         <div className="user-container">
+         <div className="cart-container">
             <div className="logo-container">
                <img className="img" src="/icons/asr-logo.svg" alt="ASR Logo" />
             </div>
@@ -52,7 +52,7 @@ function User() {
                   </div>
                   {
                      data && data.roles && <div className="user-admin-container">
-                        <Link to="/admin" state={data.roles}>Admin dashboard</Link>
+                        <Link to="/admin">Admin dashboard</Link>
                      </div>
                   }
                   <div className="user-report-container">
