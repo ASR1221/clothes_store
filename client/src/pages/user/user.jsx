@@ -46,17 +46,17 @@ function User() {
                         <p>{user.email}</p>
                      </div>
                      <div className="user-info-actions-container">
-                        <Link to="/user/orders" className="user-hover">Orders</Link>
+                        <Link to="/user/orders">Orders</Link>
                         <p onClick={handleLogOut} className="user-hover">Log out</p>
                      </div>
                   </div>
                   {
                      data && data.roles && <div className="user-admin-container">
-                        <Link to="/admin" state={data.roles} className="user-hover">Admin dashboard</Link>
+                        <Link to="/admin" state={data.roles}>Admin dashboard</Link>
                      </div>
                   }
                   <div className="user-report-container">
-                     <a href="mailto:asr12211@outlook.com" className="user-hover">Report a problem</a>
+                     <a href="mailto:asr12211@outlook.com">Report a problem</a>
                   </div>
                </div>
             ) : (

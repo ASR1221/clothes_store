@@ -47,6 +47,7 @@ a, button, input {
 
 a:focus, button:focus, a:hover, button:hover {
   outline: none !important;
+  text-decoration: underline;
 }
 
 .grid {
