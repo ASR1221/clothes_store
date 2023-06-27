@@ -7,7 +7,7 @@ exports.createSession = (req, res, next) => {
 
    const { id, name, email, phone_number, cartItemsCount } = req.user;
    
-   const expiresIn = req.path.includes("native") ? "7d" : "1d";
+   const expiresIn = req.path.includes("native") ? "7d" : "15m";
    jwt.sign(
       {
          id,
@@ -47,7 +47,7 @@ exports.checkAndRecreateSession = (req, res, next) => {
          return next(error)
       }
 
-      const expiresIn = req.path.includes("native") ? "7d" : "1d";
+      const expiresIn = req.path.includes("native") ? "7d" : "15m";
       jwt.sign(
          {
             id: data.id,

@@ -3,10 +3,6 @@ const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
 
-// TODO: fix session time
-// TODO: payment
-// TODO: infinite scrolling in /list/items
-
 const app = express();
 
 // Development imports
@@ -22,11 +18,6 @@ app.use(helmet.hidePoweredBy());
 app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
-
-// database sync (should import model to work) //! DELETE after sync is complete
-// sequelize.sync({ alter: true})
-//    .then(() => console.log("database syncd"))
-//    .catch(e => console.log(`database sync error: ${e}`));
 
 // routes
 app.use("/api/native", require("./routes/mainRoute"));
