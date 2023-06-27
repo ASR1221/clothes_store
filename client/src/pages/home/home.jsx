@@ -236,6 +236,13 @@ function Home() {
                />
             </div>
          </section>
+         <div className="intro absolute flex">
+            <div className="intro-inner">
+               <img className="img" src="/icons/asr-logo.svg" alt="ASR Logo" />
+               <p>ASR Store</p>
+               <p>Dress Elegance</p>
+            </div>
+         </div>
       </div>
    );
 }

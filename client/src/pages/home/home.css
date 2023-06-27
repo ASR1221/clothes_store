@@ -73,3 +73,31 @@
    }
 
 }
+
+.intro {
+   background-color: white;
+   width: 100vw;
+   top: 0;
+   left: 0;
+   bottom: 0;
+   z-index: 1000;
+   grid-template-columns: 1fr;
+   align-items: center;
+   justify-content: center;
+   animation: intro 1s 3.5s forwards;
+}
+
+.intro-inner {
+   width: 120px;
+}
+
+.intro-inner > p {
+   width: fit-content;
+   margin: 5px auto;
+   font-size: larger;
+}
+
+@keyframes intro {
+   from { left: 0; }
+   to { left: -200%; }
+}
