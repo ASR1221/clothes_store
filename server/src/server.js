@@ -2,14 +2,14 @@ const express = require("express");
 const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
-const Item = require("./models/clothesModels/itemsModel");
-const Item2 = require("./models/clothesModels/itemsDetailsModel");
-const Item3 = require("./models/clothesModels/imagesModel");
-const Item4 = require("./models/orderModels/orderModel");
-const Item5 = require("./models/orderModels/orderItemsModel");
-const Item6 = require("./models/userModels/usersModel");
-const Item7 = require("./models/userModels/cartModel");
-const Item8 = require("./models/userModels/adminsModel");
+// const Item = require("./models/clothesModels/itemsModel");
+// const Item2 = require("./models/clothesModels/itemsDetailsModel");
+// const Item3 = require("./models/clothesModels/imagesModel");
+// const Item4 = require("./models/orderModels/orderModel");
+// const Item5 = require("./models/orderModels/orderItemsModel");
+// const Item6 = require("./models/userModels/usersModel");
+// const Item7 = require("./models/userModels/cartModel");
+// const Item8 = require("./models/userModels/adminsModel");
 
 const app = express();
 
@@ -19,7 +19,6 @@ if (process.env.NODE_ENV !== "production") {
    const logger = require("morgan");
    app.use(logger("dev"));
 }
-console.log(process.env.NODE_ENV);
 
 // Important middlewares
 app.use(helmet());
@@ -28,10 +27,10 @@ app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
 
-// database sync (should import model to work) //! DELETE after sync is complete
-sequelize.sync({ alter: true})
-   .then(() => console.log("database syncd"))
-   .catch(e => console.log(`database sync error: ${e}`));
+// // database sync (should import model to work) //! DELETE after sync is complete
+// sequelize.sync({ alter: true})
+//    .then(() => console.log("database syncd"))
+//    .catch(e => console.log(`database sync error: ${e}`));
 
 // routes
 app.use("/api/native", require("./routes/mainRoute"));
