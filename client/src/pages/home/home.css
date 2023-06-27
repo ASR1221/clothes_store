@@ -5,7 +5,7 @@
    top: 83%;
    z-index: 10;
    background-color: white;
-   box-shadow: 1px 1px 5px black;
+   box-shadow: 0 0 5px rgba(0, 0, 0, 0.432);
    padding-bottom: 30%;
 }
 
