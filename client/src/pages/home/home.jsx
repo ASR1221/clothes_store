@@ -7,7 +7,7 @@ import FilterBtn from "../../components/filterBtn/filterBtn";
 
 import "./home.css";
 
-function Home() {
+function Home({ animate }) {
 
    // constants
    const DEVICEWIDTH = document.documentElement.clientWidth;
@@ -235,13 +235,13 @@ function Home() {
                />
             </div>
          </section>
-         <div className="intro absolute flex">
+         {animate.current && <div className="intro absolute flex" onAnimationEnd={() => animate.current = false}>
             <div className="intro-inner">
                <img className="img" src="/icons/asr-logo.svg" alt="ASR Logo" />
                <p>ASR Store</p>
                <p>Dress Elegance</p>
             </div>
-         </div>
+         </div>}
       </div>
    );
 }

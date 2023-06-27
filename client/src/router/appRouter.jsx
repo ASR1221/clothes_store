@@ -19,6 +19,8 @@ import Trends from "../pages/trends/trends";
 
 function App() {
 
+   const animationIntroRef = useRef(true);
+
    const [dialogTxt, setDialogTxt] = useState();
    const dialogRef = useRef();
 
@@ -55,7 +57,7 @@ function App() {
                   <NavBar />
                   <Dialog text={dialogTxt} ref={dialogRef} />
                </>}>
-               <Route index element={<Home />} />
+               <Route index element={<Home animate={animationIntroRef}/>} />
                <Route path="search" element={<Search />} />
                <Route path="item/:id" element={<ItemDetails />} />
                <Route path="trends/:section" element={<Trends />} />
