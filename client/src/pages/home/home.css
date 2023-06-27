@@ -97,7 +97,22 @@
    font-size: larger;
 }
 
+.intro-inner > img {
+   animation: intro-image1 1s 3.5s forwards, intro-image2 3.5s;
+}
+
 @keyframes intro {
    from { left: 0; }
    to { left: -200%; }
+}
+
+@keyframes intro-image1 {
+   from { rotate: 0deg; }
+   to { rotate: -360deg; }
+}
+
+@keyframes intro-image2 {
+   0% { scale: 1; }
+   50% { scale: 1.05; }
+   100% { scale: 1; }
 }

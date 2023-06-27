@@ -17,10 +17,6 @@ import Admin from "../pages/admin/admin";
 import Uploading from "../pages/admin/uploading/uploading";
 import Trends from "../pages/trends/trends";
 
-// TODO: trend pages
-// TODO: fix rounds in itemDetails
-// TODO: admins pages
-
 function App() {
 
    const [dialogTxt, setDialogTxt] = useState();

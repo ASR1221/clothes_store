@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-import "./home.css";
 import Cover from "./components/cover/cover";
 import Trends from "./components/trends/trends";
 import Items from "../../components/items/items";
 import FilterBtn from "../../components/filterBtn/filterBtn";
 
-// TODO: infinteQuery and trends in server and client
+import "./home.css";
 
 function Home() {
 

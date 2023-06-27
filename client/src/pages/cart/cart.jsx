@@ -87,7 +87,7 @@ function Cart() {
          ) : < CartItems isEditable={true} cartItems={cartItems} setCartItems={setCartItems}/>
       }
       <div className="cart-check-container flex">
-         <p>Total Check: { totalCheck }$</p>
+         <p>Total Check: { (totalCheck).toFixed(2) }$</p>
          <Button
             text={"Make Order"}
             fn={handleMakeOrderClick}

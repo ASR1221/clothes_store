@@ -119,7 +119,7 @@ function ItemDetailsComp({
                         className="itemDetails-number-input"
                      />
                   </label>
-                  <p>Total price: {data && data.item.price * selectedCount * selectedSizes.length}$</p>
+                  <p>Total price: {data && (data.item.price * selectedCount * selectedSizes.length).toFixed(2)}$</p>
                </div>
             </section>
          </>

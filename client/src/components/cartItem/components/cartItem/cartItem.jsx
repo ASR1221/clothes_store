@@ -28,7 +28,7 @@ function CartItem({ cartItem, index, isEditable, setCartItems }) {
                <p>Count: {cartItem.item_count}</p>
             </div>
             <p className="cartItem-price">
-               Total Price: <span>{cartItem.price * cartItem.item_count}$</span>
+               Total Price: <span>{(cartItem.price * cartItem.item_count).toFixed(2)}$</span>
             </p>
          </div>
          {isEditable && (
