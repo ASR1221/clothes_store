@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 import "./trends.css";
 
-function Trends({imgsLoad, handleImgsLoad, trendImgs, trendText}) {
+function Trends({imgsLoad, handleImgsLoad, trendImgs, trendText, section}) {
    return (
       <>
          <h2>Trends</h2>
-         <Link to="/trends/category" className="home-main-trend cat grid">
+         <Link to={`/trends/${section}`} className="home-main-trend cat grid">
             <div className="trends-placeholder">
                <img
                   onLoad={() =>

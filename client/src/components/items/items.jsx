@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
+import { useParams } from "react-router-dom";
 
-import ItemCard from "../card/card";
 import fetchFn from "../../utils/fetchFn";
 
-import "./items.css";
+import ItemCard from "../card/card";
 import Loading from "../loading/loading";
-import { useParams } from "react-router-dom";
+
+import "./items.css";
 
 function Items({ endpoint, queryId, rootRef, types }) {
 

@@ -15,6 +15,7 @@ import Cart from "../pages/cart/cart";
 import Orders from "../pages/orders/orders";
 import Admin from "../pages/admin/admin";
 import Uploading from "../pages/admin/uploading/uploading";
+import Trends from "../pages/trends/trends";
 
 // TODO: trend pages
 // TODO: fix rounds in itemDetails
@@ -61,6 +62,7 @@ function App() {
                <Route index element={<Home />} />
                <Route path="search" element={<Search />} />
                <Route path="item/:id" element={<ItemDetails />} />
+               <Route path="trends/:section" element={<Trends />} />
                <Route path="login" element={<Login />} /> {/* This should be the redirect url for logins */}
                <Route path="cart" element={<Cart />} />
                <Route path="user">

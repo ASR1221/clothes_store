@@ -207,6 +207,7 @@ function Home() {
                   handleImgsLoad={handleImgsLoad}
                   trendImgs={trendImgs}
                   trendText={trendText}
+                  section={section}
                />
                <h2>All</h2>
                <div className="flex home-main-types">
