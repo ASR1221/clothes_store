@@ -521,7 +521,7 @@ This file is going to take you through all the end points in this API.
             "sizes": [ 
                {
                   "size": "XL",
-                  "count": 5
+                  "stock": 5
                },
                ...
             ]

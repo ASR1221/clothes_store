@@ -256,7 +256,7 @@ exports.updateStock = async (req, res, next) => {
       if (!COLORS.includes(obj.color)) {
          return false;
       }
-      return obj.sizes.every(elm => elm.count > 0 && elm.count % 1 === 0 && SIZES.includes(elm.size));
+      return obj.sizes.every(elm => elm.stock > 0 && elm.stock % 1 === 0 && SIZES.includes(elm.size));
    });
 
    if (!allowCreate) {
@@ -274,7 +274,7 @@ exports.updateStock = async (req, res, next) => {
                defaults: {
                   size: size.size,
                   color: obj.color,
-                  stock: size.count,
+                  stock: size.stock,
                   item_id: id,
                },
                where: {
@@ -301,7 +301,7 @@ exports.updateStock = async (req, res, next) => {
                createdFlag = true;
                return;
             }
-            itemDetail.stock = itemDetail.stock + size.count;
+            itemDetail.stock = itemDetail.stock + size.stock;
             promises.push(itemDetail.save());
          })
       });

@@ -1,10 +1,9 @@
 import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 import fetchFn from "../../utils/fetchFn";
 
-import "./admin.css";
 import Loading from "../../components/loading/loading";
-import { Link } from "react-router-dom";
 
 function Admin() {
 

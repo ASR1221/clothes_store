@@ -12,23 +12,28 @@ import Button from "../../../components/button/button";
 
 function Uploading() {
 
+   const [isUpload, setIsUpload] = useState(true);
    const showDialog = useContext(dialogContext);
 
    const { isLoading, mutate } = useMutation({
-      mutationFn: async(body) => {
-         const res = await fetch("/api/admin/item/add", {
-            method: "POST",
-            headers: {
-               "Authorization": `Bearer ${localStorage.getItem("ssID")}`,
-            
-            },
-            body
-         });
-         if (!res.ok) {
-            const body = await res.json();
-            throw new Error(body.message);
+      mutationFn: async (body) => {
+         if (isUpload) {
+            const res = await fetch("/api/admin/item/add", {
+               method: "POST",
+               headers: {
+                  "Authorization": `Bearer ${localStorage.getItem("ssID")}`,
+               
+               },
+               body
+            });
+            if (!res.ok) {
+               const body = await res.json();
+               throw new Error(body.message);
+            }
+            return res.json();
          }
-         return res.json();
+
+         return fetchFn("/admin/item/update", "PUT", localStorage.getItem("ssID"), body);
       },
       onError: (error) => showDialog(`${error}. Please try again.`),
       onSuccess: (data) => {
@@ -42,6 +47,7 @@ function Uploading() {
             details: [],
          });
          setFiles([]);
+         setItemId(0);
          setAddedColors([{
             color: "red",
             sizes: [
@@ -75,6 +81,7 @@ function Uploading() {
       ],
    }]);
    
+   const [itemId, setItemId] = useState(0);
    const [formData, setFormData] = useState({
       name: "",
       price: "",
@@ -108,7 +115,6 @@ function Uploading() {
 
       setAddedColors(updatedColors);
    }
-
    
    function handleFileChange(e) {
       setFiles(e.target.files);
@@ -116,7 +122,8 @@ function Uploading() {
 
    //! ******** ADD and REMOVE COLORS or SIZE ********
    
-   function handleAddColor() {
+   function handleAddColor(e) {
+      e.preventDefault();
       setAddedColors(p => ([
          ...p, {
          color: "red",
@@ -126,13 +133,15 @@ function Uploading() {
       }]));
    }
    
-   function handleRemoveColor() {
+   function handleRemoveColor(e) {
+      e.preventDefault();
       const color = [...addedColors];
       color.pop();
       setAddedColors(color);
    }
 
-   function handleAddSize(i) {
+   function handleAddSize(e, i) {
+      e.preventDefault();
       const updatedColors = [...addedColors];
 
       const sizes = [...updatedColors[i].sizes];
@@ -143,7 +152,8 @@ function Uploading() {
       setAddedColors(updatedColors);
    }
 
-   function handleRemoveSize(i) {
+   function handleRemoveSize(e, i) {
+      e.preventDefault();
       const updatedColors = [...addedColors];
     
       const sizes = [...updatedColors[i].sizes];
@@ -160,15 +170,21 @@ function Uploading() {
    //! ******** SEND TO SERVER ***********
    function handleSubmit(e) {
       e.preventDefault();
-      const bodyData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-         bodyData.append("images", files[i]);
+      if (isUpload) {
+         const bodyData = new FormData();
+         for (let i = 0; i < files.length; i++) {
+            bodyData.append("images", files[i]);
+         }
+         const newFormData = { ...formData, details: addedColors }
+         bodyData.append("json", JSON.stringify(newFormData));
+         console.log(newFormData)
+   
+         mutate(bodyData);
+      } else {
+         const bodyData = { id: itemId, details: [...addedColors] };
+         console.log(bodyData)
+         mutate(bodyData);
       }
-      const newFormData = { ...formData, details: addedColors }
-      bodyData.append("json", JSON.stringify(newFormData));
-      console.log(newFormData)
-
-      mutate(bodyData);
    }
    //! ********** END SEND TO SERVER **************
 
@@ -180,41 +196,65 @@ function Uploading() {
       <h1>Upload</h1>
       <div>
          <form onSubmit={handleSubmit} >
+            <div>
+               <select
+                  name="select"
+                  value={isUpload ? "uploade" : "update"}
+                  onChange={(e) => e.target.value === "upload" ? setIsUpload(true) : setIsUpload(false)}
+                  required
+               >
+                     <option value="upload">upload</option>
+                     <option value="update">update</option>
+               </select>
+            </div>
             <div className="grid uploading-name-container">
-               <label htmlFor="name">Name: </label>
-               <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleTextChange}
-                  required
-               />
-               <label htmlFor="price">Price: </label>
-               <input
-                  type="text"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleTextChange}
-                  required
-               />
-               <label htmlFor="section">Section: </label>
-               <select name="section" value={formData.section} onChange={handleTextChange} required>
-                  <option value="men">men</option>
-                  <option value="women">women</option>
-                  <option value="kids">kids</option>
-               </select>
-               <label htmlFor="type">Type: </label>
-               <select name="type" value={formData.type} onChange={handleTextChange} required>
-                  <option value="jeans">jeans</option>
-                  <option value="shirts">shirts</option>
-                  <option value="coats">coats</option>
-                  {
-                     formData.section !== "men" && <>
-                        <option value="dresses">dresses</option>
-                        <option value="skirts">skirts</option>
-                     </>
-                  }
-               </select>
+               {
+                  isUpload ? <>
+                     <label htmlFor="name">Name: </label>
+                     <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleTextChange}
+                        required
+                     />
+                     <label htmlFor="price">Price: </label>
+                     <input
+                        type="text"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleTextChange}
+                        required
+                     />
+                     <label htmlFor="section">Section: </label>
+                     <select name="section" value={formData.section} onChange={handleTextChange} required>
+                        <option value="men">men</option>
+                        <option value="women">women</option>
+                        <option value="kids">kids</option>
+                     </select>
+                     <label htmlFor="type">Type: </label>
+                     <select name="type" value={formData.type} onChange={handleTextChange} required>
+                        <option value="jeans">jeans</option>
+                        <option value="shirts">shirts</option>
+                        <option value="coats">coats</option>
+                        {
+                           formData.section !== "men" && <>
+                              <option value="dresses">dresses</option>
+                              <option value="skirts">skirts</option>
+                           </>
+                        }
+                     </select>
+                  </>
+                  : <>
+                     <label htmlFor="id">Item id: </label>
+                     <input
+                        type="number"
+                        name="id"
+                        value={itemId}
+                        onChange={e => setItemId(e.target.value)}
+                     />
+                  </>
+               }
             </div>
             <div>
                {
@@ -259,22 +299,22 @@ function Uploading() {
                            />
                         </div>)
                      }
-                     <Button text={"Add Size"} fn={() => handleAddSize(i)}/>
-                     <Button text={"Remove Size"} fn={() => handleRemoveSize(i)}/>
+                     <Button text={"Add Size"} fn={(e) => handleAddSize(e, i)}/>
+                     <Button text={"Remove Size"} fn={(e) => handleRemoveSize(e, i)}/>
                   </div>)
                }
             </div>
             <div className="uploading-file-container">
                <Button text={"Add Color"} fn={handleAddColor}/>
                <Button text={"Remove Color"} fn={handleRemoveColor} />
-               <input
+               {isUpload && <input
                   type="file"
                   name="images"
                   accept="image/png, image/jpeg"
                   multiple
                   required
                   onChange={handleFileChange}
-               />
+               />}
                <button type="submit" className="btn">Submit</button>
             </div>
          </form>
