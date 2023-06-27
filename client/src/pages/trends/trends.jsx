@@ -1,16 +1,14 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+
 import Items from "../../components/items/items";
-import { useParams } from "react-router-dom";
 
 function Trends() {
 
    const containerRef = useRef();
    const { section } = useParams();
-   const type = useMemo(() => {
-      if (section === "women") return "dresses";
-      if (section === "men") return "coats";
-      if (section === "kids") return "shirts";
-   }, [section]);
+   const [searchParams] = useSearchParams();
+   const type = searchParams.get("type");
 
    return <div className="cart-container">
       <div className="cart logo-container">
@@ -20,7 +18,7 @@ function Trends() {
       <div ref={containerRef}>
          <Items
             endpoint={`/items/list?section=${section}&type=${type}&page=`}
-            queryId={`${section}_trends`}
+            queryId={`${section}_trends_${type}`}
             rootRef={containerRef}
          />
       </div>

@@ -1,13 +1,22 @@
 /* eslint-disable react/prop-types */
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import "./trends.css";
 
-function Trends({imgsLoad, handleImgsLoad, trendImgs, trendText, section}) {
+function Trends({ imgsLoad, handleImgsLoad, trendImgs, trendText, section }) {
+   
+
+   const type = useMemo(() => {
+      if (section === "women") return "dresses";
+      if (section === "men") return "coats";
+      if (section === "kids") return "shirts";
+   }, [section]);
+
    return (
       <>
          <h2>Trends</h2>
-         <Link to={`/trends/${section}`} className="home-main-trend cat grid">
+         <Link to={`/trends/${section}?type=${type}`} className="home-main-trend cat grid">
             <div className="trends-placeholder">
                <img
                   onLoad={() =>

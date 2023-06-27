@@ -76,7 +76,7 @@ function Cover({navigatorRef, isAllowedRef, imgsLoad, setSection}) {
             ref={carouselRef}
          >
             <div className="home-carousel-placeholder">
-               <Link to="/trends/women">
+               <Link to="/trends/women?type=shirts">
                   <img
                      src="/images/home/elei-top.png"
                      alt="Home image"
@@ -85,7 +85,7 @@ function Cover({navigatorRef, isAllowedRef, imgsLoad, setSection}) {
                </Link>
             </div>
             <div className="home-carousel-placeholder">
-               <Link to="/trends/men">
+               <Link to="/trends/men?type=jeans">
                   <img
                      src="/images/home/man-in-suit.png"
                      alt="Home image"
@@ -94,7 +94,7 @@ function Cover({navigatorRef, isAllowedRef, imgsLoad, setSection}) {
                </Link>
             </div>
             <div className="home-carousel-placeholder">
-               <Link to="/trends/kids">
+               <Link to="/trends/kids?type=dresses">
                   <img
                      src="/images/home/kids-in-coats.png"
                      alt="Home image"
