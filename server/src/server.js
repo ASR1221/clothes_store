@@ -2,6 +2,14 @@ const express = require("express");
 const helmet = require("helmet");
 const compression = require("express-compression");
 const sequelize = require("./utils/database");
+const Item = require("./models/clothesModels/itemsModel");
+const Item2 = require("./models/clothesModels/itemsDetailsModel");
+const Item3 = require("./models/clothesModels/imagesModel");
+const Item4 = require("./models/orderModels/orderModel");
+const Item5 = require("./models/orderModels/orderItemsModel");
+const Item6 = require("./models/userModels/usersModel");
+const Item7 = require("./models/userModels/cartModel");
+const Item8 = require("./models/userModels/adminsModel");
 
 const app = express();
 
