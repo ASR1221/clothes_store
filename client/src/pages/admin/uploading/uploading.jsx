@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import fetchFn from "../../../utils/fetchFn";
 import { dialogContext } from "../../../context/dialogContext";
 
-import "./uploading.css";
 import Loading from "../../../components/loading/loading";
+
+import "./uploading.css";
+import Button from "../../../components/button/button";
 
 function Uploading() {
 
@@ -178,47 +180,52 @@ function Uploading() {
       <h1>Upload</h1>
       <div>
          <form onSubmit={handleSubmit} >
-            <label htmlFor="name">Name: </label>
-            <input
-               type="text"
-               name="name"
-               value={formData.name}
-               onChange={handleTextChange}
-               required
-            /><br />
-            <label htmlFor="price">Price: </label>
-            <input
-               type="text"
-               name="price"
-               value={formData.price}
-               onChange={handleTextChange}
-               required
-            /><br />
-            <label htmlFor="section">Section: </label>
-            <select name="section" value={formData.section} onChange={handleTextChange} required>
-               <option value="men">men</option>
-               <option value="women">women</option>
-               <option value="kids">kids</option>
-            </select>
-            <br />
-            <label htmlFor="type">Type: </label>
-            <select name="type" value={formData.type} onChange={handleTextChange} required>
-               <option value="jeans">jeans</option>
-               <option value="shirts">shirts</option>
-               <option value="coats">coats</option>
+            <div className="grid uploading-name-container">
+               <label htmlFor="name">Name: </label>
+               <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleTextChange}
+                  required
+               />
+               <label htmlFor="price">Price: </label>
+               <input
+                  type="text"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleTextChange}
+                  required
+               />
+               <label htmlFor="section">Section: </label>
+               <select name="section" value={formData.section} onChange={handleTextChange} required>
+                  <option value="men">men</option>
+                  <option value="women">women</option>
+                  <option value="kids">kids</option>
+               </select>
+               <label htmlFor="type">Type: </label>
+               <select name="type" value={formData.type} onChange={handleTextChange} required>
+                  <option value="jeans">jeans</option>
+                  <option value="shirts">shirts</option>
+                  <option value="coats">coats</option>
+                  {
+                     formData.section !== "men" && <>
+                        <option value="dresses">dresses</option>
+                        <option value="skirts">skirts</option>
+                     </>
+                  }
+               </select>
+            </div>
+            <div>
                {
-                  formData.section !== "men" && <>
-                     <option value="dresses">dresses</option>
-                     <option value="skirts">skirts</option>
-                  </>
-               }
-            </select>
-            <br />
-            <div id="repeated" >
-               {
-                  addedColors.map( (obj, i) => <div key={i} style={{ padding: ".5rem", border: "1px solid black" }}>
+                  addedColors.map( (obj, i) => <div key={i} className="uploading-color-container">
                      <label htmlFor="color">Color: </label>
-                     <select name="color" onChange={(e) => handleColorChange(e, i)} required>
+                     <select
+                        name="color"
+                        onChange={(e) => handleColorChange(e, i)}
+                        required
+                        className="uploading-color-select"
+                     >
                         <option value="red">red</option>
                         <option value="blue">blue</option>
                         <option value="yellow">yellow</option>
@@ -229,7 +236,12 @@ function Uploading() {
                      {
                         addedColors[i].sizes.map((sizeObj, sizeI) => <div key={sizeI}>
                            <label htmlFor="size">Size: </label>
-                           <select name="size" onChange={(e) => handleSizeAndStockChange(e, i, sizeI)} required>
+                           <select
+                              name="size"
+                              onChange={(e) => handleSizeAndStockChange(e, i, sizeI)}
+                              required
+                              className="uploading-color-select"
+                           >
                               <option value="XS">XS</option>
                               <option value="S">S</option>
                               <option value="L">L</option>
@@ -247,22 +259,24 @@ function Uploading() {
                            />
                         </div>)
                      }
-                     <button type="button" onClick={() => handleAddSize(i)}>Add Size</button>
-                     <button type="button" onClick={() => handleRemoveSize(i)}>Remove Size</button>
+                     <Button text={"Add Size"} fn={() => handleAddSize(i)}/>
+                     <Button text={"Remove Size"} fn={() => handleRemoveSize(i)}/>
                   </div>)
                }
             </div>
-            <button type="button" onClick={handleAddColor}>Add Color</button>
-            <button type="button" onClick={handleRemoveColor}>Remove Color</button>
-            <input
-               type="file"
-               name="images"
-               accept="image/png, image/jpeg"
-               multiple
-               required
-               onChange={handleFileChange}
-            />
-            <button type="submit">Submit</button>
+            <div className="uploading-file-container">
+               <Button text={"Add Color"} fn={handleAddColor}/>
+               <Button text={"Remove Color"} fn={handleRemoveColor} />
+               <input
+                  type="file"
+                  name="images"
+                  accept="image/png, image/jpeg"
+                  multiple
+                  required
+                  onChange={handleFileChange}
+               />
+               <button type="submit" className="btn">Submit</button>
+            </div>
          </form>
       </div>
       {isLoading && <Loading />}

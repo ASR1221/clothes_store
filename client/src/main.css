@@ -24,7 +24,7 @@ p, a, div, span, button, input {
    font-family: "body";
 }
 
-input[type=text] {
+input[type=text], input[type=number], select {
    border: 1px solid black;
    border-radius: 5px;
    padding: 2px 7px;
@@ -47,7 +47,10 @@ a, button, input {
 
 a:focus, button:focus, a:hover, button:hover {
   outline: none !important;
-  text-decoration: underline;
+}
+
+a:focus, button:focus, a:hover {
+   text-decoration: underline;
 }
 
 .grid {
