@@ -1,5 +1,6 @@
 .home-main-trend.cat {
    grid-template-columns: 4fr 5fr;
+   height: min(43vw, 120px);
 }
 
 .home-main-trend {
@@ -43,6 +44,10 @@
 
 @media (min-width: 550px) {
    .home-main-trend.cat .trends-placeholder {
-      height: min(28vw, 100px);
+      height: min(28vw, 130px);
+   }
+
+   .home-main-trend.cat > p {
+      padding-right: 42%;
    }
 }

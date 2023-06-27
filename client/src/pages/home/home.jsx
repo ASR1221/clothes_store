@@ -21,7 +21,7 @@ function Home({ animate }) {
 
    // images and text for trends
    const [trendImgs, setTrendImgs] = useState({
-      cat: "/images/home/elei-top.png",
+      cat: "/images/home/women-trend.png",
       item1: "/images/1683055485589-Cotton shirt-1.jpg",
       item2: "/images/1683055559620-Oxford shirt-1.jpg",
       item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
@@ -152,7 +152,7 @@ function Home({ animate }) {
 
       if (section === "women") {
          setTrendImgs({
-            cat: "/images/home/elei-top.png",
+            cat: "/images/home/women-trend.png",
             item1: "/images/1683055485589-Cotton shirt-1.jpg",
             item2: "/images/1683055559620-Oxford shirt-1.jpg",
             item3: "/images/1683056627574-Waxed tie-belt coat-1.jpg",
@@ -160,7 +160,7 @@ function Home({ animate }) {
          setTrendText("Discover the Elegance Collection: Your perfect dress awaits. Be unforgettable.");
       } else if (section === "men") {
          setTrendImgs({
-            cat: "/images/home/black.png",
+            cat: "/images/home/men-trend.png",
             item1: "/images/1683057393396-Regular Fit Oxford shirt-1.jpg",
             item2: "/images/1683057632516-Felted wool-blend car coat-1.jpg",
             item3: "/images/1683057591829-Slim Jeans-1.jpg",
@@ -168,12 +168,12 @@ function Home({ animate }) {
          setTrendText("Elevate your style with our Classic Gentlemen's Coat. Timeless elegance, impeccable craftsmanship.");
       } else if (section === "kids") {
          setTrendImgs({
-            cat: "/images/home/kids-in-suit.png",
+            cat: "/images/home/kids-trend.png",
             item1: "/images/1683056826778-Pleated tulle dress-1.jpg",
             item2: "/images/1683057044567-Printed sweatshirt-2.jpg",
             item3: "/images/1683057143507-Superstretch Slim Fit Jeans-1.jpg",
          });
-         setTrendText("Style your little one in our charming Little Gentleman Suit. Sharp style for young icons. Make a statement");
+         setTrendText("Style your little one in our charming Little Gentleman Shirts. Sharp style for young icons. Make a statement");
       }
 
       mainSlideRef.current.style.top = "91%";
