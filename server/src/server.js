@@ -19,6 +19,7 @@ if (process.env.NODE_ENV !== "production") {
    const logger = require("morgan");
    app.use(logger("dev"));
 }
+console.log(process.env.NODE_ENV);
 
 // Important middlewares
 app.use(helmet());
