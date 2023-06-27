@@ -19,6 +19,11 @@ app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
 
+// database sync (should import model to work) //! DELETE after sync is complete
+sequelize.sync({ alter: true})
+   .then(() => console.log("database syncd"))
+   .catch(e => console.log(`database sync error: ${e}`));
+
 // routes
 app.use("/api/native", require("./routes/mainRoute"));
 app.use("/api", require("./routes/mainRoute"));

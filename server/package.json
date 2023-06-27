@@ -2,9 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "An back-end for a clothing store.",
-  "main": "server.js",
+  "main": "./src/server.js",
   "scripts": {
-    "start": "nodemon ./src/server.js"
+    "dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
   },
   "keywords": [
     "express",

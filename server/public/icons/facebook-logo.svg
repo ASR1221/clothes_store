@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="11.6417mm"
+   height="11.67mm"
+   viewBox="0 0 11.641699 11.669999"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="facebook-logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="-9.125"
+     inkscape:cy="23.125"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2"
+     height="11.58214mm" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="ellipse_5pts"
+       id="path-effect3097"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="envelope"
+       id="path-effect3095"
+       is_visible="true"
+       lpeversion="1"
+       yy="true"
+       xx="true"
+       bendpath1="m 63.531541,101.75285 h 8.902098"
+       bendpath2="m 72.433639,101.75285 v 10.20167"
+       bendpath3="m 63.531541,111.95452 h 8.902098"
+       bendpath4="m 63.531541,101.75285 v 10.20167" />
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect3074"
+       is_visible="true"
+       lpeversion="1"
+       pattern="M 0,0 H 1"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       hide_knot="false"
+       fuse_tolerance="0" />
+    <inkscape:path-effect
+       effect="attach_path"
+       id="path-effect3051"
+       lpeversion="1"
+       is_visible="true"
+       startpath=""
+       startposition="0"
+       startcurvestart="0,0 , 20,0"
+       startcurveend="0,0 , 20,0"
+       endpath=""
+       endposition="0"
+       endcurvestart="0,0 , 20,0"
+       endcurveend="0,0 , 20,0" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect2285"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0.95911458,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="bend_path"
+       id="path-effect2283"
+       is_visible="true"
+       lpeversion="1"
+       bendpath="m 65.62513,107.21685 h 4.987486"
+       prop_scale="0.99119265"
+       scale_y_rel="false"
+       vertical="false"
+       hide_knot="false" />
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2"
+     transform="translate(-62.211164,-100.28036)">
+    <ellipse
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.43799;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:13.314, 13.314;stroke-dashoffset:7.98843;stroke-opacity:0.275304;paint-order:stroke markers fill"
+       id="path2870"
+       cx="68.032196"
+       cy="106.84784"
+       rx="4.500658"
+       ry="5.0949903" />
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-62.211164,-100.28036)">
+    <path
+       d="m 68.031964,100.28036 c -3.2147,0 -5.8208,2.60615 -5.8208,5.82084 0,2.91835 2.1497,5.32791 4.9509,5.74886 v -4.20608 h -1.4402 v -1.53008 h 1.4402 v -1.01812 c 0,-1.68566 0.8212,-2.4257 2.2222,-2.4257 0.671,0 1.0258,0.0497 1.1938,0.0725 v 1.33561 h -0.9557 c -0.5947,0 -0.8024,0.56383 -0.8024,1.19936 v 0.83635 h 1.743 l -0.2365,1.53008 h -1.5065 v 4.21852 c 2.841,-0.3855 5.0329,-2.81464 5.0329,-5.7613 0,-3.21469 -2.6062,-5.82084 -5.8209,-5.82084 z"
+       id="path832"
+       style="stroke-width:0.264583" />
+  </g>
+</svg>
