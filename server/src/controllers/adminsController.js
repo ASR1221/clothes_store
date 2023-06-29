@@ -176,7 +176,7 @@ exports.addNewItem = async (req, res, next) => {
       item = await Items.create({
          name,
          price,
-         image_path: `/images/${req.files.images[0].filename}`,
+         image_path: `/images/items/${req.files.images[0].filename}`,
          section,
          type,
       });
@@ -184,7 +184,7 @@ exports.addNewItem = async (req, res, next) => {
       let promises = [];
 
       for (let i = 0; i < 3; i++) {
-         const imagePath = `/images/${req.files.images[i].filename}`;
+         const imagePath = `/images/items/${req.files.images[i].filename}`;
          const promise = ItemsImages.create({
             item_id: item.id,
             path: imagePath,
