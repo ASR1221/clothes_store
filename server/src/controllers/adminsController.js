@@ -9,6 +9,8 @@ const Order = require("../models/orderModels/orderModel");
 const Users = require("../models/userModels/usersModel");
 const { Op } = require("sequelize");
 
+const { supabase } = require("../utils/supabase");
+
 
 exports.allowAccess = async (req, res, next) => {
    const { sessionToken, roles } = req.user;
@@ -173,10 +175,27 @@ exports.addNewItem = async (req, res, next) => {
          throw error;
       }
 
+      if (!req.files.images || req.files.images.length !== 3) {
+         const error = new Error("Exacly 3 files required.");
+         error.status = 400;
+         throw error;
+      }
+   
+      const files = req.files.images;
+      const fileNames = files.map((file) => Date.now() + "-" + file.originalname);
+      const fileBuffers = files.map((file) => file.buffer);
+
+      const filePromises = fileBuffers.map((fileBuffer, index) => {
+         const fileName = fileNames[index];
+         return supabase.storage.from("asr_store").upload(`/images/${fileName}`, fileBuffer);
+      });
+   
+      await Promise.all(filePromises);
+
       item = await Items.create({
          name,
          price,
-         image_path: `/images/items/${req.files.images[0].filename}`,
+         image_path: fileNames[0],
          section,
          type,
       });
@@ -184,10 +203,9 @@ exports.addNewItem = async (req, res, next) => {
       let promises = [];
 
       for (let i = 0; i < 3; i++) {
-         const imagePath = `/images/items/${req.files.images[i].filename}`;
          const promise = ItemsImages.create({
             item_id: item.id,
-            path: imagePath,
+            path: fileNames[i],
          });
          promises.push(promise);
       }

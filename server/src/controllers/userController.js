@@ -72,18 +72,19 @@ exports.facebookUser = async (req, res, next) => {
       // should add phone_number to the fields above but it requires advance permissions. and also add phone number to the scopes in the request url in the client side.
       const { name, email, phone_number } = await response.json(); 
 
-      if (!(response.ok && (email ||  phone_number) && name)) {
+      if (!(response.ok && (email || phone_number) && name)) {
          const error = new Error("There was a problem getting your data. Please try again.");
          error.status = 500;
          return next(error);
       }
+      console.log("hi1")
       
       const [user, created] = await Users.findOrCreate({
          where: {
-            [Op.or]: {
-               email: email || null, 
-               phone_number: phone_number || 12,
-            }
+            [Op.or]: [
+               { email: email || null }, 
+               { phone_number: phone_number || "12" },
+            ]
          },
          defaults: {
             name,
@@ -91,7 +92,7 @@ exports.facebookUser = async (req, res, next) => {
             phone_number: phone_number || null,
          }
       });
-
+      console.log("hi2")
       const cartItemsCount = created ? 0 : await Cart.count({ where: { user_id: user.id } });
 
       req.user = {
