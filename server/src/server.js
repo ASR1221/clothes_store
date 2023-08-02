@@ -23,11 +23,16 @@ if (process.env.NODE_ENV !== "production") {
 // Important middlewares
 app.use(helmet());
 app.use(helmet.hidePoweredBy());
+app.use(helmet.contentSecurityPolicy({
+   directives: {
+      imgSrc: ["'self'", "https://ncirklecbvhkpnbchfed.supabase.co"],
+   }
+}));
 app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
 
-// // database sync (should import model to work) //! DELETE after sync is complete
+// database sync (should import model to work) //! DELETE after sync is complete
 // sequelize.sync({ alter: true})
 //    .then(() => console.log("database syncd"))
 //    .catch(e => console.log(`database sync error: ${e}`));
@@ -38,9 +43,7 @@ app.use("/api", require("./routes/mainRoute"));
 
 // Handling 404 (Not found)
 app.use((req, res, next) => {
-   const err = new Error("Not Found!");
-   err.status = 404;
-   next(err);
+   res.redirect("/");
 });
 
 // Error handler
