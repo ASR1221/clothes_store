@@ -1,13 +1,6 @@
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-   destination: (req, file, cb) => {
-      cb(null, "./public/images/items");
-   },
-   filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
-   }
-});
+const storage = multer.memoryStorage();
 
 function fileFilter(req, file, cb) {
    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
@@ -20,7 +13,7 @@ function fileFilter(req, file, cb) {
 module.exports = multer({
    storage,
    fileFilter,
-   limits: { fileSize: 7_000_000 } // 7 MB
+   limits: { fileSize: 3_000_000 }, // 3 MB
 })
    .fields([
       { name: "images", maxCount: 3 },

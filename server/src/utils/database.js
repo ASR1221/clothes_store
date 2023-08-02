@@ -6,12 +6,12 @@ if (process.env.NODE_ENV !== "production") {
 
 // Database connection
 const sequelize = new Sequelize({
-   database: process.env.MYSQLDATABASE,
-   username: process.env.MYSQLUSER,
-   password: process.env.MYSQLPASSWORD,
-   host: process.env.MYSQLHOST,
-   port: process.env.MYSQLPORT,
-   dialect: "mysql",
+   database: process.env.SUPABASE_DATABASE,
+   username: process.env.SUPABASE_USER,
+   password: process.env.SUPABASE_PASSWORD,
+   host: process.env.SUPABASE_HOST,
+   port: process.env.SUPABASE_PORT,
+   dialect: "postgres",
 });
 
 // chech if connection is good //! DELETE later
