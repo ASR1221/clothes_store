@@ -77,14 +77,13 @@ exports.facebookUser = async (req, res, next) => {
          error.status = 500;
          return next(error);
       }
-      console.log("hi1")
       
       const [user, created] = await Users.findOrCreate({
          where: {
-            [Op.or]: [
-               { email: email || null }, 
-               { phone_number: phone_number || "12" },
-            ]
+            [Op.or]: {
+               email: email || null, 
+               phone_number: phone_number || "12",
+            }
          },
          defaults: {
             name,
@@ -92,7 +91,7 @@ exports.facebookUser = async (req, res, next) => {
             phone_number: phone_number || null,
          }
       });
-      console.log("hi2")
+
       const cartItemsCount = created ? 0 : await Cart.count({ where: { user_id: user.id } });
 
       req.user = {

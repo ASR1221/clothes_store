@@ -23,11 +23,6 @@ if (process.env.NODE_ENV !== "production") {
 // Important middlewares
 app.use(helmet());
 app.use(helmet.hidePoweredBy());
-app.use(helmet.contentSecurityPolicy({
-   directives: {
-      imgSrc: ["'self'", "https://ncirklecbvhkpnbchfed.supabase.co"],
-   }
-}));
 app.use(compression());
 app.use(express.json());
 app.use(express.static("public"));
