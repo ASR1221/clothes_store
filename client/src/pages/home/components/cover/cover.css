@@ -90,6 +90,10 @@
       transform: rotate(180deg);
    }
 
+   .leftScrollBtn:hover, .rightScrollBtn:hover {
+      background-color: rgb(239, 239, 239);
+   }
+
    .scrollBtnImg {
       width: 150%;
       height: 150%;
