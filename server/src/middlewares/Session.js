@@ -32,6 +32,13 @@ exports.createSession = (req, res, next) => {
 }
 
 exports.checkAndRecreateSession = (req, res, next) => {
+
+   if (!req.headers.authorization) {
+      const error = new Error("No session token. Please try logging in")
+      error.status = 401;
+      return next(error);
+   }
+
    const sessionToken = req.headers.authorization.split("Bearer ")[1];
    if (!sessionToken) {
       const error = new Error("No session token. Please try logging in")
