@@ -17,7 +17,7 @@ function CartItem({ cartItem, index, isEditable, setCartItems }) {
          <div className="cartItem-img-container">
             <img
                className="img"
-               src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + cartItem.img}
+               src={cartItem.img}
                alt="Item image"
                crossOrigin="anonymous"
             />

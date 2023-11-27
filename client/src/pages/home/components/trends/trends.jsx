@@ -39,7 +39,7 @@ function Trends({ imgsLoad, handleImgsLoad, trendImgs, trendText, section }) {
                            item1: true,
                         })
                      }
-                     src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + trendImgs.item1}
+                     src={"/images/" + trendImgs.item1}
                      alt="trend item"
                      className="img home-main-trend-img"
                      crossOrigin="anonymous"
@@ -55,7 +55,7 @@ function Trends({ imgsLoad, handleImgsLoad, trendImgs, trendText, section }) {
                            item2: true,
                         })
                      }
-                     src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + trendImgs.item2}
+                     src={"/images/" + trendImgs.item2}
                      alt="trend item"
                      className="img home-main-trend-img"
                      crossOrigin="anonymous"
@@ -71,7 +71,7 @@ function Trends({ imgsLoad, handleImgsLoad, trendImgs, trendText, section }) {
                            item3: true,
                         })
                      }
-                     src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + trendImgs.item3}
+                     src={"/images/" + trendImgs.item3}
                      alt="trend item"
                      className="img home-main-trend-img"
                      crossOrigin="anonymous"

@@ -56,6 +56,14 @@
    padding-block: 5px;
 }
 
+.search-phrases-pBtn {
+   cursor: pointer;
+}
+
+.search-phrases-pBtn:hover {
+   font-weight: bold;
+}
+
 .search-items-container {
    padding-top: 27vh;
    padding-inline: 5%;

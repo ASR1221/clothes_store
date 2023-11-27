@@ -49,10 +49,6 @@ a:focus, button:focus, a:hover, button:hover {
   outline: none !important;
 }
 
-a:focus, a:hover {
-   text-decoration: underline;
-}
-
 .grid {
    display: grid;
 }

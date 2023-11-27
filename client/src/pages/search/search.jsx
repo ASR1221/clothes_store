@@ -57,23 +57,23 @@ function Search() {
          <div className="search-phrases">
             <p onClick={handleClick}>Search for:</p>
             <div className="search-phrases-section">
-               <p onClick={handleClick}>Women dresses</p>
-               <p onClick={handleClick}>Women shirts</p>
-               <p onClick={handleClick}>Women jeans</p>
-               <p onClick={handleClick}>Women skirts</p>
-               <p onClick={handleClick}>Women coats</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Women dresses</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Women shirts</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Women jeans</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Women skirts</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Women coats</p>
             </div>
             <div className="search-phrases-section">
-               <p onClick={handleClick}>Men shirts</p>
-               <p onClick={handleClick}>Men jeans</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Men shirts</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Men jeans</p>
                <p onClick={handleClick}>Men coats</p>
             </div>
             <div className="search-phrases-section">
-               <p onClick={handleClick}>Kids dresses</p>
-               <p onClick={handleClick}>Kids shirts</p>
-               <p onClick={handleClick}>Kids jeans</p>
-               <p onClick={handleClick}>Kids skirts</p>
-               <p onClick={handleClick}>Kids coats</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Kids dresses</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Kids shirts</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Kids jeans</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Kids skirts</p>
+               <p role="button" className="search-phrases-pBtn" onClick={handleClick}>Kids coats</p>
             </div>
          </div>
          {(searchTerm && searchFeild) && <Items

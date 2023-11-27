@@ -61,7 +61,7 @@ function ItemDetailsComp({
                <div className="itemDetails-mainImg-container">
                   <img
                      className="img"
-                     src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + selectedImg}
+                     src={selectedImg}
                      alt="selected item image"
                      crossOrigin="anonymous"
                   />
@@ -73,7 +73,7 @@ function ItemDetailsComp({
                         onClick={handleImgClick}
                         className={`itemDetails-smallImg-container ${selectedImg === img ? "selected" : ""}`}
                      >
-                        <img className="img" src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + img} alt="item image" crossOrigin="anonymous"/>
+                        <img className="img" src={img} alt="item image" crossOrigin="anonymous"/>
                      </div>)
                   }
                </div>

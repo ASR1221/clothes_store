@@ -12,7 +12,7 @@ function ItemCard({ id, name, price, img }) {
       >
          <div className="placeholder">
             <img
-               src={"https://ncirklecbvhkpnbchfed.supabase.co/storage/v1/object/public/asr_store/images/" + img}
+               src={img}
                alt="item image"
                className="card-img transition-1 img"
                crossOrigin="anonymous"
