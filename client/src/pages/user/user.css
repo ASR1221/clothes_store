@@ -39,6 +39,10 @@
    margin-block: 5px;
 }
 
+.user-hover {
+   cursor: pointer;
+}
+
 .user-hover:hover {
    text-decoration: underline;
 }
