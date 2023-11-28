@@ -89,6 +89,7 @@ function Cart() {
       <div className="cart-check-container flex">
          <p>Total Check: { (totalCheck).toFixed(2) }$</p>
          <Button
+            disabled={cartItems.length < 1}
             text={"Make Order"}
             fn={handleMakeOrderClick}
          />
