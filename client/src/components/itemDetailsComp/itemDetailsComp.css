@@ -28,6 +28,10 @@
    pointer-events: none;
 }
 
+.itemDetails-smallImg-container:not(.selected) {
+   cursor: pointer;
+}
+
 .itemDetails-text-container {
    padding-inline: 5px;
 }
@@ -55,7 +59,7 @@
    border: none !important;
    border-bottom: 1px solid black  !important;
    border-radius: 0 !important;
-   width: clamp(20px, 10%, 30px);
+   width: clamp(30px, 10%, 40px);
    margin-inline: 10px;
    padding-block: 3px;
    padding-inline: 7px;
