@@ -15,6 +15,6 @@ The app implements most functions of modren web apps like:
 
 ## Live Demos
 
-- [Desktop Live Demo](./2023-11-28%2020-18-42.mp4)
+- [Desktop Live Demo](https://youtu.be/bpsTBcx9Kgk?si=63JnV4XflidxZPzw)
 
-- [Mobile Live Demo](./document_5417897825662942780.mp4)
+- [Mobile Live Demo](https://youtu.be/zTe325L8J_c?si=CG6GNG-RAMmXUrh4)
